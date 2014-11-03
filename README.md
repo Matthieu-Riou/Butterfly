@@ -12,7 +12,7 @@ This project is build with Maven :
 
 ```mvn clean package```
 
-It will build a ```.jar``` inside the ```target.``` directory.
+It will build a ```.jar``` inside the ```target.``` directory
 
 Then to launch :
 
