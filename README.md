@@ -1,32 +1,50 @@
-Butterfly
-=========
+# Butterfly
 
 > A Scala-based mini text editor
 
-The name refers to this [xkcd](http://xkcd.com/378/) 
+The name refers to this [xkcd](http://xkcd.com/378/)
 
-Build & Launch
---------------
+## Run, test & build
 
-This project is build with Maven :
+### With sbt (recommended)
 
-```mvn clean package```
+Simply run
 
-It will build a ```.jar``` inside the ```target.``` directory
+`sbt`
 
-Then to launch :
+Then, to run
 
-```scala target/butterfly-{version}.jar```
+`run`
 
-Test
-----
+To launch tests
 
-To run tests
+`test`
 
-```mvn test```
+To build
 
-Contributors
-------------
+`assembly`
+
+It will build a `butterfly-assembly-{version}.jar` somewhere in `target/` containing all dependencies
+
+And that's all !
+
+### With Maven (not recommended)
+
+To build
+
+`mvn clean package`
+
+It will build a `.jar` inside the `target/` directory
+
+To launch
+
+`scala target/butterfly-{version}.jar`
+
+To launch tests
+
+`mvn test`
+
+## Contributors
 
 - Matthieu Riou
 - Brice Thomas
