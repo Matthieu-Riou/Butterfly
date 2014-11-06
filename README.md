@@ -32,7 +32,7 @@ And that's all !
 
 To build
 
-`mvn clean package`
+`mvn clean package -U`
 
 It will build a `.jar` inside the `target/` directory
 
