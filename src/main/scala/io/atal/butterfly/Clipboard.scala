@@ -7,10 +7,10 @@ package io.atal.butterfly
 class Clipboard {
   var _data: String = ""
 
-  def data = _data
-  def data_=(data: String) = _data = data
+  def data: String = _data
+  def data_=(data: String): Unit = _data = data
 
   /** Clear the data with an empty String
     */
-  def clearData = _data = ""
+  def clearData: Unit = _data = ""
 }
