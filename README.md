@@ -28,11 +28,11 @@ It will build a `butterfly-assembly-{version}.jar` somewhere in `target/` contai
 
 And that's all !
 
-### With Maven (not recommended)
+### With Maven
 
 To build
 
-`mvn clean package`
+`mvn clean package -U`
 
 It will build a `.jar` inside the `target/` directory
 
