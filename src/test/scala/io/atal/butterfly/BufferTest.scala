@@ -22,4 +22,26 @@ class BufferTest extends FlatSpec {
 
     assert(buffer.toString() == buffer.content)
   }
+  
+  "The Buffer select method" should "return the substring selected" in {
+  	val buffer = new Buffer("Hello world!")  	
+  	  	  	  	
+  	assert(buffer.select(6,11).equals("world"))
+  }
+  
+  "The Buffer insert method" should "insert the wanted string in the content at the wanted position" in {
+  	val buffer = new Buffer("Hello world!")
+  	
+  	buffer.insert("king of the ", 6)
+  	
+  	assert(buffer.content == "Hello king of the world!")
+  }
+  
+  "The Buffer remove method" should "remove the substring defined by positions from the content" in {
+  	val buffer = new Buffer("Hello world!")
+  	
+  	buffer.remove(5,11)
+  	
+  	assert(buffer.content == "Hello!")
+  }
 }
