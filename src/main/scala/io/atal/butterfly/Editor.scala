@@ -3,9 +3,15 @@ package io.atal.butterfly
 /** Editor class
   */
 class Editor {
+  var _currentBuffer: Buffer = new Buffer("")
   var _buffers: Array[Buffer] = Array()
+  var _cursor: Cursor = new Cursor(this)
 
-  def buffers = _buffers
+  def currentBuffer: Buffer = _currentBuffer
+
+  def buffers: Array[Buffer] = _buffers
+
+  def buffers_=(buffers: Array[Buffer]): Unit = _buffers = buffers
 
   /** Add a buffer to the editor
     *

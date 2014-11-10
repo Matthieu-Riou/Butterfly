@@ -8,6 +8,7 @@ class Clipboard {
   var _data: String = ""
 
   def data: String = _data
+
   def data_=(data: String): Unit = _data = data
 
   /** Clear the data with an empty String
