@@ -7,10 +7,28 @@ import Matchers._
   */
 class EditorTest extends FlatSpec {
 
-  "The Editor buffers accessor" should "be as expected" in {
+  "The Editor current buffer accessor and mutator" should "be as expected" in {
     val editor = new Editor
 
-    editor.buffers should equal (Array())
+    // @todo Test default buffer
+    // assert(editor.currentBuffer == new Buffer(""))
+
+    // @todo Test mutator
+    // val expected = new Buffer("#buffer")
+    // editor.currentBuffer = buffer
+
+    // assert(editor.currentBuffer == expected)
+  }
+
+  "The Editor buffers accessor and mutator" should "be as expected" in {
+    val editor = new Editor
+
+    editor.buffers should equal (Array[Buffer]())
+
+    val expected = Array[Buffer](new Buffer("#buffer"))
+    editor.buffers = expected
+
+    editor.buffers should equal (expected)
   }
 
   "The Editor add and remove buffer methods" should "add and remove a buffer" in {
