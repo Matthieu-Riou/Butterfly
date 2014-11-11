@@ -1,39 +1,39 @@
 package io.atal.butterfly
 import scala.collection.mutable.ListBuffer
 
-class Historic {
-  var _historicBefore: ListBuffer[HistoricEvent] = new ListBuffer()
-  var _historicAfter: ListBuffer[HistoricEvent] = new ListBuffer()
+class History {
+  var _historyBefore: ListBuffer[HistoryEvent] = new ListBuffer()
+  var _historyAfter: ListBuffer[HistoryEvent] = new ListBuffer()
 
-  /** Add a new event to the historic
+  /** Add a new event to the history
     * @param event The new event
     */
-  def newEvent(event: HistoricEvent): Unit = {
-  	_historicBefore.prepend(event)
+  def newEvent(event: HistoryEvent): Unit = {
+  	_historyBefore.prepend(event)
   }
   
   /** Undo the last event
     */
   def undo(): Unit = {
-  	_historicBefore.head.undo()
-  	_historicAfter.prepend(_historicBefore.remove(0))
+  	_historyBefore.head.undo()
+  	_historyAfter.prepend(_historyBefore.remove(0))
   }
   
   /** Redo the last undo event
     */
   def redo(): Unit = {
-  	_historicAfter.head.redo()
-  	_historicBefore.prepend(_historicAfter.remove(0))
+  	_historyAfter.head.redo()
+  	_historyBefore.prepend(_historyAfter.remove(0))
   }
 }
 
 
-trait HistoricEvent {
+trait HistoryEvent {
   def undo(): Unit
   def redo(): Unit
 }
 
-class Insertion(b:Buffer, s: String, i: Int) extends HistoricEvent {
+class Insertion(b:Buffer, s: String, i: Int) extends HistoryEvent {
   val _string = s
   val _index = i
   val _buffer = b
@@ -45,7 +45,7 @@ class Insertion(b:Buffer, s: String, i: Int) extends HistoricEvent {
   def redo(): Unit = _buffer.simpleInsert(_string, _index)
 }
  
-class Deletion(b: Buffer, begin: Int, end:Int) extends HistoricEvent {
+class Deletion(b: Buffer, begin: Int, end:Int) extends HistoryEvent {
   val _beginIndex = begin
   val _endIndex = end
   val _buffer = b
