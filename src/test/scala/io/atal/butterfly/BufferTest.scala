@@ -44,4 +44,34 @@ class BufferTest extends FlatSpec {
   	
   	assert(buffer.content == "Hello!")
   }
+  
+  "The last event" should "undo and redo properly" in {
+  	val buffer = new Buffer("Hello world!")
+  	
+  	buffer.insert("king of the ", 6)
+  	
+  	assert(buffer.content == "Hello king of the world!")
+  	
+  	buffer._lastEvent.undo()
+  	
+  	assert(buffer.content == "Hello world!")
+  	
+  	buffer._lastEvent.redo()
+  	
+  	assert(buffer.content == "Hello king of the world!")
+  	
+  	
+  	buffer.remove(6, 18)
+  	
+  	assert(buffer.content == "Hello world!")
+  	
+  	buffer._lastEvent.undo()
+  	
+  	assert(buffer.content == "Hello king of the world!")
+  	
+  	buffer._lastEvent.redo()
+  	
+  	assert(buffer.content == "Hello world!")
+  }
+  
 }
