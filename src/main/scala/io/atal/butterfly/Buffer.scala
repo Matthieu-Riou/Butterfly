@@ -8,16 +8,22 @@ class Buffer(s: String) {
 
   override def toString(): String = _content
   
-  /* Return a selected substring in the buffer
-   * beginIndex is selected, but not endIndex
-   */
+  /** Return a selected substring in the buffer
+    * @param beginIndex The beginning index of the selection
+    * @param endIndex The endding index of the selection
+    * @return beginIndex The substring between the beginIndex (including) and the endding index (excluded)
+    */
   def select(beginIndex: Int, endIndex: Int): String = _content.substring(beginIndex, endIndex)
 
-  /* Insert a string at the index
-   */
+  /** Insert a string at the index
+    * @param string The string to insert
+    * @param index The position of the insertion
+    */
   def insert(string: String, index: Int): Unit = _content = _content.substring(0, index).concat(string).concat(_content.substring(index))
   
-  /* Remove the substring between beginIndex (included) and endIndex(excluded)
+  /** Remove the substring between beginIndex (included) and endIndex(excluded)
+    * @param beginIndex The beginning index of the deletion
+    * @param endIndex The endding index of the deletion
    */
   def remove(beginIndex: Int, endIndex: Int): Unit = _content = _content.substring(0, beginIndex).concat(_content.substring(endIndex))
 }
