@@ -2,7 +2,7 @@ package io.atal.butterfly
 
 class Buffer(s: String) {
   var _content: String = s
-  var _history: History = new History()
+  var _history: History = new History(this)
 
   def content: String = _content
 
@@ -22,7 +22,7 @@ class Buffer(s: String) {
     * @param index The position of the insertion
     */
   def insert(string: String, index: Int): Unit = {
-    _history.newInsertion(this, string, index)
+    _history.newInsertion(string, index)
     simpleInsert(string, index)
   }
   
@@ -31,7 +31,7 @@ class Buffer(s: String) {
     * @param endIndex The ending index of the deletion
     */
   def remove(beginIndex: Int, endIndex: Int): Unit = {
-    _history.newDeletion(this, beginIndex, endIndex)
+    _history.newDeletion(beginIndex, endIndex)
     simpleRemove(beginIndex, endIndex)
   }
 
