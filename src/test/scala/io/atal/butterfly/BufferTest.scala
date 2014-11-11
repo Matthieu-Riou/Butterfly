@@ -52,11 +52,11 @@ class BufferTest extends FlatSpec {
   	
   	assert(buffer.content == "Hello king of the world!")
   	
-  	buffer._lastEvent.undo()
+  	buffer.undo()
   	
   	assert(buffer.content == "Hello world!")
   	
-  	buffer._lastEvent.redo()
+  	buffer.redo()
   	
   	assert(buffer.content == "Hello king of the world!")
   	
@@ -65,11 +65,11 @@ class BufferTest extends FlatSpec {
   	
   	assert(buffer.content == "Hello world!")
   	
-  	buffer._lastEvent.undo()
+  	buffer.undo()
   	
   	assert(buffer.content == "Hello king of the world!")
   	
-  	buffer._lastEvent.redo()
+  	buffer.redo()
   	
   	assert(buffer.content == "Hello world!")
   }

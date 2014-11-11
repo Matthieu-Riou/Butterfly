@@ -1,9 +1,11 @@
 package io.atal.butterfly
+import scala.collection.mutable.ListBuffer
 
 class Buffer(s: String) {
   var _content: String = s
   
-  var _lastEvent: Historique = null
+  var _historicBefore: ListBuffer[Historique] = new ListBuffer()
+  var _historicAfter: ListBuffer[Historique] = new ListBuffer()
 
   def content: String = _content
   def content_=(s: String): Unit = _content = s
@@ -22,19 +24,35 @@ class Buffer(s: String) {
     * @param index The position of the insertion
     */
   def insert(string: String, index: Int): Unit = {
-  	_lastEvent = new Insertion(string, index)
-  	_lastEvent.redo()
+  	_historicBefore.prepend(new Insertion(string, index))
+  	_historicBefore.head.redo()
   }
-  
   
   /** Remove the substring between beginIndex (included) and endIndex(excluded)
     * @param beginIndex The beginning index of the deletion
     * @param endIndex The endding index of the deletion
-   */
+    */
   def remove(beginIndex: Int, endIndex: Int): Unit = {
-  	_lastEvent = new Deletion(beginIndex, endIndex)
-  	_lastEvent.redo()
+  	_historicBefore.prepend(new Deletion(beginIndex, endIndex))
+  	_historicBefore.head.redo()
   }
+  
+  /** Undo the last event
+    */
+  def undo(): Unit = {
+  	_historicBefore.head.undo()
+  	_historicAfter.prepend(_historicBefore.remove(0))
+  }
+  
+  /** Redo the last undo event
+    */
+  def redo(): Unit = {
+  	_historicAfter.head.redo()
+  	_historicBefore.prepend(_historicAfter.remove(0))
+  }
+  
+  
+  
   
   trait Historique {
 	def undo(): Unit
