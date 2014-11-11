@@ -10,14 +10,20 @@ class History {
     * @param string The string inserted
     * @param index The position of the insertion
     */
-  def newInsertion(buffer: Buffer, string: String, index: Int): Unit = _historyBefore.prepend(new Insertion(buffer, string, index))
+  def newInsertion(buffer: Buffer, string: String, index: Int): Unit = {
+    _historyBefore.prepend(new Insertion(buffer, string, index))
+    _historyAfter.clear()
+  }
   
   /** Add a new deletion to the history
     * @param buffer The buffer of the event
     * @param beginIndex The beginning of the deletion (included)
     * @param endIndex The ending of the deletion (excluded)
     */
-  def newDeletion(buffer: Buffer, beginIndex: Int, endIndex: Int): Unit = _historyBefore.prepend(new Deletion(buffer, beginIndex, endIndex))
+  def newDeletion(buffer: Buffer, beginIndex: Int, endIndex: Int): Unit = {
+    _historyBefore.prepend(new Deletion(buffer, beginIndex, endIndex))
+    _historyAfter.clear() 
+  }
   
   /** Undo the last event
     */
