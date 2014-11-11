@@ -5,10 +5,19 @@ class History {
   var _historyBefore: ListBuffer[HistoryEvent] = new ListBuffer()
   var _historyAfter: ListBuffer[HistoryEvent] = new ListBuffer()
 
-  /** Add a new event to the history
-    * @param event The new event
+  /** Add a new insertion to the history
+    * @param buffer The buffer of the event
+    * @param string The string inserted
+    * @param index The position of the insertion
     */
-  def newEvent(event: HistoryEvent): Unit = _historyBefore.prepend(event)
+  def newInsertion(buffer: Buffer, string: String, index: Int): Unit = _historyBefore.prepend(new Insertion(buffer, string, index))
+  
+  /** Add a new deletion to the history
+    * @param buffer The buffer of the event
+    * @param beginIndex The beginning of the deletion (included)
+    * @param endIndex The ending of the deletion (excluded)
+    */
+  def newDeletion(buffer: Buffer, beginIndex: Int, endIndex: Int): Unit = _historyBefore.prepend(new Deletion(buffer, beginIndex, endIndex))
   
   /** Undo the last event
     */

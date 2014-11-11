@@ -22,7 +22,7 @@ class Buffer(s: String) {
     * @param index The position of the insertion
     */
   def insert(string: String, index: Int): Unit = {
-    _history.newEvent(new Insertion(this, string, index))
+    _history.newInsertion(this, string, index)
     simpleInsert(string, index)
   }
   
@@ -31,7 +31,7 @@ class Buffer(s: String) {
     * @param endIndex The ending index of the deletion
     */
   def remove(beginIndex: Int, endIndex: Int): Unit = {
-    _history.newEvent(new Deletion(this, beginIndex, endIndex))
+    _history.newDeletion(this, beginIndex, endIndex)
     simpleRemove(beginIndex, endIndex)
   }
 
