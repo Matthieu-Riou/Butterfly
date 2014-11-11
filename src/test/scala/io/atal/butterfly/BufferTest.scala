@@ -35,7 +35,7 @@ class BufferTest extends FlatSpec {
   	buffer.insert("king of the ", 6)
   	
   	assert(buffer.content == "Hello king of the world!")
-  }
+  }cd 
   
   "The Buffer remove method" should "remove the substring defined by positions from the content" in {
   	val buffer = new Buffer("Hello world!")
@@ -72,6 +72,5 @@ class BufferTest extends FlatSpec {
   	buffer.redo()
   	
   	assert(buffer.content == "Hello world!")
-  }
-  
+  } 
 }
