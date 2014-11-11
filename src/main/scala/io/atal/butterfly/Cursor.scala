@@ -5,7 +5,7 @@ package io.atal.butterfly
   * @constructor Create a new cursor linked to an editor
   * @param ed The editor where the cursor lives
   */
-class Cursor(ed: Editor) {
+class Cursor(ed: Editor) extends EventTrait {
   val _editor: Editor = ed
   var _bufferPosition: (Int, Int) = (0, 0)
 
@@ -13,7 +13,10 @@ class Cursor(ed: Editor) {
 
   def bufferPosition: (Int, Int) = _bufferPosition
 
-  def bufferPosition_=(position: (Int, Int)): Unit = _bufferPosition = (position._1, position._2)
+  def bufferPosition_=(position: (Int, Int)): Unit = {
+    _bufferPosition = (position._1, position._2)
+    _event.emit("cursor-move")
+  }
 
   /** Move up the cursor
     *
@@ -41,5 +44,9 @@ class Cursor(ed: Editor) {
 
   /** Move to the top the cursor
     */
-  def moveToTop: Unit = _bufferPosition = (0, 0)
+  def moveToTop: Unit = bufferPosition = (0, 0)
+
+  /** Move to the bottom the cursor
+    */
+  def moveToBottom: Unit = {}
 }
