@@ -3,15 +3,13 @@ package io.atal.butterfly
 /** A cursor is the little blinking vertical line where the text is inserted
   *
   * @constructor Create a new cursor linked to an editor
-  * @param ed The editor
+  * @param ed The editor where the cursor lives
   */
 class Cursor(ed: Editor) {
-  var _editor: Editor = ed
+  val _editor: Editor = ed
   var _bufferPosition: (Int, Int) = (0, 0)
 
   def editor: Editor = _editor
-
-  def editor_=(editor: Editor): Unit = _editor = editor
 
   def bufferPosition: (Int, Int) = _bufferPosition
 

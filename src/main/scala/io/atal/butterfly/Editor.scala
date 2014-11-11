@@ -1,29 +1,16 @@
 package io.atal.butterfly
 
-/** Editor class
+/** An editor is the place where you edit a buffer thanks to a cursor (or more ? #later)
+  * It tracks user events and coordinate the communication between cursor(s) and the buffer
+  *
+  * @constructor Create a new editor for the buffer
+  * @param buff The buffer to edit
   */
-class Editor {
-  var _currentBuffer: Buffer = new Buffer("")
-  var _buffers: Array[Buffer] = Array[Buffer]()
+class Editor(buff: Buffer = new Buffer("")) {
+  var _buffer: Buffer = buff
   var _cursor: Cursor = new Cursor(this)
 
-  def currentBuffer: Buffer = _currentBuffer
+  def buffer: Buffer = _buffer
 
-  def currentBuffer_=(buffer: Buffer): Unit = _currentBuffer = buffer
-
-  def buffers: Array[Buffer] = _buffers
-
-  def buffers_=(buffers: Array[Buffer]): Unit = _buffers = buffers
-
-  /** Add a buffer to the editor
-    *
-    * @param buffer The buffer to add
-    */
-  def addBuffer(buffer: Buffer): Unit = _buffers = _buffers :+ buffer
-
-  /** Remove a buffer from the editor
-    *
-    * @param buffer The buffer to remove
-    */
-  def removeBuffer(buffer: Buffer): Unit = _buffers = _buffers diff Array(buffer)
+  def buffer_=(buffer: Buffer): Unit = _buffer = buffer
 }

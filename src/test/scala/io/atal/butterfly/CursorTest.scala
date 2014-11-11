@@ -18,16 +18,11 @@ class CursorTest extends FlatSpec {
     assert(cursor.bufferPosition == expected)
   }
 
-  "The Cursor editor accessor and mutator" should "be as expected" in {
-    val editor1 = new Editor
-    val editor2 = new Editor
-    val cursor = new Cursor(editor1)
+  "The Cursor editor accessor" should "be as expected" in {
+    val editor = new Editor
+    val cursor = new Cursor(editor)
 
-    assert(cursor.editor == editor1)
-
-    cursor.editor = editor2
-
-    assert(cursor.editor == editor2)
+    assert(cursor.editor == editor)
   }
 
   "The Cursor moveToTop method" should "place the cursor at the beginning" in {
