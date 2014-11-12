@@ -15,6 +15,14 @@ class Editor(buff: Buffer = new Buffer("")) extends EventTrait {
 
   def buffer_=(buffer: Buffer): Unit = _buffer = buffer
 
+  /** Write a text into the buffer at the current cursor(s) position
+    *
+    * @param text The text to be inserted in the buffer
+    */
+  def write(text: String): Unit = {
+    // @todo implements insertion when the Buffer branch will be merged
+  }
+
   /** Move up the cursor
     *
     * @param row Number of row to move, default 1

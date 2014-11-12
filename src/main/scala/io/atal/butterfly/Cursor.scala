@@ -21,33 +21,25 @@ class Cursor(ed: Editor) extends EventTrait {
     *
     * @param row Number of row to move, default 1
     */
-  def moveUp(row: Int = 1): Unit = {
-    position = (_position._1 - row, _position._2)
-  }
+  def moveUp(row: Int = 1): Unit = position = (_position._1 - row, _position._2)
 
   /** Move down the cursor
     *
     * @param row Number of row to move, default 1
     */
-  def moveDown(row: Int = 1): Unit = {
-    position = (_position._1 + row, _position._2)
-  }
+  def moveDown(row: Int = 1): Unit = position = (_position._1 + row, _position._2)
 
   /** Move left the cursor
     *
     * @param column Number of column to move, default 1
     */
-  def moveLeft(column: Int = 1): Unit = {
-    position = (_position._1, _position._2 - column)
-  }
+  def moveLeft(column: Int = 1): Unit = position = (_position._1, _position._2 - column)
 
   /** Move right the cursor
     *
     * @param column Number of column to move, default 1
     */
-  def moveRight(column: Int = 1): Unit = {
-    position = (_position._1, _position._2 + column)
-  }
+  def moveRight(column: Int = 1): Unit = position = (_position._1, _position._2 + column)
 
   /** Move to the top the cursor
     */
