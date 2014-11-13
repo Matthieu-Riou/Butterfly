@@ -2,7 +2,7 @@ package io.atal.butterfly
 
 import org.scalatest._
 
-/** Clipboard unit test
+/** Clipboard unit tests
   */
 class ClipboardTest extends FlatSpec {
 
