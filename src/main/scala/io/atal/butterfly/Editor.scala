@@ -15,6 +15,8 @@ class Editor(buff: Buffer = new Buffer("")) extends EventTrait {
 
   def buffer_=(buffer: Buffer): Unit = _buffer = buffer
 
+  def cursors: List[Cursor] = _cursors
+
   /** Write a text into the buffer at the current cursor(s) position
     *
     * @param text The text to be inserted in the buffer
@@ -33,7 +35,7 @@ class Editor(buff: Buffer = new Buffer("")) extends EventTrait {
     *
     * @param cursor Cursor to remove
     */
-  def removeCursor(cursor: Cursor): Unit = _cursors.diff(List(cursor))
+  def removeCursor(cursor: Cursor): Unit = _cursors = _cursors.diff(List(cursor))
 
   /** Move up cursors
     *
