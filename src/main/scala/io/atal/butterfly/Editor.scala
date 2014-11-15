@@ -1,7 +1,7 @@
 package io.atal.butterfly
 
-/** An editor is the place where you edit a buffer thanks to a cursor (or more ? #later)
-  * It tracks user events and coordinate the communication between cursor(s) and the buffer
+/** An editor is the place where you edit a buffer thanks to cursors
+  * It tracks user events and coordinate the communication between cursors and the buffer
   * User events tracking is done by the EventManager through the EventTrait
   *
   * @constructor Create a new editor for the buffer
@@ -9,7 +9,7 @@ package io.atal.butterfly
   */
 class Editor(buff: Buffer = new Buffer("")) extends EventTrait {
   var _buffer: Buffer = buff
-  var _cursor: Cursor = new Cursor(this)
+  var _cursors: List[Cursor] = List[Cursor](new Cursor(this))
 
   def buffer: Buffer = _buffer
 
@@ -23,36 +23,47 @@ class Editor(buff: Buffer = new Buffer("")) extends EventTrait {
     // @todo implements insertion when the Buffer branch will be merged
   }
 
-  /** Move up the cursor
+  /** Add a cursor
+    *
+    * @param cursor Cursor to add
+    */
+  def addCursor(cursor: Cursor): Unit = _cursors = _cursors :+ cursor
+
+  /** Remove a cursor
+    *
+    * @param cursor Cursor to remove
+    */
+  def removeCursor(cursor: Cursor): Unit = _cursors.diff(List(cursor))
+
+  /** Move up cursors
     *
     * @param row Number of row to move, default 1
     * @return true if the cursor has moved
     */
   def moveCursorUp(row: Int = 1): Boolean = {
-    // @todo check if going up is possible
-    _cursor.moveUp(row)
+    _cursors.foreach { _.moveUp(row) }
     return true
   }
 
-  /** Move down the cursor
+  /** Move down cursors
     *
     * @param row Number of row to move, default 1
     * @return true if the cursor has moved
     */
   def moveCursorDown(row: Int = 1): Boolean = {
     // @todo check if going down is possible
-    _cursor.moveDown(row)
+    _cursors.foreach { _.moveDown(row) }
     return true
   }
 
-  /** Move left the cursor
+  /** Move left cursors
     *
     * @param column Number of column to move, default 1
     * @return true if the cursor has moved
     */
   def moveCursorLeft(column: Int = 1): Boolean = {
     // @todo check if going left is possible
-    _cursor.moveLeft(column)
+    _cursors.foreach { _.moveLeft(column) }
     return true
   }
 
@@ -63,21 +74,20 @@ class Editor(buff: Buffer = new Buffer("")) extends EventTrait {
     */
   def moveCursorRight(column: Int = 1): Boolean = {
     // @todo check if going right is possible
-    _cursor.moveRight(column)
+    _cursors.foreach { _.moveRight(column) }
     return true
   }
 
-  /** Move to top the cursor
+  /** Move to the top cursors
     */
   def moveCursorToTop: Unit = {
-    _cursor.moveToTop
+    _cursors.foreach { _.moveToTop }
   }
 
   /** Move to botom the cursor
     */
   def moveCursorToBottom: Unit = {
-    // @todo get last line and last column of the buffer
-    // _cursor.position = ()
+    _cursors.foreach { _.moveToBottom }
   }
 
   // Register to events
