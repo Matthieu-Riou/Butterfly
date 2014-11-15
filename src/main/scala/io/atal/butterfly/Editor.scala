@@ -40,9 +40,7 @@ class Editor(buff: Buffer = new Buffer("")) extends EventTrait {
   /** Remove merged cursors (in other words with the same position)
     * It occurs each time a cursor has moved
     */
-  def removeMergedCursors: Unit = {
-    _cursors = _cursors.distinct
-  }
+  def removeMergedCursors: Unit = _cursors = _cursors.distinct
 
   /** Move up cursors
     *
@@ -50,6 +48,7 @@ class Editor(buff: Buffer = new Buffer("")) extends EventTrait {
     */
   def moveCursorUp(row: Int = 1): Unit = {
     _cursors.foreach { _.moveUp(row) }
+    removeMergedCursors
   }
 
   /** Move down cursors
@@ -58,6 +57,7 @@ class Editor(buff: Buffer = new Buffer("")) extends EventTrait {
     */
   def moveCursorDown(row: Int = 1): Unit = {
     _cursors.foreach { _.moveDown(row) }
+    removeMergedCursors
   }
 
   /** Move left cursors
@@ -66,6 +66,7 @@ class Editor(buff: Buffer = new Buffer("")) extends EventTrait {
     */
   def moveCursorLeft(column: Int = 1): Unit = {
     _cursors.foreach { _.moveLeft(column) }
+    removeMergedCursors
   }
 
   /** Move right the cursor
@@ -74,18 +75,21 @@ class Editor(buff: Buffer = new Buffer("")) extends EventTrait {
     */
   def moveCursorRight(column: Int = 1): Unit = {
     _cursors.foreach { _.moveRight(column) }
+    removeMergedCursors
   }
 
   /** Move to the top cursors
     */
   def moveCursorToTop: Unit = {
     _cursors.foreach { _.moveToTop }
+    removeMergedCursors
   }
 
   /** Move to botom the cursor
     */
   def moveCursorToBottom: Unit = {
     _cursors.foreach { _.moveToBottom }
+    removeMergedCursors
   }
 
   // Register to events

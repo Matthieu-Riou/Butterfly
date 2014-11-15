@@ -27,7 +27,7 @@ class Cursor(ed: Editor, pos: (Int, Int) = (0, 0)) extends EventTrait {
     * @param row Number of row to move, default 1
     */
   def moveUp(row: Int = 1): Unit = {
-    // todo check from editor.buffer if possible
+    // @todo check from editor.buffer if possible
     position = (_position._1 - row, _position._2)
   }
 
@@ -36,7 +36,7 @@ class Cursor(ed: Editor, pos: (Int, Int) = (0, 0)) extends EventTrait {
     * @param row Number of row to move, default 1
     */
   def moveDown(row: Int = 1): Unit = {
-    // todo check from editor.buffer if possible
+    // @todo check from editor.buffer if possible
     position = (_position._1 + row, _position._2)
   }
 
@@ -45,7 +45,7 @@ class Cursor(ed: Editor, pos: (Int, Int) = (0, 0)) extends EventTrait {
     * @param column Number of column to move, default 1
     */
   def moveLeft(column: Int = 1): Unit = {
-    // todo check from editor.buffer if possible
+    // @todo check from editor.buffer if possible
     position = (_position._1, _position._2 - column)
   }
 
@@ -54,7 +54,7 @@ class Cursor(ed: Editor, pos: (Int, Int) = (0, 0)) extends EventTrait {
     * @param column Number of column to move, default 1
     */
   def moveRight(column: Int = 1): Unit = {
-    // todo check from editor.buffer if possible
+    // @todo check from editor.buffer if possible
     position = (_position._1, _position._2 + column)
   }
 
