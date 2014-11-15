@@ -37,47 +37,43 @@ class Editor(buff: Buffer = new Buffer("")) extends EventTrait {
     */
   def removeCursor(cursor: Cursor): Unit = _cursors = _cursors.diff(List(cursor))
 
+  /** Remove merged cursors (in other words with the same position)
+    * It occurs each time a cursor has moved
+    */
+  def removeMergedCursors: Unit = {
+    _cursors = _cursors.distinct
+  }
+
   /** Move up cursors
     *
     * @param row Number of row to move, default 1
-    * @return true if the cursor has moved
     */
-  def moveCursorUp(row: Int = 1): Boolean = {
+  def moveCursorUp(row: Int = 1): Unit = {
     _cursors.foreach { _.moveUp(row) }
-    return true
   }
 
   /** Move down cursors
     *
     * @param row Number of row to move, default 1
-    * @return true if the cursor has moved
     */
-  def moveCursorDown(row: Int = 1): Boolean = {
-    // @todo check if going down is possible
+  def moveCursorDown(row: Int = 1): Unit = {
     _cursors.foreach { _.moveDown(row) }
-    return true
   }
 
   /** Move left cursors
     *
     * @param column Number of column to move, default 1
-    * @return true if the cursor has moved
     */
-  def moveCursorLeft(column: Int = 1): Boolean = {
-    // @todo check if going left is possible
+  def moveCursorLeft(column: Int = 1): Unit = {
     _cursors.foreach { _.moveLeft(column) }
-    return true
   }
 
   /** Move right the cursor
     *
     * @param column Number of column to move, default 1
-    * @return true if the cursor has moved
     */
-  def moveCursorRight(column: Int = 1): Boolean = {
-    // @todo check if going right is possible
+  def moveCursorRight(column: Int = 1): Unit = {
     _cursors.foreach { _.moveRight(column) }
-    return true
   }
 
   /** Move to the top cursors

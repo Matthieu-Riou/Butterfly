@@ -44,12 +44,24 @@ class EditorTest extends FlatSpec {
 
   "The Editor remove cursor method" should "actually remove the cursor" in {
     val editor = new Editor
-    val cursor = new Cursor(editor)
+    val cursor = new Cursor(editor, (1, 1))
 
     editor.addCursor(cursor)
     editor.removeCursor(cursor)
 
     editor.cursors should have length 1
     editor.cursors should not contain (cursor)
+  }
+
+  "The Editor remove merged cursors method" should "remove cursors with the same position" in {
+    val editor = new Editor
+    val cursor = new Cursor(editor, (0, 0))
+
+    editor.addCursor(cursor)
+
+    // By default, an editor has a cursor lying at (0, 0)
+    editor.removeMergedCursors
+
+    editor.cursors should have length 1
   }
 }
