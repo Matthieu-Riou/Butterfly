@@ -1,29 +1,31 @@
 package io.atal.butterfly
+
 import scala.collection.mutable.ListBuffer
 
-class History(buffer: Buffer) {
-  val _buffer: Buffer = buffer
+class History(val buffer: Buffer) {
   var _historyBefore: ListBuffer[HistoryEvent] = new ListBuffer()
   var _historyAfter: ListBuffer[HistoryEvent] = new ListBuffer()
 
   /** Add a new insertion to the history
+    *
     * @param string The string inserted
     * @param index The position of the insertion
     */
   def newInsertion(string: String, index: Int): Unit = {
-    _historyBefore.prepend(new Insertion(_buffer, string, index))
+    _historyBefore.prepend(new Insertion(buffer, string, index))
     _historyAfter.clear()
   }
-  
+
   /** Add a new deletion to the history
+    *
     * @param beginIndex The beginning of the deletion (included)
     * @param endIndex The ending of the deletion (excluded)
     */
   def newDeletion(beginIndex: Int, endIndex: Int): Unit = {
-    _historyBefore.prepend(new Deletion(_buffer, beginIndex, endIndex))
-    _historyAfter.clear() 
+    _historyBefore.prepend(new Deletion(buffer, beginIndex, endIndex))
+    _historyAfter.clear()
   }
-  
+
   /** Undo the last event
     */
   def undo(): Unit = {
@@ -40,37 +42,19 @@ class History(buffer: Buffer) {
 }
 
 trait HistoryEvent {
-  def undo(): Unit
-  def redo(): Unit
+  def undo(): Unit = this match {
+    case i: Insertion => new Deletion(i.buffer, i.index, i.index + i.string.length).redo()
+    case d: Deletion => new Insertion(d.buffer, d.string, d.beginIndex).redo()
+  }
+
+  def redo(): Unit = this match {
+    case i: Insertion => i.buffer.simpleInsert(i.string, i.index)
+    case d: Deletion => d.buffer.simpleRemove(d.beginIndex, d.endIndex)
+  }
 }
 
-class Insertion(b: Buffer, s: String, i: Int) extends HistoryEvent {
-  val _string = s
-  val _index = i
-  val _buffer = b
+case class Insertion(val buffer: Buffer, val string: String, val index: Int) extends HistoryEvent
 
-  def string: String = _string
-  
-  def index: Int = _index
-
-  def undo(): Unit = new Deletion(_buffer, _index, _index + _string.length).redo()
-  
-  def redo(): Unit = _buffer.simpleInsert(_string, _index)
-}
- 
-class Deletion(b: Buffer, begin: Int, end:Int) extends HistoryEvent {
-  val _beginIndex = begin
-  val _endIndex = end
-  val _buffer = b
-  val _string = _buffer.select(_beginIndex, _endIndex)
-
-  def beginIndex: Int = _beginIndex
-
-  def endIndex: Int = _endIndex
-
-  def string: String = _string
-
-  def undo(): Unit = new Insertion(_buffer, _string, _beginIndex).redo()
-
-  def redo(): Unit = _buffer.simpleRemove(_beginIndex, _endIndex)
+case class Deletion(val buffer: Buffer, val beginIndex: Int, val endIndex: Int) extends HistoryEvent {
+  val string = buffer.select(beginIndex, endIndex)
 }
