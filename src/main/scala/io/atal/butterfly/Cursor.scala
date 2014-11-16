@@ -5,17 +5,9 @@ package io.atal.butterfly
   * @constructor Create a new cursor linked to an editor
   * @param ed The editor where the cursor lives
   */
-class Cursor(ed: Editor, pos: (Int, Int) = (0, 0)) extends EventTrait {
-  val _editor: Editor = ed
-  var _position: (Int, Int) = pos
+class Cursor(val editor: Editor, var position: (Int, Int) = (0, 0)) extends EventTrait {
 
-  def editor: Editor = _editor
-
-  def position: (Int, Int) = _position
-
-  def position_=(position: (Int, Int)): Unit = _position = (position._1, position._2)
-
-  override def hashCode = _position.hashCode
+  override def hashCode = position.hashCode
 
   override def equals(obj: Any) = obj match {
     case c: Cursor => c.hashCode == this.hashCode
@@ -28,7 +20,7 @@ class Cursor(ed: Editor, pos: (Int, Int) = (0, 0)) extends EventTrait {
     */
   def moveUp(row: Int = 1): Unit = {
     // @todo check from editor.buffer if possible
-    position = (_position._1 - row, _position._2)
+    position = (position._1 - row, position._2)
   }
 
   /** Move down the cursor
@@ -37,7 +29,7 @@ class Cursor(ed: Editor, pos: (Int, Int) = (0, 0)) extends EventTrait {
     */
   def moveDown(row: Int = 1): Unit = {
     // @todo check from editor.buffer if possible
-    position = (_position._1 + row, _position._2)
+    position = (position._1 + row, position._2)
   }
 
   /** Move left the cursor
@@ -46,7 +38,7 @@ class Cursor(ed: Editor, pos: (Int, Int) = (0, 0)) extends EventTrait {
     */
   def moveLeft(column: Int = 1): Unit = {
     // @todo check from editor.buffer if possible
-    position = (_position._1, _position._2 - column)
+    position = (position._1, position._2 - column)
   }
 
   /** Move right the cursor
@@ -55,7 +47,7 @@ class Cursor(ed: Editor, pos: (Int, Int) = (0, 0)) extends EventTrait {
     */
   def moveRight(column: Int = 1): Unit = {
     // @todo check from editor.buffer if possible
-    position = (_position._1, _position._2 + column)
+    position = (position._1, position._2 + column)
   }
 
   /** Move to the top the cursor

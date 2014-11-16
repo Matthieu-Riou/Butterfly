@@ -7,13 +7,8 @@ package io.atal.butterfly
   * @constructor Create a new editor for the buffer
   * @param buff The buffer to edit, default empty buffer
   */
-class Editor(buff: Buffer = new Buffer("")) extends EventTrait {
-  var _buffer: Buffer = buff
+class Editor(var buffer: Buffer = new Buffer("")) extends EventTrait {
   var _cursors: List[Cursor] = List[Cursor](new Cursor(this))
-
-  def buffer: Buffer = _buffer
-
-  def buffer_=(buffer: Buffer): Unit = _buffer = buffer
 
   def cursors: List[Cursor] = _cursors
 
