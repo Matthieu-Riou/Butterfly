@@ -24,7 +24,7 @@ class Editor(var buffer: Buffer = new Buffer("")) extends EventTrait {
     *
     * @param cursor Cursor to add
     */
-  def addCursor(cursor: Cursor): Unit = _cursors = _cursors :+ cursor
+  def addCursor(cursor: Cursor): Unit = _cursors = cursor :: _cursors
 
   /** Remove a cursor
     *
