@@ -41,19 +41,54 @@ class History(val buffer: Buffer) {
   }
 }
 
+/** Define an Event
+  */
 trait HistoryEvent {
+
+  /** Define an undo function
+    */
   def undo(): Unit
+  
+  /** Define a redo function
+    */
   def redo(): Unit
 }
 
+/** Implement the event Insertion
+  *
+  * @constructor Create the event
+  * @param buffer The buffer where the event occurs
+  * @param string The string inserted
+  * @param index The index where the string is inserted
+  */
 class Insertion(val buffer: Buffer, val string: String, val index: Int) extends HistoryEvent {
+
+  /** Undo an Insertion
+    * Delete the string inserted
+    */
   def undo(): Unit = new Deletion(buffer, index, index + string.length).redo()
+  
+  /** Redo an Insertion
+    */
   def redo(): Unit = buffer.simpleInsert(string, index)
 }
 
+/** Implement the event Deletion
+  *
+  * @constructor Create the event
+  * @param buffer The buffer where the event occurs
+  * @param beginIndex The beginning index of the deletion
+  * @param endIndex The ending index of the deletion
+  */
 class Deletion(val buffer: Buffer, val beginIndex: Int, val endIndex: Int) extends HistoryEvent {
   val string = buffer.select(beginIndex, endIndex)
   
+  /** Undo the Deletion
+    * Re-insert the deleted string
+    */
   def undo(): Unit = new Insertion(buffer, string, beginIndex).redo()
+  
+  /** Redo the Deletion
+    */
   def redo(): Unit = buffer.simpleRemove(beginIndex, endIndex)
 }
