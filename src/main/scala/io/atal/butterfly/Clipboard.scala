@@ -13,5 +13,5 @@ class Clipboard {
 
   /** Clear the data with an empty String
     */
-  def clearData: Unit = _data = ""
+  def clearData: Unit = data = ""
 }
