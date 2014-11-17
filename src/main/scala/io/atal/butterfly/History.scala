@@ -1,10 +1,8 @@
 package io.atal.butterfly
 
-import scala.collection.mutable.ListBuffer
-
 class History(val buffer: Buffer) {
-  var _historyBefore: ListBuffer[HistoryEvent] = new ListBuffer()
-  var _historyAfter: ListBuffer[HistoryEvent] = new ListBuffer()
+  var _historyBefore: List[HistoryEvent] = List()
+  var _historyAfter: List[HistoryEvent] = List()
 
   /** Add a new insertion to the history
     *
@@ -12,8 +10,8 @@ class History(val buffer: Buffer) {
     * @param index The position of the insertion
     */
   def newInsertion(string: String, index: Int): Unit = {
-    _historyBefore.prepend(new Insertion(buffer, string, index))
-    _historyAfter.clear()
+    _historyBefore = new Insertion(buffer, string, index) :: _historyBefore
+    _historyAfter = List()
   }
 
   /** Add a new deletion to the history
@@ -22,22 +20,24 @@ class History(val buffer: Buffer) {
     * @param endIndex The ending of the deletion (excluded)
     */
   def newDeletion(beginIndex: Int, endIndex: Int): Unit = {
-    _historyBefore.prepend(new Deletion(buffer, beginIndex, endIndex))
-    _historyAfter.clear()
+    _historyBefore = new Deletion(buffer, beginIndex, endIndex) :: _historyBefore
+    _historyAfter = List()
   }
 
   /** Undo the last event
     */
   def undo(): Unit = {
     _historyBefore.head.undo()
-    _historyAfter.prepend(_historyBefore.remove(0))
+    _historyAfter = _historyBefore.head :: _historyAfter
+    _historyBefore = _historyBefore.tail
   }
 
   /** Redo the last undo event
     */
   def redo(): Unit = {
     _historyAfter.head.redo()
-    _historyBefore.prepend(_historyAfter.remove(0))
+    _historyBefore = _historyAfter.head :: _historyBefore
+    _historyAfter = _historyAfter.tail
   }
 }
 
