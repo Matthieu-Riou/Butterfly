@@ -54,7 +54,7 @@ class Cursor(val editor: Editor, var position: (Int, Int) = (0, 0)) extends Even
     */
   def moveToTop: Unit = position = (0, 0)
 
-  /** Move to the nottom the cursor
+  /** Move to the bottom the cursor
     */
   def moveToBottom: Unit = {
     // @todo get from editor.buffer the last line/column
