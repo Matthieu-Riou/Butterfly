@@ -22,8 +22,7 @@ class EditorTest extends FlatSpec {
   "The Editor default buffer" should "be empty" in {
     val editor = new Editor
 
-    // @todo Update it when Buffer branch will be merged
-    assert(editor.buffer.buf == "")
+    assert(editor.buffer.content == "")
   }
 
   "The Editor default cursors" should "contain only one cursor" in {
