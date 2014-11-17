@@ -42,19 +42,18 @@ class History(val buffer: Buffer) {
 }
 
 trait HistoryEvent {
-  def undo(): Unit = this match {
-    case i: Insertion => new Deletion(i.buffer, i.index, i.index + i.string.length).redo()
-    case d: Deletion => new Insertion(d.buffer, d.string, d.beginIndex).redo()
-  }
-
-  def redo(): Unit = this match {
-    case i: Insertion => i.buffer.simpleInsert(i.string, i.index)
-    case d: Deletion => d.buffer.simpleRemove(d.beginIndex, d.endIndex)
-  }
+  def undo(): Unit
+  def redo(): Unit
 }
 
-case class Insertion(val buffer: Buffer, val string: String, val index: Int) extends HistoryEvent
+class Insertion(val buffer: Buffer, val string: String, val index: Int) extends HistoryEvent {
+  def undo(): Unit = new Deletion(buffer, index, index + string.length).redo()
+  def redo(): Unit = buffer.simpleInsert(string, index)
+}
 
-case class Deletion(val buffer: Buffer, val beginIndex: Int, val endIndex: Int) extends HistoryEvent {
+class Deletion(val buffer: Buffer, val beginIndex: Int, val endIndex: Int) extends HistoryEvent {
   val string = buffer.select(beginIndex, endIndex)
+  
+  def undo(): Unit = new Insertion(buffer, string, beginIndex).redo()
+  def redo(): Unit = buffer.simpleRemove(beginIndex, endIndex)
 }
