@@ -7,9 +7,9 @@ package io.atal.butterfly
   */
 class Cursor(val editor: Editor, var position: (Int, Int) = (0, 0)) extends EventTrait {
 
-  override def hashCode = position.hashCode
+  override def hashCode: Int = position.hashCode
 
-  override def equals(obj: Any) = obj match {
+  override def equals(obj: Any): Boolean = obj match {
     case c: Cursor => c.hashCode == this.hashCode
     case _ => false
   }
