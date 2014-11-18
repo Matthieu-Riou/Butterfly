@@ -1,86 +1,90 @@
 package io.atal.butterfly
 
-/** An editor is the place where you edit a buffer thanks to a cursor (or more ? #later)
-  * It tracks user events and coordinate the communication between cursor(s) and the buffer
-  * User events tracking is done by the EventManager through the EventTrait
+/** An editor is the place where you edit a buffer thanks to cursors
+  * It tracks user events and coordinate the communication between cursors and the buffer
   *
   * @constructor Create a new editor for the buffer
   * @param buff The buffer to edit, default empty buffer
   */
-class Editor(buff: Buffer = new Buffer("")) extends EventTrait {
-  var _buffer: Buffer = buff
-  var _cursor: Cursor = new Cursor(this)
+class Editor(var buffer: Buffer = new Buffer("")) {
+  var _cursors: List[Cursor] = List[Cursor](new Cursor(this))
 
-  def buffer: Buffer = _buffer
+  def cursors: List[Cursor] = _cursors
 
-  def buffer_=(buffer: Buffer): Unit = _buffer = buffer
+  def cursors_=(cursors: List[Cursor]): Unit = _cursors = cursors
 
   /** Write a text into the buffer at the current cursor(s) position
     *
     * @param text The text to be inserted in the buffer
     */
   def write(text: String): Unit = {
-    // @todo implements insertion when the Buffer branch will be merged
+    // @todo implements insertion
   }
 
-  /** Move up the cursor
+  /** Add a cursor
+    *
+    * @param cursor Cursor to add
+    */
+  def addCursor(cursor: Cursor): Unit = cursors = cursor :: cursors
+
+  /** Remove a cursor
+    *
+    * @param cursor Cursor to remove
+    */
+  def removeCursor(cursor: Cursor): Unit = cursors = cursors.diff(List(cursor))
+
+  /** Remove merged cursors (in other words with the same position)
+    * It occurs each time a cursor has moved
+    */
+  def removeMergedCursors: Unit = cursors = cursors.distinct
+
+  /** Move up cursors
     *
     * @param row Number of row to move, default 1
-    * @return true if the cursor has moved
     */
-  def moveCursorUp(row: Int = 1): Boolean = {
-    // @todo check if going up is possible
-    _cursor.moveUp(row)
-    return true
+  def moveCursorUp(row: Int = 1): Unit = {
+    cursors.foreach { _.moveUp(row) }
+    removeMergedCursors
   }
 
-  /** Move down the cursor
+  /** Move down cursors
     *
     * @param row Number of row to move, default 1
-    * @return true if the cursor has moved
     */
-  def moveCursorDown(row: Int = 1): Boolean = {
-    // @todo check if going down is possible
-    _cursor.moveDown(row)
-    return true
+  def moveCursorDown(row: Int = 1): Unit = {
+    cursors.foreach { _.moveDown(row) }
+    removeMergedCursors
   }
 
-  /** Move left the cursor
+  /** Move left cursors
     *
     * @param column Number of column to move, default 1
-    * @return true if the cursor has moved
     */
-  def moveCursorLeft(column: Int = 1): Boolean = {
-    // @todo check if going left is possible
-    _cursor.moveLeft(column)
-    return true
+  def moveCursorLeft(column: Int = 1): Unit = {
+    cursors.foreach { _.moveLeft(column) }
+    removeMergedCursors
   }
 
   /** Move right the cursor
     *
     * @param column Number of column to move, default 1
-    * @return true if the cursor has moved
     */
-  def moveCursorRight(column: Int = 1): Boolean = {
-    // @todo check if going right is possible
-    _cursor.moveRight(column)
-    return true
+  def moveCursorRight(column: Int = 1): Unit = {
+    cursors.foreach { _.moveRight(column) }
+    removeMergedCursors
   }
 
-  /** Move to top the cursor
+  /** Move to the top cursors
     */
   def moveCursorToTop: Unit = {
-    _cursor.moveToTop
+    cursors.foreach { _.moveToTop }
+    removeMergedCursors
   }
 
   /** Move to botom the cursor
     */
   def moveCursorToBottom: Unit = {
-    // @todo get last line and last column of the buffer
-    // _cursor.position = ()
+    cursors.foreach { _.moveToBottom }
+    removeMergedCursors
   }
-
-  // Register to events
-  // May be useful later
-  _event.on("cursor-move", (None) => println("It moved #cursor"))
 }
