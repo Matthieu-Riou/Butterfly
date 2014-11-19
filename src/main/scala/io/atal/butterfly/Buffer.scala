@@ -23,6 +23,15 @@ class Buffer(var content: String) {
     simpleInsert(string, index)
   }
 
+  /** Insert a string using a two dimensions position
+    *
+    * @param string The string to insert
+    * @param position The two dimensions position of the insertion
+    */
+  def insert(string: String, position: (Int, Int)): Unit = {
+    insert(string, convertToLinearPosition(position))
+  }
+
   /** Add the removing event to the history and call simpleRemove
     *
     * @param beginIndex The beginning index of the deletion
@@ -49,6 +58,15 @@ class Buffer(var content: String) {
     */
   def simpleRemove(beginIndex: Int, endIndex: Int): Unit = {
     content = content.substring(0, beginIndex).concat(content.substring(endIndex))
+  }
+
+  /** Convert a two dimensions position to its linear equivalent
+    *
+    * @param position The two dimensions coordinate to convert
+    * @return The linear coordinate equivalent for the given position
+    */
+  def convertToLinearPosition(position: (Int, Int)): Int = {
+    (position._1 * position._2) - position._1
   }
 
   /** Undo the last event

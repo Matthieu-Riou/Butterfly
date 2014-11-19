@@ -4,7 +4,7 @@ package io.atal.butterfly
   * It tracks user events and coordinate the communication between cursors and the buffer
   *
   * @constructor Create a new editor for the buffer
-  * @param buff The buffer to edit, default empty buffer
+  * @param buffer The buffer to edit, default empty buffer
   */
 class Editor(var buffer: Buffer = new Buffer("")) {
   var _cursors: List[Cursor] = List[Cursor](new Cursor(this))
