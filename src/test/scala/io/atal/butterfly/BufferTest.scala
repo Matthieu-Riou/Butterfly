@@ -37,10 +37,35 @@ class BufferTest extends FlatSpec {
     assert(buffer.content == "Hello king of the world!")
   }
 
+  "The Buffer insert method with a two dimensions position" should "insert the string at the wanted position" in {
+    val buffer = new Buffer("Hello world!")
+
+    buffer.insert("king of the ", (0, 6))
+
+    assert(buffer.content == "Hello king of the world!")
+
+    buffer.content = "I am a tribe\nYou are a tribe\nWe a tribe"
+    var expected = "I am a tribe\nYou are a tribe\nWe are a tribe"
+
+    buffer.insert(" are", (2, 2))
+
+    assert(buffer.content == expected)
+
+    expected = "I am a tribe\nYou are a tribe potatoes\nWe are a tribe"
+    buffer.insert(" potatoes", (1, 15))
+
+    assert(buffer.content == expected)
+
+    expected = "I am a tribe with sugar\nYou are a tribe potatoes\nWe are a tribe"
+    buffer.insert(" with sugar", (0, 12))
+
+    assert(buffer.content == expected)
+  }
+
   "The Buffer remove method" should "remove the substring defined by positions from the content" in {
     val buffer = new Buffer("Hello world!")
 
-    buffer.remove(5,11)
+    buffer.remove(5, 11)
 
     assert(buffer.content == "Hello!")
   }
