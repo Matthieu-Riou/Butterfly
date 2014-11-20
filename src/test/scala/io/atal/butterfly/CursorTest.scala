@@ -1,7 +1,6 @@
 package io.atal.butterfly
 
 import org.scalatest._
-import Matchers._
 
 /** Cursor unit tests
   */

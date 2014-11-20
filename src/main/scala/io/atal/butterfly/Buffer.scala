@@ -13,6 +13,17 @@ class Buffer(var content: String) {
     */
   def select(beginIndex: Int, endIndex: Int): String = content.substring(beginIndex, endIndex)
 
+  /** Select a substring from the buffer with 2 two dimensions positions
+    *
+    * @param beginPosition The begin of the selection
+    * @param endPosition The end of the selection
+    * @return The substring between these two positions
+    */
+  def select(beginPosition: (Int, Int), endPosition: (Int, Int)): String = {
+    // @todo Unit test brother !
+    select(convertToLinearPosition(beginPosition), convertToLinearPosition(endPosition))
+  }
+
   /** Add the inserting event to the history and call simple insert
     *
     * @param string The string to insert
@@ -42,7 +53,7 @@ class Buffer(var content: String) {
     simpleRemove(beginIndex, endIndex)
   }
 
-  /** Remove the string between 2 two dimensions position
+  /** Remove the string between 2 two dimensions positions
     *
     * @param beginPosition The begin position
     * @param endPosition The end position

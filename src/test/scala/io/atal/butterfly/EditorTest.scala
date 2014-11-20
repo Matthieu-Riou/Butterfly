@@ -64,6 +64,48 @@ class EditorTest extends FlatSpec {
     editor.cursors should have length 1
   }
 
+  "The Editor default selections" should "be empty" in {
+    val editor = new Editor
+
+    editor.selections should have length 0
+  }
+
+  "The Editor add selection method" should "actually add the selection" in {
+    val editor = new Editor
+    val selection = new Selection((0, 0), (1, 1))
+
+    editor.addSelection(selection)
+
+    editor.selections should have length 1
+    editor.selections should contain (selection)
+  }
+
+  "The Editor remove selection method" should "actually remove the selection" in {
+    val editor = new Editor
+    val selection = new Selection((0, 0), (1, 1))
+    val selection1 = new Selection((1, 1), (0, 0))
+
+    editor.addSelection(selection)
+    editor.addSelection(selection1)
+    editor.removeSelection(selection)
+
+    editor.selections should have length 1
+    editor.selections should not contain (selection)
+  }
+
+  "The Editor clear selection method" should "actually remove all selections" in {
+    val editor = new Editor
+    val selection = new Selection((0, 0), (1, 1))
+    val selection1 = new Selection((1, 1), (0, 0))
+
+    editor.addSelection(selection)
+    editor.addSelection(selection1)
+
+    editor.clearSelection
+
+    editor.selections should have length 0
+  }
+
   "The Editor write method" should "write the given text at all cursors position" in {
     val editor = new Editor
     val cursor = new Cursor(editor, (1, 0))
