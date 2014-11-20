@@ -42,6 +42,15 @@ class Buffer(var content: String) {
     simpleRemove(beginIndex, endIndex)
   }
 
+  /** Remove the string between the two two dimensions position
+    *
+    * @param beginPosition The begin position
+    * @param endPosition The end position
+    */
+  def remove(beginPosition: (Int, Int), endPosition: (Int, Int)): Unit = {
+    remove(convertToLinearPosition(beginPosition), convertToLinearPosition(endPosition))
+  }
+
   /** Insert a string at the index
     *
     * @param string The string to insert
@@ -51,7 +60,7 @@ class Buffer(var content: String) {
     content = content.substring(0, index).concat(string).concat(content.substring(index))
   }
 
-  /** Remove the substring between beginIndex (included) and endIndex(excluded)
+  /** Remove the substring between beginIndex (included) and endIndex (excluded)
     *
     * @param beginIndex The beginning index of the deletion
     * @param endIndex The ending index of the deletion

@@ -68,6 +68,10 @@ class BufferTest extends FlatSpec {
     buffer.remove(5, 11)
 
     assert(buffer.content == "Hello!")
+
+    buffer.remove(0, 1)
+
+    assert(buffer.content == "ello!")
   }
 
   "The last event" should "undo and redo properly" in {

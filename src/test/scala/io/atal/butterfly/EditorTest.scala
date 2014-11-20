@@ -63,4 +63,32 @@ class EditorTest extends FlatSpec {
 
     editor.cursors should have length 1
   }
+
+  "The Editor write method" should "write the given text at all cursors position" in {
+    val editor = new Editor
+    val cursor = new Cursor(editor, (1, 0))
+
+    editor.buffer.content = "Wow\nWow"
+
+    editor.addCursor(cursor)
+
+    // There are two cursors, lying at (0, 0) and (1, 0)
+    editor.write("So ")
+
+    assert(editor.buffer.content == "So Wow\nSo Wow")
+  }
+
+  "The Editor erase method" should "erase the character at all cursors position" in {
+    val editor = new Editor
+    val cursor = new Cursor(editor, (1, 2))
+
+    editor.buffer.content = "Wow\nSon"
+
+    editor.addCursor(cursor)
+
+    // There are two cursors, lying at (0, 0) and (1, 2)
+    editor.erase
+
+    assert(editor.buffer.content == "ow\nSo")
+  }
 }

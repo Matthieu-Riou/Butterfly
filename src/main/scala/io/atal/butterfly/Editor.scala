@@ -18,7 +18,20 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     * @param text The text to be inserted in the buffer
     */
   def write(text: String): Unit = {
-    // @todo implements insertion
+    for (cursor <- cursors) {
+      buffer.insert(text, cursor.position)
+      cursor.moveRight(text.length)
+    }
+  }
+
+  /** A simple eraser character by character (no selection)
+    */
+  def erase(): Unit = {
+    for (cursor <- cursors) {
+      // End index position is excluded, we need to add 1 to actually remove the character
+      buffer.remove(cursor.position, (cursor.position._1, cursor.position._2 + 1))
+      cursor.moveLeft()
+    }
   }
 
   /** Add a cursor
