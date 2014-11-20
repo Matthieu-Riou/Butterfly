@@ -42,7 +42,7 @@ class Buffer(var content: String) {
     simpleRemove(beginIndex, endIndex)
   }
 
-  /** Remove the string between the two two dimensions position
+  /** Remove the string between 2 two dimensions position
     *
     * @param beginPosition The begin position
     * @param endPosition The end position

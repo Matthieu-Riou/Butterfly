@@ -74,6 +74,24 @@ class BufferTest extends FlatSpec {
     assert(buffer.content == "ello!")
   }
 
+  "The Buffer remove method with two dimensions position" should "remove the substring defined by the positions" in {
+    val buffer = new Buffer("Hello world!")
+
+    buffer.remove((0, 5), (0, 11))
+
+    assert(buffer.content == "Hello!")
+
+    buffer.remove((0, 0), (0,1))
+
+    assert(buffer.content == "ello!")
+
+    buffer.content = "I am a tribe\nNothing else.\nchair"
+
+    buffer.remove((0, 7), (2, 0))
+
+    assert(buffer.content == "I am a chair")
+  }
+
   "The last event" should "undo and redo properly" in {
     val buffer = new Buffer("Hello world!")
 
@@ -100,5 +118,17 @@ class BufferTest extends FlatSpec {
     buffer.redo()
 
     assert(buffer.content == "Hello world!")
+  }
+
+  "The convert to linear position" should "correctly convert" in {
+    val buffer = new Buffer("Hello world!\nThis is the night\nOf the chair.")
+
+    var linear1 = buffer.convertToLinearPosition((1, 5))
+    var linear2 = buffer.convertToLinearPosition((2, 2))
+    var linear3 = buffer.convertToLinearPosition((0, 2))
+
+    assert(linear1 == 18)
+    assert(linear2 == 33)
+    assert(linear3 == 2)
   }
 }

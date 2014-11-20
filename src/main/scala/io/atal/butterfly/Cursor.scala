@@ -3,7 +3,7 @@ package io.atal.butterfly
 /** A cursor is the little blinking vertical line where the text is inserted
   *
   * @constructor Create a new cursor linked to an editor
-  * @param ed The editor where the cursor lives
+  * @param editor The editor where the cursor lives
   */
 class Cursor(val editor: Editor, var position: (Int, Int) = (0, 0)) extends EventTrait {
 
