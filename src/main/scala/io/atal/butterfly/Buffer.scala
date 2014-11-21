@@ -1,9 +1,16 @@
 package io.atal.butterfly
 
+/** A buffer is the structure where the text you edit lives
+  *
+  * @constructor Create a new buffer with the given content
+  * @param content The default content of the buffer
+  */
 class Buffer(var content: String) {
   var history: History = new History(this)
 
-  override def toString(): String = content
+  /** Return the content as an array
+    */
+  def lines: Array[String] = content.split("\n")
 
   /** Return a selected substring in the buffer
     *

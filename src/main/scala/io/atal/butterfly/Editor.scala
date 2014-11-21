@@ -7,7 +7,7 @@ package io.atal.butterfly
   * @param buffer The buffer to edit, default empty buffer
   */
 class Editor(var buffer: Buffer = new Buffer("")) {
-  var _cursors: List[Cursor] = List(new Cursor(this))
+  var _cursors: List[Cursor] = List(new Cursor())
   var _selections: List[Selection] = List()
 
   def cursors: List[Cursor] = _cursors
@@ -18,7 +18,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
 
   def selections_=(selections: List[Selection]): Unit = _selections = selections
 
-  /** Write a text into the buffer at the current cursor(s) position
+  /** Write a text into the buffer at the current cursors position
     *
     * @param text The text to be inserted in the buffer
     */
@@ -102,7 +102,13 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     * @param row Number of row to move, default 1
     */
   def moveCursorUp(row: Int = 1): Unit = {
-    cursors.foreach { _.moveUp(row) }
+    // @todo Unit test brother !
+    for (cursor <- cursors) {
+      if (cursor.position._1 - row >= 0) {
+        cursor.moveUp(row)
+      }
+    }
+
     removeMergedCursors
   }
 
@@ -111,7 +117,14 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     * @param row Number of row to move, default 1
     */
   def moveCursorDown(row: Int = 1): Unit = {
-    cursors.foreach { _.moveDown(row) }
+    // @todo Unit test brother !
+    val lines = buffer.lines
+
+    for (cursor <- cursors) {
+      if (cursor.position._1 + row <= lines.length)
+        cursor.moveDown(row)
+    }
+
     removeMergedCursors
   }
 
@@ -120,7 +133,14 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     * @param column Number of column to move, default 1
     */
   def moveCursorLeft(column: Int = 1): Unit = {
-    cursors.foreach { _.moveLeft(column) }
+    // @todo Unit test brother !
+    for (cursor <- cursors) {
+      if (cursor.position._2 - column >= 0)
+        cursor.moveLeft(column)
+      else
+        moveCursorUp(1)
+    }
+
     removeMergedCursors
   }
 
@@ -129,21 +149,41 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     * @param column Number of column to move, default 1
     */
   def moveCursorRight(column: Int = 1): Unit = {
-    cursors.foreach { _.moveRight(column) }
+    // @todo Unit test brother !
+    val lines = buffer.lines
+
+    for (cursor <- cursors) {
+      if (cursor.position._2 + column <= lines(cursor.position._1).length)
+        cursor.moveRight(column)
+      else
+        moveCursorDown(1)
+    }
+
     removeMergedCursors
   }
 
   /** Move to the top cursors
     */
   def moveCursorToTop: Unit = {
+    // @todo Unit test brother !
     cursors.foreach { _.moveToTop }
     removeMergedCursors
   }
 
-  /** Move to botom the cursor
+  /** Move to the bottom cursors
     */
   def moveCursorToBottom: Unit = {
-    cursors.foreach { _.moveToBottom }
+    // @todo Unit test brother !
+    val lines = buffer.lines
+    val lastLine = lines.length
+    val lastColumn = lines(lastLine).length
+
+    val bottomPosition = (lastLine, lastColumn)
+
+    for (cursor <- cursors) {
+      cursor.position = bottomPosition
+    }
+
     removeMergedCursors
   }
 }

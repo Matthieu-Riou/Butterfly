@@ -1,12 +1,13 @@
 package io.atal.butterfly
 
 import org.scalatest._
+import Matchers._
 
 /** Buffer unit test
   */
 class BufferTest extends FlatSpec {
 
-  "The Buffer accessor and mutator" should "be as expected" in {
+  "The Buffer's content accessor and mutator" should "be as expected" in {
     val buffer = new Buffer("#begin")
 
     assert(buffer.content == "#begin")
@@ -17,10 +18,13 @@ class BufferTest extends FlatSpec {
     assert(buffer.content == expected)
   }
 
-  "The Buffer toString method" should "return the content" in {
-    val buffer = new Buffer("#begin")
+  "The Buffer lines method" should "return the buffer content in an array" in {
+    val buffer = new Buffer("#begin\n#lessbegin\n#end")
 
-    assert(buffer.toString() == buffer.content)
+    var expected = Array("#begin", "#lessbegin", "#end")
+    var lines = buffer.lines
+
+    lines should equal (expected)
   }
 
   "The Buffer select method" should "return the substring selected" in {

@@ -33,7 +33,7 @@ class EditorTest extends FlatSpec {
 
   "The Editor add cursor method" should "actually add a cursor" in {
     val editor = new Editor
-    val cursor = new Cursor(editor)
+    val cursor = new Cursor
 
     editor.addCursor(cursor)
 
@@ -43,7 +43,7 @@ class EditorTest extends FlatSpec {
 
   "The Editor remove cursor method" should "actually remove the cursor" in {
     val editor = new Editor
-    val cursor = new Cursor(editor, (1, 1))
+    val cursor = new Cursor((1, 1))
 
     editor.addCursor(cursor)
     editor.removeCursor(cursor)
@@ -54,7 +54,7 @@ class EditorTest extends FlatSpec {
 
   "The Editor remove merged cursors method" should "remove cursors with the same position" in {
     val editor = new Editor
-    val cursor = new Cursor(editor, (0, 0))
+    val cursor = new Cursor((0, 0))
 
     editor.addCursor(cursor)
 
@@ -108,7 +108,7 @@ class EditorTest extends FlatSpec {
 
   "The Editor write method" should "write the given text at all cursors position" in {
     val editor = new Editor
-    val cursor = new Cursor(editor, (1, 0))
+    val cursor = new Cursor((1, 0))
 
     editor.buffer.content = "Wow\nWow"
 
@@ -122,7 +122,7 @@ class EditorTest extends FlatSpec {
 
   "The Editor erase method" should "erase the character at all cursors position" in {
     val editor = new Editor
-    val cursor = new Cursor(editor, (1, 2))
+    val cursor = new Cursor((1, 2))
 
     editor.buffer.content = "Wow\nSon"
 
