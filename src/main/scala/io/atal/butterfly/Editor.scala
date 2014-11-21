@@ -97,85 +97,107 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     */
   def clearSelection: Unit = selections = List()
 
-  /** Move up cursors
+  /** Move up all cursors
     *
     * @param row Number of row to move, default 1
     */
-  def moveCursorUp(row: Int = 1): Unit = {
-    // @todo Unit test brother !
+  def moveCursorsUp(row: Int = 1): Unit = {
+    cursors.foreach { moveCursorUp(_, row) }
+    removeMergedCursors
+  }
+
+  /** Move up a single cursor
+  *
+  * @param row Number of row to move, default 1
+  */
+  def moveCursorUp(cursor: Cursor, row: Int = 1): Unit = {
+    val lines = buffer.lines
+
+    if (cursor.position._1 - row >= 0) {
+      cursor.moveUp(row)
+
+      val posX = cursor.position._1
+      val posY = cursor.position._2
+
+      if (posY > lines(posX).length)
+        cursor.position = (posX, lines(posX).length)
+    }
+  }
+
+  /** Move down all cursors
+    *
+    * @param row Number of row to move, default 1
+    */
+  def moveCursorsDown(row: Int = 1): Unit = {
+    cursors.foreach { moveCursorDown(_, row) }
+    removeMergedCursors
+  }
+
+  /** Move down a single cursor
+    *
+    * @param cursor The cursor to move down
+    * @param row Number of row to move, default 1
+    */
+  def moveCursorDown(cursor: Cursor, row: Int = 1): Unit = {
+    val lines = buffer.lines
+
+    if (cursor.position._1 + row < lines.length) {
+      cursor.moveDown(row)
+
+      val posX = cursor.position._1
+      val posY = cursor.position._2
+
+      if (posY > lines(posX).length)
+        cursor.position = (posX, lines(posX).length)
+    }
+  }
+
+  /** Move left all cursors
+    *
+    * @param column Number of column to move, default 1
+    */
+  def moveCursorsLeft(column: Int = 1): Unit = {
     for (cursor <- cursors) {
-      if (cursor.position._1 - row >= 0) {
-        cursor.moveUp(row)
+      if (cursor.position._2 - column >= 0)
+        cursor.moveLeft(column)
+      else
+        moveCursorUp(cursor, 1)
+    }
+
+    removeMergedCursors
+  }
+
+  /** Move right all cursors
+    *
+    * @param column Number of column to move, default 1
+    */
+  def moveCursorsRight(column: Int = 1): Unit = {
+    val lines = buffer.lines
+
+    for (cursor <- cursors) {
+      if (cursor.position._2 + column <= lines(cursor.position._1).length)
+        cursor.moveRight(column)
+      else {
+        cursor.position = (cursor.position._1, 0)
+        moveCursorDown(cursor, 1)
       }
     }
 
     removeMergedCursors
   }
 
-  /** Move down cursors
-    *
-    * @param row Number of row to move, default 1
+  /** Move to the top all cursors
     */
-  def moveCursorDown(row: Int = 1): Unit = {
-    // @todo Unit test brother !
-    val lines = buffer.lines
-
-    for (cursor <- cursors) {
-      if (cursor.position._1 + row <= lines.length)
-        cursor.moveDown(row)
-    }
-
-    removeMergedCursors
-  }
-
-  /** Move left cursors
-    *
-    * @param column Number of column to move, default 1
-    */
-  def moveCursorLeft(column: Int = 1): Unit = {
-    // @todo Unit test brother !
-    for (cursor <- cursors) {
-      if (cursor.position._2 - column >= 0)
-        cursor.moveLeft(column)
-      else
-        moveCursorUp(1)
-    }
-
-    removeMergedCursors
-  }
-
-  /** Move right the cursor
-    *
-    * @param column Number of column to move, default 1
-    */
-  def moveCursorRight(column: Int = 1): Unit = {
-    // @todo Unit test brother !
-    val lines = buffer.lines
-
-    for (cursor <- cursors) {
-      if (cursor.position._2 + column <= lines(cursor.position._1).length)
-        cursor.moveRight(column)
-      else
-        moveCursorDown(1)
-    }
-
-    removeMergedCursors
-  }
-
-  /** Move to the top cursors
-    */
-  def moveCursorToTop: Unit = {
-    // @todo Unit test brother !
+  def moveCursorsToTop: Unit = {
     cursors.foreach { _.moveToTop }
     removeMergedCursors
   }
 
-  /** Move to the bottom cursors
+  /** Move to the bottom all cursors
     */
-  def moveCursorToBottom: Unit = {
-    // @todo Unit test brother !
+  def moveCursorsToBottom: Unit = {
     val lines = buffer.lines
-    val lastLine = lines.length
+    val lastLine = lines.length - 1
     val lastColumn = lines(lastLine).length
 
     val bottomPosition = (lastLine, lastColumn)

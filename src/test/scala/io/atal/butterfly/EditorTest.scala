@@ -173,9 +173,126 @@ class EditorTest extends FlatSpec {
     editor.addSelection(selection4)
 
     var content = editor.getSelectionContent
-
     var expected = "Please\nPlease\nPlease\nPlease"
 
     assert(content == expected)
+  }
+
+  "The Editor move cursors up method" should "work as expected" in {
+    val editor = new Editor
+    val cursor = new Cursor((1, 2))
+
+    editor.addCursor(cursor)
+    editor.buffer.content = "Wow\nSon"
+
+    editor.moveCursorsUp()
+
+    var expected = List(new Cursor(0, 2), new Cursor(0, 0))
+    editor.cursors should equal (expected)
+
+    editor.buffer.content = "Wow\nSon my chair"
+
+    val cursor1 = new Cursor((1, 7))
+    editor.addCursor(cursor1)
+
+    editor.moveCursorsUp()
+
+    expected = List(new Cursor(0, 3) ,new Cursor(0, 2), new Cursor(0, 0))
+    editor.cursors should equal (expected)
+  }
+
+  "The Editor move cursors down method" should "work as expected" in {
+    val editor = new Editor
+    val cursor = new Cursor((1, 2))
+
+    editor.addCursor(cursor)
+    editor.buffer.content = "Wow\nSon"
+
+    editor.moveCursorsDown()
+
+    var expected = List(new Cursor(1, 2), new Cursor(1, 0))
+    editor.cursors should equal (expected)
+
+    editor.buffer.content = "Wow\nSon my chair\nHey"
+
+    val cursor1 = new Cursor((1, 7))
+    editor.addCursor(cursor1)
+
+    editor.moveCursorsDown()
+
+    expected = List(new Cursor(2, 3), new Cursor(2, 2), new Cursor(2, 0))
+    editor.cursors should equal (expected)
+  }
+
+  "The Editor move cursors left method" should "work as expected" in {
+    val editor = new Editor
+    val cursor = new Cursor((1, 2))
+
+    editor.addCursor(cursor)
+    editor.buffer.content = "Wow\nSon"
+
+    editor.moveCursorsLeft()
+
+    var expected = List(new Cursor(1, 1), new Cursor(0, 0))
+    editor.cursors should equal (expected)
+
+    editor.buffer.content = "Wow\nSon my chair\nHey"
+
+    val cursor1 = new Cursor((2, 0))
+    editor.addCursor(cursor1)
+
+    editor.moveCursorsLeft()
+
+    expected = List(new Cursor(1, 0), new Cursor(0, 0))
+    editor.cursors should equal (expected)
+  }
+
+  "The Editor move cursors right method" should "work as expected" in {
+    val editor = new Editor
+    val cursor = new Cursor((1, 2))
+
+    editor.addCursor(cursor)
+    editor.buffer.content = "Wow\nSon"
+
+    editor.moveCursorsRight()
+
+    var expected = List(new Cursor(1, 3), new Cursor(0, 1))
+    editor.cursors should equal (expected)
+
+    editor.buffer.content = "Wow\nSon my chair\nHey!"
+
+    val cursor1 = new Cursor((1, 12))
+    editor.addCursor(cursor1)
+
+    editor.moveCursorsRight()
+
+    expected = List(new Cursor(2, 0), new Cursor(1, 4), new Cursor(0, 2))
+    editor.cursors should equal (expected)
+  }
+
+  "The Editor move cursors to top method" should "work as expected" in {
+    val editor = new Editor
+    val cursor = new Cursor((1, 2))
+
+    editor.addCursor(cursor)
+    editor.buffer.content = "Wow\nSon"
+
+    editor.moveCursorsToTop
+
+    var expected = List(new Cursor(0, 0))
+    editor.cursors should equal (expected)
+  }
+
+  "The Editor move cursors to bottom method" should "work as expected" in {
+    val editor = new Editor
+    val cursor = new Cursor((1, 2))
+
+    editor.addCursor(cursor)
+    editor.buffer.content = "Wow\nSon\nWhere is my chair ?"
+
+    editor.moveCursorsToBottom
+
+    var expected = List(new Cursor(2, 19))
+    editor.cursors should equal (expected)
   }
 }
