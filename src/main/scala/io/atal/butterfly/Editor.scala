@@ -108,6 +108,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
 
   /** Move up a single cursor
   *
+  * @param cursor The cursor to move up
   * @param row Number of row to move, default 1
   */
   def moveCursorUp(cursor: Cursor, row: Int = 1): Unit = {
