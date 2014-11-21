@@ -133,4 +133,49 @@ class EditorTest extends FlatSpec {
 
     assert(editor.buffer.content == "ow\nSo")
   }
+
+  "The Editor erase selection method" should "erase all selections' content" in {
+    val editor = new Editor
+    val selection1 = new Selection((0, 4), (0, 10))
+    val selection2 = new Selection((1, 4), (1, 10))
+    val selection3 = new Selection((2, 3), (2, 9))
+    val selection4 = new Selection((3, 16), (3, 22))
+
+    editor.buffer.content = "Wow Please\nSon Please\nNo Please\nDon't chair me. Please."
+
+    // Selections are on every "Please"
+    editor.addSelection(selection1)
+    editor.addSelection(selection2)
+    editor.addSelection(selection3)
+    editor.addSelection(selection4)
+
+    editor.eraseSelection
+
+    var expected = "Wow \nSon \nNo \nDon't chair me. ."
+    assert(editor.buffer.content == expected)
+
+    editor.selections should have length 0
+  }
+
+  "The Editor get selection content method" should "return the content of every selections" in {
+    val editor = new Editor
+    val selection1 = new Selection((0, 4), (0, 10))
+    val selection2 = new Selection((1, 4), (1, 10))
+    val selection3 = new Selection((2, 3), (2, 9))
+    val selection4 = new Selection((3, 16), (3, 22))
+
+    editor.buffer.content = "Wow Please\nSon Please\nNo Please\nDon't chair me. Please."
+
+    // Selections are on every "Please"
+    editor.addSelection(selection1)
+    editor.addSelection(selection2)
+    editor.addSelection(selection3)
+    editor.addSelection(selection4)
+
+    var content = editor.getSelectionContent
+
+    var expected = "Please\nPlease\nPlease\nPlease"
+
+    assert(content == expected)
+  }
 }

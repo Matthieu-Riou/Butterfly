@@ -42,7 +42,6 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   /** Erase all selections content
     */
   def eraseSelection: Unit = {
-    // @todo Unit test brother !
     for (selection <- selections) {
       buffer.remove(selection.begin, selection.end)
     }
@@ -56,7 +55,6 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     * @return The text of all selections
     */
   def getSelectionContent: String = {
-    // @todo Unit test brother !
     var content: String = ""
 
     for (selection <- selections) {

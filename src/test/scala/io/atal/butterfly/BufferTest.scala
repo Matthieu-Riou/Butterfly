@@ -26,7 +26,26 @@ class BufferTest extends FlatSpec {
   "The Buffer select method" should "return the substring selected" in {
     val buffer = new Buffer("Hello world!")
 
-    assert(buffer.select(6, 11).equals("world"))
+    var expected = "world"
+    var selected = buffer.select(6, 11)
+
+    assert(expected == selected)
+  }
+
+  "The Buffer select method with two dimensions position" should "return the substring selected" in {
+    val buffer = new Buffer("Hello world!")
+
+    var expected = "world"
+    var selected = buffer.select((0, 6), (0, 11))
+
+    assert(expected == selected)
+
+    buffer.content = "I am a tribe\nI love chair."
+
+    expected = "a tribe\nI love chair"
+    selected = buffer.select((0, 5), (1, 12))
+
+    assert(expected == selected)
   }
 
   "The Buffer insert method" should "insert the wanted string in the content at the wanted position" in {

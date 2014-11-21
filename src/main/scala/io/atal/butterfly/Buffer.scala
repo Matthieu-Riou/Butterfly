@@ -20,7 +20,6 @@ class Buffer(var content: String) {
     * @return The substring between these two positions
     */
   def select(beginPosition: (Int, Int), endPosition: (Int, Int)): String = {
-    // @todo Unit test brother !
     select(convertToLinearPosition(beginPosition), convertToLinearPosition(endPosition))
   }
 
