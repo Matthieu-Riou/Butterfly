@@ -92,7 +92,6 @@ class Buffer(var content: String) {
     * @return The linear coordinate equivalent for the given position
     */
   def convertToLinearPosition(position: (Int, Int)): Int = {
-    var lines = content.split("\n")
     var linearPosition = position._1 + position._2
 
     for (i <- 0 until position._1) {
