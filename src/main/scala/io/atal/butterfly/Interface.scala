@@ -24,7 +24,7 @@ object HelloWorld extends SimpleSwingApplication {
           {
             buffer.insert(input.text, _cursor)
             _cursor += input.text.length
-            text = buffer.toString()
+            text = bufferToLabel(buffer.toString())
             input.text = ""
           }
       }
@@ -34,7 +34,7 @@ object HelloWorld extends SimpleSwingApplication {
       text = "Insert"
     }
     
-    val input = new TextField(100)
+    val input = new TextArea(50,100)
     
     contents = new BorderPanel {
       add(editor, BorderPanel.Position.North)
@@ -47,5 +47,7 @@ object HelloWorld extends SimpleSwingApplication {
     }
     
   }
+  
+  def bufferToLabel(s: String) : String = return "<html>" + s.replaceAll("\n", "<br/>") + "</html>"
 }
 
