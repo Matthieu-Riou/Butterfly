@@ -2,10 +2,10 @@ package io.atal.butterfly
 
 /** A cursor is the little blinking vertical line where the text is inserted
   *
-  * @constructor Create a new cursor linked to an editor
-  * @param ed The editor where the cursor lives
+  * @constructor Create a new cursor with a position
+  * @param position Cursor's position, default (0, 0)
   */
-class Cursor(val editor: Editor, var position: (Int, Int) = (0, 0)) extends EventTrait {
+class Cursor(var position: (Int, Int) = (0, 0)) {
 
   override def hashCode: Int = position.hashCode
 
@@ -19,7 +19,6 @@ class Cursor(val editor: Editor, var position: (Int, Int) = (0, 0)) extends Even
     * @param row Number of row to move, default 1
     */
   def moveUp(row: Int = 1): Unit = {
-    // @todo check from editor.buffer if possible
     position = (position._1 - row, position._2)
   }
 
@@ -28,7 +27,6 @@ class Cursor(val editor: Editor, var position: (Int, Int) = (0, 0)) extends Even
     * @param row Number of row to move, default 1
     */
   def moveDown(row: Int = 1): Unit = {
-    // @todo check from editor.buffer if possible
     position = (position._1 + row, position._2)
   }
 
@@ -37,7 +35,6 @@ class Cursor(val editor: Editor, var position: (Int, Int) = (0, 0)) extends Even
     * @param column Number of column to move, default 1
     */
   def moveLeft(column: Int = 1): Unit = {
-    // @todo check from editor.buffer if possible
     position = (position._1, position._2 - column)
   }
 
@@ -46,17 +43,10 @@ class Cursor(val editor: Editor, var position: (Int, Int) = (0, 0)) extends Even
     * @param column Number of column to move, default 1
     */
   def moveRight(column: Int = 1): Unit = {
-    // @todo check from editor.buffer if possible
     position = (position._1, position._2 + column)
   }
 
   /** Move to the top the cursor
     */
   def moveToTop: Unit = position = (0, 0)
-
-  /** Move to the bottom the cursor
-    */
-  def moveToBottom: Unit = {
-    // @todo get from editor.buffer the last line/column
-  }
 }

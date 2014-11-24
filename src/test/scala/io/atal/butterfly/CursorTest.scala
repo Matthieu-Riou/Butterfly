@@ -1,14 +1,13 @@
 package io.atal.butterfly
 
 import org.scalatest._
-import Matchers._
 
 /** Cursor unit tests
   */
 class CursorTest extends FlatSpec {
 
   "The Cursor buffer position accessor and mutator" should "be as expected" in {
-    val cursor = new Cursor(new Editor)
+    val cursor = new Cursor
 
     assert(cursor.position == (0, 0))
 
@@ -18,26 +17,17 @@ class CursorTest extends FlatSpec {
     assert(cursor.position == expected)
   }
 
-  "The Cursor editor accessor" should "be as expected" in {
-    val editor = new Editor
-    val cursor = new Cursor(editor)
-
-    assert(cursor.editor == editor)
-  }
-
   "The Cursor moveToTop method" should "place the cursor at the beginning" in {
-    val cursor = new Cursor(new Editor)
+    val cursor = new Cursor((10, 10))
 
     val expected = (0, 0)
-    cursor.position = (10, 10)
     cursor.moveToTop
 
     assert(cursor.position == expected)
   }
 
   "The Cursor default moveUp method" should "place the cursor one row above" in {
-    val cursor = new Cursor(new Editor)
-    cursor.position = (1, 0)
+    val cursor = new Cursor((1, 0))
 
     val expected = (0, 0)
     cursor.moveUp()
@@ -46,8 +36,7 @@ class CursorTest extends FlatSpec {
   }
 
   "The Cursor default moveDown method" should "place the cursor one row below" in {
-    val cursor = new Cursor(new Editor)
-    cursor.position = (1, 0)
+    val cursor = new Cursor((1, 0))
 
     val expected = (2, 0)
     cursor.moveDown()
@@ -56,8 +45,7 @@ class CursorTest extends FlatSpec {
   }
 
   "The Cursor default moveLeft method" should "place the cursor one column to the left" in {
-    val cursor = new Cursor(new Editor)
-    cursor.position = (0, 1)
+    val cursor = new Cursor((0, 1))
 
     val expected = (0, 0)
     cursor.moveLeft()
@@ -66,8 +54,7 @@ class CursorTest extends FlatSpec {
   }
 
   "The Cursor default moveRight method" should "place the cursor one column to the right" in {
-    val cursor = new Cursor(new Editor)
-    cursor.position = (0, 1)
+    val cursor = new Cursor((0, 1))
 
     val expected = (0, 2)
     cursor.moveRight()
