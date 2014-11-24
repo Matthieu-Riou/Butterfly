@@ -1,8 +1,17 @@
 # Butterfly
 
-> A Scala-based mini text editor
+*The name refers to this [xkcd](http://xkcd.com/378/)*
 
-The name refers to this [xkcd](http://xkcd.com/378/)
+<p align="center">
+  <img
+    alt="butterfly_logo"
+    height="169"
+    width="246"
+    src="https://cloud.githubusercontent.com/assets/1422403/5165970/82a59476-73eb-11e4-802b-9c063f1818f0.png"
+  />
+</p>
+
+Butterfly is a tiny **text editor library** written in **Scala**, it offers features like multi-(cursors & selections & editors) with a simple API
 
 ## Run, test & build
 
@@ -46,5 +55,5 @@ To launch tests
 
 ## Contributors
 
-- Matthieu Riou
-- Brice Thomas
+- Matthieu Riou :bear:
+- Brice Thomas :koala:
