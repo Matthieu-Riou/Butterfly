@@ -67,6 +67,19 @@ object HelloWorld extends SimpleSwingApplication {
         case KeyPressed(_, Key.X, _, _) => keyChar("x", "X")
         case KeyPressed(_, Key.Y, _, _) => keyChar("y", "Y")
         case KeyPressed(_, Key.Z, _, _) => keyChar("z", "Z")
+        
+        case KeyPressed(_, Key.Ampersand, _, _) => keyOther("&", "1")
+        //case KeyPressed(_, Key.Key2, _, _) => keyCapsSpec("é", "2", "É") Code d'erreur
+        case KeyPressed(_, Key.Quotedbl, _, _) => keyOther("\"", "3")
+        case KeyPressed(_, Key.Quote, _, _) => keyOther("'", "4")
+        case KeyPressed(_, Key.LeftParenthesis, _, _) => keyOther("(", "5")
+        case KeyPressed(_, Key.Minus, _, _) => keyOther("-", "6")
+        //case KeyPressed(_, Key.Key7, _, _) => keyCapsSpec("è", "7", "È") Code d'erreur
+        case KeyPressed(_, Key.Underscore, _, _) => keyOther("_", "8")
+        //case KeyPressed(_, Key.Key9, _, _) => keyCapsSpec("ç", "9", "Ç") Code d'erreur
+        //case KeyPressed(_, Key.Key0, _, _) => keyCapsSpec("à", "0", "À") Code d'erreur
+        case KeyPressed(_, Key.RightParenthesis, _, _) => keyOther(")", "°")
+        case KeyPressed(_, Key.Equals, _, _) => keyOther("=", "+")
       }
     }
     
@@ -85,7 +98,27 @@ object HelloWorld extends SimpleSwingApplication {
         
       updateLabel
     }
+    
+    def keyCapsSpec(lower: String, shift: String, capsLock: String): Unit = {
+      if(isShift)
+        current.write(shift)
+      else if(isCapsLock)
+        current.write(capsLock)
+      else
+        current.write(lower)
       
+      updateLabel
+    }
+    
+    def keyOther(lower: String, shift: String): Unit = {
+      if(isShift)
+        current.write(shift)
+      else
+        current.write(lower)
+        
+      updateLabel
+    }
+    
     def updateLabel: Unit = editor.text = bufferToLabel(current.buffer.content)
   }
   
