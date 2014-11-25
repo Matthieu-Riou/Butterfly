@@ -21,14 +21,22 @@ class EditorManager {
     *
     * @TODO Add a param files to open a file text
     */
-  def openEditor: Unit = new Editor() :: editors
+  def openEditor: Unit = {
+    _editors = new Editor() :: _editors
+    _currentEditor = Some(_editors.head)
+  }
   
   /** Close an Editor
     *
     * @param editor The editor to close
     * @TODO Save the editor
     */
-  def closeEditor(editor: Editor): Unit = editors == editors.diff(List(editor))
+  def closeEditor(editor: Editor): Unit = {
+    _editors = _editors.diff(List(editor))
+    if(_currentEditor == Some(editor)) {
+      _currentEditor = Some(_editors.head)
+    }
+  }
   
   /** Write text into the current Editor
     *
