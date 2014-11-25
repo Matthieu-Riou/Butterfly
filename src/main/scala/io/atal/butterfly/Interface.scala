@@ -30,6 +30,31 @@ object HelloWorld extends SimpleSwingApplication {
         }
         
         case KeyPressed(_, Key.A, _, _) => keyChar("a")
+        case KeyPressed(_, Key.B, _, _) => keyChar("b")
+        case KeyPressed(_, Key.C, _, _) => keyChar("c")
+        case KeyPressed(_, Key.D, _, _) => keyChar("d")
+        case KeyPressed(_, Key.E, _, _) => keyChar("e")
+        case KeyPressed(_, Key.F, _, _) => keyChar("f")
+        case KeyPressed(_, Key.G, _, _) => keyChar("g")
+        case KeyPressed(_, Key.H, _, _) => keyChar("h")
+        case KeyPressed(_, Key.I, _, _) => keyChar("i")
+        case KeyPressed(_, Key.J, _, _) => keyChar("j")
+        case KeyPressed(_, Key.K, _, _) => keyChar("k")
+        case KeyPressed(_, Key.L, _, _) => keyChar("l")
+        case KeyPressed(_, Key.M, _, _) => keyChar("m")
+        case KeyPressed(_, Key.N, _, _) => keyChar("n")
+        case KeyPressed(_, Key.O, _, _) => keyChar("o")
+        case KeyPressed(_, Key.P, _, _) => keyChar("p")
+        case KeyPressed(_, Key.Q, _, _) => keyChar("q")
+        case KeyPressed(_, Key.R, _, _) => keyChar("r")
+        case KeyPressed(_, Key.S, _, _) => keyChar("s")
+        case KeyPressed(_, Key.T, _, _) => keyChar("t")
+        case KeyPressed(_, Key.U, _, _) => keyChar("u")
+        case KeyPressed(_, Key.V, _, _) => keyChar("v")
+        case KeyPressed(_, Key.W, _, _) => keyChar("w")
+        case KeyPressed(_, Key.X, _, _) => keyChar("x")
+        case KeyPressed(_, Key.Y, _, _) => keyChar("y")
+        case KeyPressed(_, Key.Z, _, _) => keyChar("z")
       }
     }
     
