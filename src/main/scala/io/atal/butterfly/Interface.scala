@@ -41,32 +41,32 @@ object HelloWorld extends SimpleSwingApplication {
             isCapsLock = true
         }
         
-        case KeyPressed(_, Key.A, _, _) => keyChar("a")
-        case KeyPressed(_, Key.B, _, _) => keyChar("b")
-        case KeyPressed(_, Key.C, _, _) => keyChar("c")
-        case KeyPressed(_, Key.D, _, _) => keyChar("d")
-        case KeyPressed(_, Key.E, _, _) => keyChar("e")
-        case KeyPressed(_, Key.F, _, _) => keyChar("f")
-        case KeyPressed(_, Key.G, _, _) => keyChar("g")
-        case KeyPressed(_, Key.H, _, _) => keyChar("h")
-        case KeyPressed(_, Key.I, _, _) => keyChar("i")
-        case KeyPressed(_, Key.J, _, _) => keyChar("j")
-        case KeyPressed(_, Key.K, _, _) => keyChar("k")
-        case KeyPressed(_, Key.L, _, _) => keyChar("l")
-        case KeyPressed(_, Key.M, _, _) => keyChar("m")
-        case KeyPressed(_, Key.N, _, _) => keyChar("n")
-        case KeyPressed(_, Key.O, _, _) => keyChar("o")
-        case KeyPressed(_, Key.P, _, _) => keyChar("p")
-        case KeyPressed(_, Key.Q, _, _) => keyChar("q")
-        case KeyPressed(_, Key.R, _, _) => keyChar("r")
-        case KeyPressed(_, Key.S, _, _) => keyChar("s")
-        case KeyPressed(_, Key.T, _, _) => keyChar("t")
-        case KeyPressed(_, Key.U, _, _) => keyChar("u")
-        case KeyPressed(_, Key.V, _, _) => keyChar("v")
-        case KeyPressed(_, Key.W, _, _) => keyChar("w")
-        case KeyPressed(_, Key.X, _, _) => keyChar("x")
-        case KeyPressed(_, Key.Y, _, _) => keyChar("y")
-        case KeyPressed(_, Key.Z, _, _) => keyChar("z")
+        case KeyPressed(_, Key.A, _, _) => keyChar("a", "A")
+        case KeyPressed(_, Key.B, _, _) => keyChar("b", "B")
+        case KeyPressed(_, Key.C, _, _) => keyChar("c", "C")
+        case KeyPressed(_, Key.D, _, _) => keyChar("d", "D")
+        case KeyPressed(_, Key.E, _, _) => keyChar("e", "E")
+        case KeyPressed(_, Key.F, _, _) => keyChar("f", "F")
+        case KeyPressed(_, Key.G, _, _) => keyChar("g", "G")
+        case KeyPressed(_, Key.H, _, _) => keyChar("h", "H")
+        case KeyPressed(_, Key.I, _, _) => keyChar("i", "I")
+        case KeyPressed(_, Key.J, _, _) => keyChar("j", "J")
+        case KeyPressed(_, Key.K, _, _) => keyChar("k", "K")
+        case KeyPressed(_, Key.L, _, _) => keyChar("l", "L")
+        case KeyPressed(_, Key.M, _, _) => keyChar("m", "M")
+        case KeyPressed(_, Key.N, _, _) => keyChar("n", "N")
+        case KeyPressed(_, Key.O, _, _) => keyChar("o", "O")
+        case KeyPressed(_, Key.P, _, _) => keyChar("p", "P")
+        case KeyPressed(_, Key.Q, _, _) => keyChar("q", "Q")
+        case KeyPressed(_, Key.R, _, _) => keyChar("r", "R")
+        case KeyPressed(_, Key.S, _, _) => keyChar("s", "S")
+        case KeyPressed(_, Key.T, _, _) => keyChar("t", "T")
+        case KeyPressed(_, Key.U, _, _) => keyChar("u", "U")
+        case KeyPressed(_, Key.V, _, _) => keyChar("v", "V")
+        case KeyPressed(_, Key.W, _, _) => keyChar("w", "W")
+        case KeyPressed(_, Key.X, _, _) => keyChar("x", "X")
+        case KeyPressed(_, Key.Y, _, _) => keyChar("y", "Y")
+        case KeyPressed(_, Key.Z, _, _) => keyChar("z", "Z")
       }
     }
     
@@ -77,8 +77,12 @@ object HelloWorld extends SimpleSwingApplication {
     }
     
     
-    def keyChar(char: String): Unit = {
-      current.write(char)
+    def keyChar(lowerChar: String, upperChar: String): Unit = {
+      if((isShift && !isCapsLock) || (isCapsLock && !isShift))
+        current.write(upperChar)
+      else
+        current.write(lowerChar)
+        
       updateLabel
     }
       
