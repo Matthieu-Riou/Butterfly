@@ -14,6 +14,8 @@ object HelloWorld extends SimpleSwingApplication {
     editorManager.openEditor
       
     var current: Editor = editorManager.currentEditor.get
+    var isShift: Boolean = false
+    var isCapsLock: Boolean = false
     
     object editor extends Label {
       text = current.buffer.content
@@ -27,6 +29,16 @@ object HelloWorld extends SimpleSwingApplication {
         case KeyPressed(_, Key.BackSpace, _, _) => {
           current.erase
           updateLabel
+        }
+        
+        case KeyPressed(_, Key.Shift, _, _) => isShift = true
+        case KeyReleased(_, Key.Shift, _, _) => isShift = false
+        
+        case KeyPressed(_, Key.CapsLock, _, _) => {
+          if(isCapsLock)
+            isCapsLock = false
+          else
+            isCapsLock = true
         }
         
         case KeyPressed(_, Key.A, _, _) => keyChar("a")
