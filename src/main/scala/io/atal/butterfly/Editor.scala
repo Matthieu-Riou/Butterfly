@@ -30,12 +30,16 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   }
 
   /** A simple eraser, character by character
+    *
+    * Erase the character before the cursors, then move left
     */
   def erase: Unit = {
     for (cursor <- cursors) {
       // End index position is excluded, we need to add 1 to actually remove the character
-      buffer.remove(cursor.position, (cursor.position._1, cursor.position._2 + 1))
-      cursor.moveLeft()
+      if(cursor.position._2 -1 > 0) {
+        buffer.remove((cursor.position._1, cursor.position._2 - 1), cursor.position)
+        cursor.moveLeft()
+      }
     }
   }
 

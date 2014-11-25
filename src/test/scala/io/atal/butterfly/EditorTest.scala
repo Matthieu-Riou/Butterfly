@@ -131,7 +131,7 @@ class EditorTest extends FlatSpec {
     // There are two cursors, lying at (0, 0) and (1, 2)
     editor.erase
 
-    assert(editor.buffer.content == "ow\nSo")
+    assert(editor.buffer.content == "Wow\nSn")
   }
 
   "The Editor erase selection method" should "erase all selections' content" in {
