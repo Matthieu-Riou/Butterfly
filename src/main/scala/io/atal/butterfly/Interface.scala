@@ -80,6 +80,26 @@ object HelloWorld extends SimpleSwingApplication {
         //case KeyPressed(_, Key.Key0, _, _) => keyCapsSpec("à", "0", "À") Code d'erreur
         case KeyPressed(_, Key.RightParenthesis, _, _) => keyOther(")", "°")
         case KeyPressed(_, Key.Equals, _, _) => keyOther("=", "+")
+        
+        case KeyPressed(_, Key.Enter, _, _) => {
+          current.write("\n")
+          updateLabel
+        }
+        
+        case KeyPressed(_, Key.Space, _, _) => {
+          current.write(" ")
+          updateLabel
+        }
+        
+        case KeyPressed(_, Key.Comma, _, _) => keyOther(",", "?")
+        case KeyPressed(_, Key.Semicolon, _, _) => keyOther(";", ".")
+        case KeyPressed(_, Key.Colon, _, _) => keyOther(":", "/")
+        case KeyPressed(_, Key.ExclamationMark, _, _) => keyOther("!", "/")
+        case KeyPressed(_, Key.Asterisk, _, _) => keyOther("*", "µ")
+        //case KeyPressed(_, Key.Circumflex, _, _) => keyOther("^", "¨") Erreur, ne fait rien
+        case KeyPressed(_, Key.Dollar, _, _) => keyOther("$", "£")
+        
+        //Touche "ù" Code d'erreur
       }
     }
     
