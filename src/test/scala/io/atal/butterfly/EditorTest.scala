@@ -128,10 +128,26 @@ class EditorTest extends FlatSpec {
 
     editor.addCursor(cursor)
 
-    // There are two cursors, lying at (0, 0) and (1, 2)
+    // Two cursors, lying at (0, 0) and (1, 2)
     editor.erase
 
     assert(editor.buffer.content == "Wow\nSn")
+    assert(editor.cursors(0).position == (1, 1))
+    assert(editor.cursors(1).position == (0, 0))
+
+    // Two cursors, lying at (0, 0) and (1, 1)
+    editor.erase
+
+    assert(editor.buffer.content == "Wow\nn")
+    assert(editor.cursors(0).position == (1, 0))
+    assert(editor.cursors(1).position == (0, 0))
+
+    // Two cursors, lying at (0, 0) and (1, 0)
+    editor.erase
+
+    assert(editor.buffer.content == "Wown")
+    assert(editor.cursors(0).position == (0, 3))
+    assert(editor.cursors(1).position == (0, 0))
   }
 
   "The Editor erase selection method" should "erase all selections' content" in {
@@ -243,7 +259,7 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsLeft()
 
-    expected = List(new Cursor(1, 0), new Cursor(0, 0))
+    expected = List(new Cursor(1, 12), new Cursor(1, 0), new Cursor(0, 0))
     editor.cursors should equal (expected)
   }
 

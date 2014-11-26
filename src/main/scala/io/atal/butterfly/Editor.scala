@@ -35,10 +35,20 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     */
   def erase: Unit = {
     for (cursor <- cursors) {
-      // End index position is excluded, we need to add 1 to actually remove the character
-      if(cursor.position._2 -1 > 0) {
-        buffer.remove((cursor.position._1, cursor.position._2 - 1), cursor.position)
-        cursor.moveLeft()
+      cursor.position match {
+        case (0, 0) => Unit
+        case (x, 0) => {
+          val lines = buffer.lines
+          val lastColOfPrevLine = lines(x - 1).length
+
+          // Remove the \n of the previous line
+          buffer.remove((x - 1, lastColOfPrevLine), (x, 0))
+          cursor.position = (x - 1, lastColOfPrevLine)
+        }
+        case (x, y) => {
+          buffer.remove((x, y - 1), (x, y))
+          moveCursorLeft(cursor)
+        }
       }
     }
   }
@@ -157,16 +167,31 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     }
   }
 
+  /** Move left a single cursor
+    *
+    * @param cursor The cursor to move left
+    * @param column Number of column to move, default 1
+    */
+  def moveCursorLeft(cursor: Cursor, column: Int = 1): Unit = cursor.position match {
+    case (0, 0) => Unit
+    case (x, y) if (y - column >= 0) => cursor.moveLeft(column)
+    case (x, y) => {
+      moveCursorUp(cursor, 1)
+
+      val lines = buffer.lines
+      val lastColumn = lines(cursor.position._1).length
+
+      cursor.position = (cursor.position._1, lastColumn)
+    }
+  }
+
   /** Move left all cursors
     *
     * @param column Number of column to move, default 1
     */
   def moveCursorsLeft(column: Int = 1): Unit = {
     for (cursor <- cursors) {
-      if (cursor.position._2 - column >= 0)
-        cursor.moveLeft(column)
-      else
-        moveCursorUp(cursor, 1)
+      moveCursorLeft(cursor)
     }
 
     removeMergedCursors
