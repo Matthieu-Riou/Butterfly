@@ -181,7 +181,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
       val lastColumn = lines(cursor.position._1).length
 
       // @todo, place y to the good position
-      cursor.position = (cursor.position._1, lastColumn - (column - 1))
+      cursor.position = (cursor.position._1, lastColumn)
     }
   }
 
@@ -204,14 +204,13 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     */
   def moveCursorRight(cursor: Cursor, column: Int = 1): Unit = {
     val lines = buffer.lines
-    val lastLine = lines.length
+    val lastLine = lines.length - 1
     val lastColumn = lines(cursor.position._1).length
 
     cursor.position match {
       case (x, y) if (y + column <= lastColumn) => cursor.moveRight(column)
       case (x, y) if (x == lastLine) => cursor.position = (x, lastColumn)
-      case (x, y) => {
-        // @todo, place y to the good position
+      case (x, y)  => {
         cursor.position = (x, 0)
         moveCursorDown(cursor, 1)
       }

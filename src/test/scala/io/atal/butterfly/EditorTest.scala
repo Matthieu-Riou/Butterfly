@@ -282,7 +282,7 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsLeft(4)
 
-    expected = List(new Cursor(1, 9), new Cursor(0, 0))
+    expected = List(new Cursor(1, 12), new Cursor(0, 3), new Cursor(0, 0))
     editor.cursors should equal (expected)
   }
 
@@ -318,7 +318,14 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsRight(2)
 
-    var expected = List(new Cursor(1, 0), new Cursor(0, 2))
+    var expected = List(new Cursor(1, 3), new Cursor(0, 2))
+    editor.cursors should equal (expected)
+
+    editor.buffer.content = "Wow\nSon my chair\nHey!"
+
+    editor.moveCursorsRight(15)
+
+    expected = List(new Cursor(2, 0), new Cursor(1, 0))
     editor.cursors should equal (expected)
   }
 
