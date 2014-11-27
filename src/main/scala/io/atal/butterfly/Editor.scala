@@ -174,14 +174,11 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   def moveCursorLeft(cursor: Cursor, column: Int = 1): Unit = cursor.position match {
     case (0, 0) => Unit
     case (x, y) if (y - column >= 0) => cursor.moveLeft(column)
+    case (0, y) => cursor.position = (0, 0)
     case (x, y) => {
-      moveCursorUp(cursor, 1)
-
-      val lines = buffer.lines
-      val lastColumn = lines(cursor.position._1).length
-
-      // @todo, place y to the good position
-      cursor.position = (cursor.position._1, lastColumn)
+      val lastColumn = buffer.lines(x-1).length
+      cursor.position = (x-1, lastColumn)
+      moveCursorLeft(cursor, column - y-1)
     }
   }
 
@@ -203,16 +200,17 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     * @param column Number of column to move, default 1
     */
   def moveCursorRight(cursor: Cursor, column: Int = 1): Unit = {
-    val lines = buffer.lines
-    val lastLine = lines.length - 1
-    val lastColumn = lines(cursor.position._1).length
+    // LastLine and LastColumn need to start with an uppercase to be stable identifiers, and to be used in the match
+    val LastLine = buffer.lines.length - 1
+    val LastColumn = buffer.lines(cursor.position._1).length
 
     cursor.position match {
-      case (x, y) if (y + column <= lastColumn) => cursor.moveRight(column)
-      case (x, y) if (x == lastLine) => cursor.position = (x, lastColumn)
-      case (x, y)  => {
-        cursor.position = (x, 0)
-        moveCursorDown(cursor, 1)
+      case (LastLine, LastColumn) => Unit
+      case (x, y) if (y + column <= LastColumn) => cursor.moveRight(column)
+      case (LastLine, y) => cursor.position = (LastLine, LastColumn)
+      case (x, y) => {
+        cursor.position = (x+1, 0)
+        moveCursorRight(cursor, column - (LastColumn-y) -1)
       }
     }
   }
