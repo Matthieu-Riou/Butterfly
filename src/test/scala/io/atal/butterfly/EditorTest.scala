@@ -259,7 +259,6 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsLeft()
 
-    println(editor.cursors(0).position)
     expected = List(new Cursor(1, 12), new Cursor(1, 0), new Cursor(0, 0))
     editor.cursors should equal (expected)
   }
@@ -281,9 +280,9 @@ class EditorTest extends FlatSpec {
     val cursor1 = new Cursor((2, 0))
     editor.addCursor(cursor1)
 
-    editor.moveCursorsLeft(3)
+    editor.moveCursorsLeft(4)
 
-    expected = List(new Cursor(1, 10), new Cursor(0, 1), new Cursor(0, 0))
+    expected = List(new Cursor(1, 9), new Cursor(0, 0))
     editor.cursors should equal (expected)
   }
 
@@ -307,6 +306,19 @@ class EditorTest extends FlatSpec {
     editor.moveCursorsRight()
 
     expected = List(new Cursor(2, 0), new Cursor(1, 4), new Cursor(0, 2))
+    editor.cursors should equal (expected)
+  }
+
+  "The Editor move cursors right (with several steps) method" should "work as expected" in {
+    val editor = new Editor
+    val cursor = new Cursor((1, 2))
+
+    editor.addCursor(cursor)
+    editor.buffer.content = "Wow\nSon"
+
+    editor.moveCursorsRight(2)
+
+    var expected = List(new Cursor(1, 0), new Cursor(0, 2))
     editor.cursors should equal (expected)
   }
 

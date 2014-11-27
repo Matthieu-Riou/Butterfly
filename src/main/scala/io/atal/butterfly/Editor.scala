@@ -180,6 +180,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
       val lines = buffer.lines
       val lastColumn = lines(cursor.position._1).length
 
+      // @todo, place y to the good position
       cursor.position = (cursor.position._1, lastColumn - (column - 1))
     }
   }
@@ -196,20 +197,34 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     removeMergedCursors
   }
 
+  /** Move right a single cursor
+    *
+    * @param cursor The cursor to move right
+    * @param column Number of column to move, default 1
+    */
+  def moveCursorRight(cursor: Cursor, column: Int = 1): Unit = {
+    val lines = buffer.lines
+    val lastLine = lines.length
+    val lastColumn = lines(cursor.position._1).length
+
+    cursor.position match {
+      case (x, y) if (y + column <= lastColumn) => cursor.moveRight(column)
+      case (x, y) if (x == lastLine) => cursor.position = (x, lastColumn)
+      case (x, y) => {
+        // @todo, place y to the good position
+        cursor.position = (x, 0)
+        moveCursorDown(cursor, 1)
+      }
+    }
+  }
+
   /** Move right all cursors
     *
     * @param column Number of column to move, default 1
     */
   def moveCursorsRight(column: Int = 1): Unit = {
-    val lines = buffer.lines
-
     for (cursor <- cursors) {
-      if (cursor.position._2 + column <= lines(cursor.position._1).length)
-        cursor.moveRight(column)
-      else {
-        cursor.position = (cursor.position._1, 0)
-        moveCursorDown(cursor, 1)
-      }
+      moveCursorRight(cursor, column)
     }
 
     removeMergedCursors
