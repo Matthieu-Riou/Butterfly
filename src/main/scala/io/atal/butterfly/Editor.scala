@@ -30,8 +30,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   }
 
   /** A simple eraser, character by character
-    *
-    * Erase the character before the cursors, then move left
+    * Erase the character before the cursors
     */
   def erase: Unit = {
     for (cursor <- cursors) {
@@ -181,7 +180,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
       val lines = buffer.lines
       val lastColumn = lines(cursor.position._1).length
 
-      cursor.position = (cursor.position._1, lastColumn)
+      cursor.position = (cursor.position._1, lastColumn - (column - 1))
     }
   }
 
@@ -191,7 +190,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     */
   def moveCursorsLeft(column: Int = 1): Unit = {
     for (cursor <- cursors) {
-      moveCursorLeft(cursor)
+      moveCursorLeft(cursor, column)
     }
 
     removeMergedCursors
