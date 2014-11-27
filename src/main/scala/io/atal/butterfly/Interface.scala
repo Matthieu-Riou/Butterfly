@@ -14,8 +14,7 @@ object HelloWorld extends SimpleSwingApplication {
     editorManager.openEditor
       
     var current: Editor = editorManager.currentEditor.get
-    var isShift: Boolean = false
-    var isCapsLock: Boolean = false
+    var isSpec = false
     
     object editor extends Label {
       text = current.buffer.content
@@ -26,80 +25,27 @@ object HelloWorld extends SimpleSwingApplication {
             
       listenTo(keys)
       reactions += {
+        /**
+          * KeyPressed and KeyTyped are too different event, both sent everytime.
+          * KeyPressed allow to do any action for a key (those which are non buguy (all accents)), for exemple erase for backspace
+          * KeyTyped allow to capture the character generate with a key (taking account shift, alt, ...) => no buguy accent, but buguy char for BackSpace
+          *   It doesn't recognize a key, so no filter :(
+          */
+          
         case KeyPressed(_, Key.BackSpace, _, _) => {
-          current.erase
+          isSpec = true
+          //current.erase <- En commentaire en attendant le merge de la correction (soon)
           updateLabel
         }
         
-        case KeyPressed(_, Key.Shift, _, _) => isShift = true
-        case KeyReleased(_, Key.Shift, _, _) => isShift = false
+        case KeyPressed(_, x, _, _) => isSpec = false //Allow for non-specified KeyPressed (like Key.BackSpace) to be match with KeyTyped. It's ugly. Better way ?
         
-        case KeyPressed(_, Key.CapsLock, _, _) => {
-          if(isCapsLock)
-            isCapsLock = false
-          else
-            isCapsLock = true
+        case KeyTyped(_, y, _, _) => {
+          if(!isSpec) {
+            current.write(y.toString)
+            updateLabel
+          }
         }
-        
-        case KeyPressed(_, Key.A, _, _) => keyChar("a", "A")
-        case KeyPressed(_, Key.B, _, _) => keyChar("b", "B")
-        case KeyPressed(_, Key.C, _, _) => keyChar("c", "C")
-        case KeyPressed(_, Key.D, _, _) => keyChar("d", "D")
-        case KeyPressed(_, Key.E, _, _) => keyChar("e", "E")
-        case KeyPressed(_, Key.F, _, _) => keyChar("f", "F")
-        case KeyPressed(_, Key.G, _, _) => keyChar("g", "G")
-        case KeyPressed(_, Key.H, _, _) => keyChar("h", "H")
-        case KeyPressed(_, Key.I, _, _) => keyChar("i", "I")
-        case KeyPressed(_, Key.J, _, _) => keyChar("j", "J")
-        case KeyPressed(_, Key.K, _, _) => keyChar("k", "K")
-        case KeyPressed(_, Key.L, _, _) => keyChar("l", "L")
-        case KeyPressed(_, Key.M, _, _) => keyChar("m", "M")
-        case KeyPressed(_, Key.N, _, _) => keyChar("n", "N")
-        case KeyPressed(_, Key.O, _, _) => keyChar("o", "O")
-        case KeyPressed(_, Key.P, _, _) => keyChar("p", "P")
-        case KeyPressed(_, Key.Q, _, _) => keyChar("q", "Q")
-        case KeyPressed(_, Key.R, _, _) => keyChar("r", "R")
-        case KeyPressed(_, Key.S, _, _) => keyChar("s", "S")
-        case KeyPressed(_, Key.T, _, _) => keyChar("t", "T")
-        case KeyPressed(_, Key.U, _, _) => keyChar("u", "U")
-        case KeyPressed(_, Key.V, _, _) => keyChar("v", "V")
-        case KeyPressed(_, Key.W, _, _) => keyChar("w", "W")
-        case KeyPressed(_, Key.X, _, _) => keyChar("x", "X")
-        case KeyPressed(_, Key.Y, _, _) => keyChar("y", "Y")
-        case KeyPressed(_, Key.Z, _, _) => keyChar("z", "Z")
-        
-        case KeyPressed(_, Key.Ampersand, _, _) => keyOther("&", "1")
-        //case KeyPressed(_, Key.Key2, _, _) => keyCapsSpec("é", "2", "É") Code d'erreur
-        case KeyPressed(_, Key.Quotedbl, _, _) => keyOther("\"", "3")
-        case KeyPressed(_, Key.Quote, _, _) => keyOther("'", "4")
-        case KeyPressed(_, Key.LeftParenthesis, _, _) => keyOther("(", "5")
-        case KeyPressed(_, Key.Minus, _, _) => keyOther("-", "6")
-        //case KeyPressed(_, Key.Key7, _, _) => keyCapsSpec("è", "7", "È") Code d'erreur
-        case KeyPressed(_, Key.Underscore, _, _) => keyOther("_", "8")
-        //case KeyPressed(_, Key.Key9, _, _) => keyCapsSpec("ç", "9", "Ç") Code d'erreur
-        //case KeyPressed(_, Key.Key0, _, _) => keyCapsSpec("à", "0", "À") Code d'erreur
-        case KeyPressed(_, Key.RightParenthesis, _, _) => keyOther(")", "°")
-        case KeyPressed(_, Key.Equals, _, _) => keyOther("=", "+")
-        
-        case KeyPressed(_, Key.Enter, _, _) => {
-          current.write("\n")
-          updateLabel
-        }
-        
-        case KeyPressed(_, Key.Space, _, _) => {
-          current.write(" ")
-          updateLabel
-        }
-        
-        case KeyPressed(_, Key.Comma, _, _) => keyOther(",", "?")
-        case KeyPressed(_, Key.Semicolon, _, _) => keyOther(";", ".")
-        case KeyPressed(_, Key.Colon, _, _) => keyOther(":", "/")
-        case KeyPressed(_, Key.ExclamationMark, _, _) => keyOther("!", "/")
-        case KeyPressed(_, Key.Asterisk, _, _) => keyOther("*", "µ")
-        //case KeyPressed(_, Key.Circumflex, _, _) => keyOther("^", "¨") Erreur, ne fait rien
-        case KeyPressed(_, Key.Dollar, _, _) => keyOther("$", "£")
-        
-        //Touche "ù" Code d'erreur
       }
     }
     
@@ -107,36 +53,7 @@ object HelloWorld extends SimpleSwingApplication {
       contents.append(editor)
       border = Swing.EmptyBorder(10, 10, 10, 10)
       
-    }
     
-    
-    def keyChar(lowerChar: String, upperChar: String): Unit = {
-      if((isShift && !isCapsLock) || (isCapsLock && !isShift))
-        current.write(upperChar)
-      else
-        current.write(lowerChar)
-        
-      updateLabel
-    }
-    
-    def keyCapsSpec(lower: String, shift: String, capsLock: String): Unit = {
-      if(isShift)
-        current.write(shift)
-      else if(isCapsLock)
-        current.write(capsLock)
-      else
-        current.write(lower)
-      
-      updateLabel
-    }
-    
-    def keyOther(lower: String, shift: String): Unit = {
-      if(isShift)
-        current.write(shift)
-      else
-        current.write(lower)
-        
-      updateLabel
     }
     
     def updateLabel: Unit = editor.text = bufferToLabel(current.buffer.content)
