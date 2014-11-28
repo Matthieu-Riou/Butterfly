@@ -282,7 +282,8 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsLeft(4)
 
-    expected = List(new Cursor(1, 9), new Cursor(0, 0)) //Due to remerge
+    // Due to merge
+    expected = List(new Cursor(1, 9), new Cursor(0, 0))
     editor.cursors should equal (expected)
   }
 

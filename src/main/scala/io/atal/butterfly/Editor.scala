@@ -120,14 +120,14 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   }
 
   /** Move up a single cursor
-  *
-  * @param cursor The cursor to move up
-  * @param row Number of row to move, default 1
-  */
-  def moveCursorUp(cursor: Cursor, row: Int = 1): Unit =  cursor.position match {
+    *
+    * @param cursor The cursor to move up
+    * @param row Number of row to move, default 1
+    */
+  def moveCursorUp(cursor: Cursor, row: Int = 1): Unit = cursor.position match {
     case (0, y) => Unit
-    case (x, y) if y > buffer.lines(x-1).length => cursor.position = (x-1, buffer.lines(x-1).length)
-    case (x, y) => cursor.position = (x-1, y)
+    case (x, y) if y > buffer.lines(x - 1).length => cursor.position = (x - 1, buffer.lines(x - 1).length)
+    case (x, y) => cursor.position = (x - 1, y)
   }
 
   /** Move down all cursors
@@ -151,9 +151,9 @@ class Editor(var buffer: Buffer = new Buffer("")) {
 
     cursor.position match {
       case (LastLine, y) => Unit
-      case (x, y) if y > buffer.lines(x+1).length => cursor.position = (x+1, buffer.lines(x+1).length)
-      case (x, y) => cursor.position = (x+1, y)
-    } 
+      case (x, y) if y > buffer.lines(x + 1).length => cursor.position = (x + 1, buffer.lines(x + 1).length)
+      case (x, y) => cursor.position = (x + 1, y)
+    }
   }
 
   /** Move left a single cursor
@@ -166,9 +166,9 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     case (x, y) if (y - column >= 0) => cursor.moveLeft(column)
     case (0, y) => cursor.position = (0, 0)
     case (x, y) => {
-      val lastColumn = buffer.lines(x-1).length
-      cursor.position = (x-1, lastColumn)
-      moveCursorLeft(cursor, column - y-1)
+      val lastColumn = buffer.lines(x - 1).length
+      cursor.position = (x - 1, lastColumn)
+      moveCursorLeft(cursor, column - y - 1)
     }
   }
 
@@ -199,8 +199,8 @@ class Editor(var buffer: Buffer = new Buffer("")) {
       case (x, y) if (y + column <= LastColumn) => cursor.moveRight(column)
       case (LastLine, y) => cursor.position = (LastLine, LastColumn)
       case (x, y) => {
-        cursor.position = (x+1, 0)
-        moveCursorRight(cursor, column - (LastColumn-y) -1)
+        cursor.position = (x + 1, 0)
+        moveCursorRight(cursor, column - (LastColumn - y) - 1)
       }
     }
   }
