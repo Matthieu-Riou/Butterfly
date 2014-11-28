@@ -25,7 +25,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   def write(text: String): Unit = {
     for (cursor <- cursors) {
       buffer.insert(text, cursor.position)
-      cursor.moveRight(text.length)
+      moveCursorRight(cursor, text.length)
     }
   }
 

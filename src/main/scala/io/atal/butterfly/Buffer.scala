@@ -10,7 +10,7 @@ class Buffer(var content: String) {
 
   /** Return the content as an array
     */
-  def lines: Array[String] = content.split("\n")
+  def lines: Array[String] = content.split("\n", -1)
 
   /** Return a selected substring in the buffer
     *
