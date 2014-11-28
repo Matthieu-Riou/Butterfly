@@ -116,11 +116,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     * @param cursor The cursor that we want
     * @retutrn The position in the buffer
     */
-  def getIndexPosition(cursor: Cursor): Int = cursor.position match { 
-    case (0, y) => y
-    case (x, 0) => buffer.lines(x-1).length + 1 + getIndexPosition(new Cursor(x-1, 0))
-    case (x, y) => y + getIndexPosition(new Cursor(x, 0))
-  }
+  def getIndexPosition(cursor: Cursor): Int = buffer.convertToLinearPosition(cursor.position)
 
   /** Move up all cursors
     *
