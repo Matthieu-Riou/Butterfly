@@ -128,10 +128,26 @@ class EditorTest extends FlatSpec {
 
     editor.addCursor(cursor)
 
-    // There are two cursors, lying at (0, 0) and (1, 2)
+    // Two cursors, lying at (0, 0) and (1, 2)
     editor.erase
 
-    assert(editor.buffer.content == "ow\nSo")
+    assert(editor.buffer.content == "Wow\nSn")
+    assert(editor.cursors(0).position == (1, 1))
+    assert(editor.cursors(1).position == (0, 0))
+
+    // Two cursors, lying at (0, 0) and (1, 1)
+    editor.erase
+
+    assert(editor.buffer.content == "Wow\nn")
+    assert(editor.cursors(0).position == (1, 0))
+    assert(editor.cursors(1).position == (0, 0))
+
+    // Two cursors, lying at (0, 0) and (1, 0)
+    editor.erase
+
+    assert(editor.buffer.content == "Wown")
+    assert(editor.cursors(0).position == (0, 3))
+    assert(editor.cursors(1).position == (0, 0))
   }
 
   "The Editor erase selection method" should "erase all selections' content" in {
@@ -243,7 +259,31 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsLeft()
 
-    expected = List(new Cursor(1, 0), new Cursor(0, 0))
+    expected = List(new Cursor(1, 12), new Cursor(1, 0), new Cursor(0, 0))
+    editor.cursors should equal (expected)
+  }
+
+  "The Editor move cursors left (with several steps) method" should "work as expected" in {
+    val editor = new Editor
+    val cursor = new Cursor((1, 2))
+
+    editor.addCursor(cursor)
+    editor.buffer.content = "Wow\nSon"
+
+    editor.moveCursorsLeft(2)
+
+    var expected = List(new Cursor(1, 0), new Cursor(0, 0))
+    editor.cursors should equal (expected)
+
+    editor.buffer.content = "Wow\nSon my chair\nHey"
+
+    val cursor1 = new Cursor((2, 0))
+    editor.addCursor(cursor1)
+
+    editor.moveCursorsLeft(4)
+
+    // Due to merge
+    expected = List(new Cursor(1, 9), new Cursor(0, 0))
     editor.cursors should equal (expected)
   }
 
@@ -267,6 +307,26 @@ class EditorTest extends FlatSpec {
     editor.moveCursorsRight()
 
     expected = List(new Cursor(2, 0), new Cursor(1, 4), new Cursor(0, 2))
+    editor.cursors should equal (expected)
+  }
+
+  "The Editor move cursors right (with several steps) method" should "work as expected" in {
+    val editor = new Editor
+    val cursor = new Cursor((1, 2))
+
+    editor.addCursor(cursor)
+    editor.buffer.content = "Wow\nSon"
+
+    editor.moveCursorsRight(2)
+
+    var expected = List(new Cursor(1, 3), new Cursor(0, 2))
+    editor.cursors should equal (expected)
+
+    editor.buffer.content = "Wow\nSon my chair\nHey!"
+
+    editor.moveCursorsRight(15)
+
+    expected = List(new Cursor(2, 4), new Cursor(2, 0))
     editor.cursors should equal (expected)
   }
 
