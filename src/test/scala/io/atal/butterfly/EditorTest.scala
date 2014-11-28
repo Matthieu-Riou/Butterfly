@@ -105,6 +105,16 @@ class EditorTest extends FlatSpec {
 
     editor.selections should have length 0
   }
+  
+  "The Editor getIndexPosition method" should "actually return the index position of the cursor" in {
+    val editor = new Editor
+    val cursor = new Cursor((1,3))
+    
+    editor.buffer.content = "Hello\nthe world"
+    
+    assert(editor.getIndexPosition(cursor) == 9)
+    
+  }
 
   "The Editor write method" should "write the given text at all cursors position" in {
     val editor = new Editor

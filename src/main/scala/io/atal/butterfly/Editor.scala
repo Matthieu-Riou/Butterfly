@@ -109,6 +109,18 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   /** Clear all selections
     */
   def clearSelection: Unit = selections = List()
+  
+  
+  /** Return the position of the cursor in the whole string
+    *
+    * @param cursor The cursor that we want
+    * @retutrn The position in the buffer
+    */
+  def getIndexPosition(cursor: Cursor): Int = cursor.position match { 
+    case (0, y) => y
+    case (x, 0) => buffer.lines(x-1).length + 1 + getIndexPosition(new Cursor(x-1, 0))
+    case (x, y) => y + getIndexPosition(new Cursor(x, 0))
+  }
 
   /** Move up all cursors
     *
