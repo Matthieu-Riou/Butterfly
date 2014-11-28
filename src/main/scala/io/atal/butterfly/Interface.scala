@@ -51,6 +51,16 @@ object HelloWorld extends SimpleSwingApplication {
           current.moveCursorsRight()
         }
         
+        case KeyPressed(_, Key.Up, _, _) => {
+          isSpec = true
+          current.moveCursorsUp()
+        }
+        
+        case KeyPressed(_, Key.Down, _, _) => {
+          isSpec = true
+          current.moveCursorsDown()
+        }
+        
         case KeyPressed(_, x, _, _) => isSpec = false //Allow for non-specified KeyPressed (like Key.BackSpace) to be match with KeyTyped. It's ugly. Better way ?
         
         case KeyTyped(_, y, _, _) => {
