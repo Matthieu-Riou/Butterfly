@@ -34,7 +34,7 @@ object HelloWorld extends SimpleSwingApplication {
           
         case KeyPressed(_, Key.BackSpace, _, _) => {
           isSpec = true
-          //current.erase <- En commentaire en attendant le merge de la correction (soon)
+          current.erase
           updateLabel
         }
         
