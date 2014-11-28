@@ -16,9 +16,12 @@ object HelloWorld extends SimpleSwingApplication {
     var current: Editor = editorManager.currentEditor.get
     var isSpec = false
     
-    object editor extends Label {
+    object editor extends EditorPane {
       text = current.buffer.content
       preferredSize = new Dimension(1000,500)
+      
+      editable = false
+      caret.visible = true
       
       focusable = true
       requestFocus
@@ -36,6 +39,16 @@ object HelloWorld extends SimpleSwingApplication {
           isSpec = true
           current.erase
           updateLabel
+        }
+        
+        case KeyPressed(_, Key.Left, _, _) => {
+          isSpec = true
+          current.moveCursorsLeft()
+        }
+        
+        case KeyPressed(_, Key.Right, _, _) => {
+          isSpec = true
+          current.moveCursorsRight()
         }
         
         case KeyPressed(_, x, _, _) => isSpec = false //Allow for non-specified KeyPressed (like Key.BackSpace) to be match with KeyTyped. It's ugly. Better way ?
@@ -56,10 +69,11 @@ object HelloWorld extends SimpleSwingApplication {
     
     }
     
-    def updateLabel: Unit = editor.text = bufferToLabel(current.buffer.content)
+    def updateLabel: Unit = {
+      editor.text = current.buffer.content
+      editor.caret.position = current.getIndexPosition(current.cursors.head)
+    }
   }
-  
-  def bufferToLabel(s: String) : String = return "<html>" + s.replaceAll("\n", "<br/>") + "</html>"
 
 }
 
