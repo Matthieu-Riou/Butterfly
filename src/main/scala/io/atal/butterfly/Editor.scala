@@ -33,15 +33,6 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   
   
 
-  /** Erase all selections content
-    */
-  def eraseSelection: Unit = {
-    for (selection <- selections) {
-      buffer.remove(selection.begin, selection.end)
-    }
-
-    clearSelection
-  }
 
   /** Return all selections' content
     * Used to put it inside the Butterfly clipboard (copy event)
@@ -91,6 +82,13 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     */
   def clearSelection: Unit = selections = List()
   
+  /** Notify if the editor is in selection's mode
+    * The editor is in selection's mode if there is at least one current selection
+    */
+  def isSelectionMode: Boolean = selections match {
+    case(List()) => false
+    case(_) => true
+  }
   
   /** Return the position of the cursor in the whole string
     *

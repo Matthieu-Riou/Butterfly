@@ -56,15 +56,6 @@ class EditorManager {
     case Some(editor) => editor.erase
     case None => Unit
   }
-  
-  /** Erase all the selections from the current Editor
-    *
-    * Call the eraseSelection method from Editor
-    */
-  def eraseSelection: Unit = _currentEditor match {
-    case Some(editor) => editor.eraseSelection
-    case None => Unit
-  }
 
   /** Get contents from the selections of the current Editor
     *

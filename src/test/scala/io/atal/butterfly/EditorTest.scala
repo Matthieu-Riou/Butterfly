@@ -160,7 +160,7 @@ class EditorTest extends FlatSpec {
     assert(editor.cursors(1).position == (0, 0))
   }
 
-  "The Editor erase selection method" should "erase all selections' content" in {
+  "The Editor erase method" should "erase the selections if there are' content" in {
     val editor = new Editor
     val selection1 = new Selection((0, 4), (0, 10))
     val selection2 = new Selection((1, 4), (1, 10))
@@ -175,7 +175,7 @@ class EditorTest extends FlatSpec {
     editor.addSelection(selection3)
     editor.addSelection(selection4)
 
-    editor.eraseSelection
+    editor.erase
 
     var expected = "Wow \nSon \nNo \nDon't chair me. ."
     assert(editor.buffer.content == expected)

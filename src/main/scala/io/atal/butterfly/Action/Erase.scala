@@ -1,31 +1,5 @@
 package io.atal.butterfly
 
-/** Define an Action
-  */
-trait Action {
-  def execute(editor: Editor): Unit
-}
-
-/** Implement the action Write
-  * Write a text in the buffer at the cursor's position
-  *
-  * @constructeur Create the action
-  * @param text The text to write
-  */
-class Write(text: String) extends Action {
-  
-  /** Execute the action
-    *
-    * @param editor The editor onto the action is executed
-    */
-  def execute(editor: Editor): Unit = {
-    for(cursor <- editor.cursors) {
-      editor.buffer.insert(text, cursor.position)
-      editor.moveCursorRight(cursor, text.length)
-    }
-  }
-}
-
 /** Implement the action Erase
   * Erase the character right before the cursor's position
   *
@@ -33,11 +7,7 @@ class Write(text: String) extends Action {
   */
 class Erase() extends Action {
   
-  /** Execute the action
-    *
-    * @param editor The editor onto the action is executed
-    */
-  def execute(editor: Editor): Unit = {
+  def erase(editor: Editor): Unit = {
     for (cursor <- editor.cursors) {
       cursor.position match {
         case (0, 0) => Unit
@@ -55,5 +25,24 @@ class Erase() extends Action {
         }
       }
     }
+  }
+  
+  def eraseSelection(editor: Editor): Unit = {
+    for (selection <- editor.selections) {
+      editor.buffer.remove(selection.begin, selection.end)
+    }
+
+    editor.clearSelection
+  }
+   
+  /** Execute the action
+    *
+    * @param editor The editor onto the action is executed
+    */
+  def execute(editor: Editor): Unit = {
+    if(editor.isSelectionMode)
+      eraseSelection(editor)
+    else
+      erase(editor)
   }
 }
