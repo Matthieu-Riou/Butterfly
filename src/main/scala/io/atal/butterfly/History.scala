@@ -10,7 +10,7 @@ class History(val buffer: Buffer) {
     * @param index The position of the insertion
     */
   def newInsertion(string: String, index: Int): Unit = {
-    _historyBefore = new Insertion(buffer, string, index) :: _historyBefore
+    _historyBefore = new HistoryInsertion(buffer, string, index) :: _historyBefore
     _historyAfter = List()
   }
 
@@ -20,7 +20,7 @@ class History(val buffer: Buffer) {
     * @param endIndex The ending of the deletion (excluded)
     */
   def newDeletion(beginIndex: Int, endIndex: Int): Unit = {
-    _historyBefore = new Deletion(buffer, beginIndex, endIndex) :: _historyBefore
+    _historyBefore = new HistoryDeletion(buffer, beginIndex, endIndex) :: _historyBefore
     _historyAfter = List()
   }
 
@@ -61,12 +61,12 @@ trait HistoryEvent {
   * @param string The string inserted
   * @param index The index where the string is inserted
   */
-class Insertion(val buffer: Buffer, val string: String, val index: Int) extends HistoryEvent {
+class HistoryInsertion(val buffer: Buffer, val string: String, val index: Int) extends HistoryEvent {
 
   /** Undo an Insertion
     * Delete the string inserted
     */
-  def undo(): Unit = new Deletion(buffer, index, index + string.length).redo()
+  def undo(): Unit = new HistoryDeletion(buffer, index, index + string.length).redo()
   
   /** Redo an Insertion
     */
@@ -80,13 +80,13 @@ class Insertion(val buffer: Buffer, val string: String, val index: Int) extends 
   * @param beginIndex The beginning index of the deletion
   * @param endIndex The ending index of the deletion
   */
-class Deletion(val buffer: Buffer, val beginIndex: Int, val endIndex: Int) extends HistoryEvent {
+class HistoryDeletion(val buffer: Buffer, val beginIndex: Int, val endIndex: Int) extends HistoryEvent {
   val string = buffer.select(beginIndex, endIndex)
   
   /** Undo the Deletion
     * Re-insert the deleted string
     */
-  def undo(): Unit = new Insertion(buffer, string, beginIndex).redo()
+  def undo(): Unit = new HistoryInsertion(buffer, string, beginIndex).redo()
   
   /** Redo the Deletion
     */
