@@ -19,38 +19,19 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   def selections_=(selections: List[Selection]): Unit = _selections = selections
 
   /** Write a text into the buffer at the current cursors position
+    * Create and execute an action Write
     *
     * @param text The text to be inserted in the buffer
     */
-  def write(text: String): Unit = {
-    for (cursor <- cursors) {
-      buffer.insert(text, cursor.position)
-      moveCursorRight(cursor, text.length)
-    }
-  }
-
+  def write(text: String): Unit = new Write(text).execute(this)
+  
   /** A simple eraser, character by character
     * Erase the character before the cursors
+    * Create and execute an action Erase
     */
-  def erase: Unit = {
-    for (cursor <- cursors) {
-      cursor.position match {
-        case (0, 0) => Unit
-        case (x, 0) => {
-          val lines = buffer.lines
-          val lastColOfPrevLine = lines(x - 1).length
-
-          // Remove the \n of the previous line
-          buffer.remove((x - 1, lastColOfPrevLine), (x, 0))
-          cursor.position = (x - 1, lastColOfPrevLine)
-        }
-        case (x, y) => {
-          buffer.remove((x, y - 1), (x, y))
-          moveCursorLeft(cursor)
-        }
-      }
-    }
-  }
+  def erase(): Unit = new Erase().execute(this)
+  
+  
 
   /** Erase all selections content
     */

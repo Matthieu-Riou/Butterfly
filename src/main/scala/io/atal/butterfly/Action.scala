@@ -3,33 +3,57 @@ package io.atal.butterfly
 /** Define an Action
   */
 trait Action {
-  def execute(buffer: Buffer)
+  def execute(editor: Editor): Unit
 }
 
-/** Implement the event Insertion
+/** Implement the action Write
+  * Write a text in the buffer at the cursor's position
   *
-  * @constructor Create the event
-  * @param string The string inserted
-  * @param index The index where the string is inserted
+  * @constructeur Create the action
+  * @param text The text to write
   */
-class Insertion(val string: String, val index: Int) extends Action {
-
-  /** Execute the event on a buffer
-    * @param The buffer onto we execute the event
-    */
-  def execute(buffer: Buffer) = buffer.insert(string, index)
-}
-
-/** Implement the event Deletion
-  *
-  * @constructor Create the event
-  * @param beginIndex The beginning index of the deletion
-  * @param endIndex The ending index of the deletion
-  */
-class Deletion(val beginIndex: Int, val endIndex: Int) extends Action {
+class Write(text: String) extends Action {
   
-  /** Execute the event on a buffer
-    * @param The buffer onto we execute the event
+  /** Execute the action
+    *
+    * @param editor The editor onto the action is executed
     */
-  def execute(buffer: Buffer) = buffer.remove(beginIndex, endIndex)
+  def execute(editor: Editor): Unit = {
+    for(cursor <- editor.cursors) {
+      editor.buffer.insert(text, cursor.position)
+      editor.moveCursorRight(cursor, text.length)
+    }
+  }
+}
+
+/** Implement the action Erase
+  * Erase the character right before the cursor's position
+  *
+  * @constructeur Create the action
+  */
+class Erase() extends Action {
+  
+  /** Execute the action
+    *
+    * @param editor The editor onto the action is executed
+    */
+  def execute(editor: Editor): Unit = {
+    for (cursor <- editor.cursors) {
+      cursor.position match {
+        case (0, 0) => Unit
+        case (x, 0) => {
+          val lines = editor.buffer.lines
+          val lastColOfPrevLine = lines(x - 1).length
+
+          // Remove the \n of the previous line
+          editor.buffer.remove((x - 1, lastColOfPrevLine), (x, 0))
+          cursor.position = (x - 1, lastColOfPrevLine)
+        }
+        case (x, y) => {
+          editor.buffer.remove((x, y - 1), (x, y))
+          editor.moveCursorLeft(cursor)
+        }
+      }
+    }
+  }
 }
