@@ -28,8 +28,8 @@ class Erase() extends Action {
   }
   
   def eraseSelection(editor: Editor): Unit = {
-    for (selection <- editor.selections) {
-      editor.buffer.remove(selection.begin, selection.end)
+    for (cursor <- editor.cursors) {
+      editor.buffer.remove(cursor.position, cursor.cursorSelection.get.position)
     }
 
     editor.clearSelection

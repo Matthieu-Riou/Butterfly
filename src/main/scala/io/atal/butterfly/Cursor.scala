@@ -7,6 +7,12 @@ package io.atal.butterfly
   */
 class Cursor(var position: (Int, Int) = (0, 0)) {
 
+  var _cursorSelection: Option[Cursor] = None
+  
+  def cursorSelection: Option[Cursor] = _cursorSelection
+  
+  def cursorSelection_=(cursor: Option[Cursor]): Unit = _cursorSelection = cursor
+
   override def hashCode: Int = position.hashCode
 
   override def equals(obj: Any): Boolean = obj match {

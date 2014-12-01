@@ -8,15 +8,10 @@ package io.atal.butterfly
   */
 class Editor(var buffer: Buffer = new Buffer("")) {
   var _cursors: List[Cursor] = List(new Cursor())
-  var _selections: List[Selection] = List()
 
   def cursors: List[Cursor] = _cursors
 
   def cursors_=(cursors: List[Cursor]): Unit = _cursors = cursors
-
-  def selections: List[Selection] = _selections
-
-  def selections_=(selections: List[Selection]): Unit = _selections = selections
 
   /** Write a text into the buffer at the current cursors position
     * Create and execute an action Write
@@ -41,11 +36,14 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     */
   def getSelectionContent: String = {
     var content: String = ""
+    
+    if(isSelectionMode) {
 
-    for (selection <- selections) {
-      content += buffer.select(selection.begin, selection.end) + "\n"
+      for (cursor <- cursors) {
+        content += buffer.select(cursor.position, cursor.cursorSelection.get.position) + "\n"
+      }
     }
-
+    
     content.dropRight(1)
   }
 
@@ -66,28 +64,42 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     */
   def removeMergedCursors: Unit = cursors = cursors.distinct
 
-  /** Add a selection
+  /** Move the selections for all cursors
+    * Create the selections if they does'nt exits
     *
-    * @param selection Selection to add
+    * @param move The number of character (absolute value) that moves of the selection (on the left if move < 0, one the right if move > 0)
     */
-  def addSelection(selection: Selection): Unit = selections = selection :: selections
-
-  /** Remove a selection
-    *
-    * @param selection Selection to remove
-    */
-  def removeSelection(selection: Selection): Unit = selections = selections.diff(List(selection))
-
+  def moveSelection(move: Int): Unit = {
+    for(cursor <- cursors)
+    {
+      if(cursor.cursorSelection == None) {
+        cursor.cursorSelection = Some(new Cursor(cursor.position))
+      }
+      
+      if(move < 0) {
+        moveCursorLeft(cursor.cursorSelection.get, Math.abs(move))
+      }
+      else {
+        moveCursorRight(cursor.cursorSelection.get, Math.abs(move))
+      }
+    }
+  }
+  
   /** Clear all selections
     */
-  def clearSelection: Unit = selections = List()
+  def clearSelection: Unit = {
+    for(cursor <- cursors)
+    {
+      cursor.cursorSelection = None
+    }
+  }
   
   /** Notify if the editor is in selection's mode
     * The editor is in selection's mode if there is at least one current selection
     */
-  def isSelectionMode: Boolean = selections match {
-    case(List()) => false
-    case(_) => true
+  def isSelectionMode: Boolean = cursors.head.cursorSelection match {
+    case None => false
+    case Some(_) => true
   }
   
   /** Return the position of the cursor in the whole string
