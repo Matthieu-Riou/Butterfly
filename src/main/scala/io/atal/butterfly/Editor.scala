@@ -150,7 +150,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     */
   def moveCursorLeft(cursor: Cursor, column: Int = 1): Unit = cursor.position match {
     case (0, 0) => Unit
-    case (x, y) if (y - column >= 0) => cursor.moveLeft(column)
+    case (x, y) if (y - column >= 0) => cursor.position = (x, y - column)
     case (0, y) => cursor.position = (0, 0)
     case (x, y) => {
       val lastColumn = buffer.lines(x - 1).length
@@ -183,7 +183,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
 
     cursor.position match {
       case (LastLine, LastColumn) => Unit
-      case (x, y) if (y + column <= LastColumn) => cursor.moveRight(column)
+      case (x, y) if (y + column <= LastColumn) => cursor.position = (x, y + column)
       case (LastLine, y) => cursor.position = (LastLine, LastColumn)
       case (x, y) => {
         cursor.position = (x + 1, 0)
@@ -207,7 +207,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   /** Move to the top all cursors
     */
   def moveCursorsToTop: Unit = {
-    cursors.foreach { _.moveToTop }
+    cursors.foreach { _.position = (0, 0) }
     removeMergedCursors
   }
 
