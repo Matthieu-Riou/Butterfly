@@ -12,15 +12,7 @@ class Write(text: String) extends Action {
     *
     * @param editor The editor onto the action is executed
     */
-  def execute(editor: Editor, clipboard: Clipboard): Unit = {
-    if(editor.isSelectionMode) {
-      new Erase().execute(editor, clipboard)
-    }
-    
-    for(cursor <- editor.cursors) {
-      editor.buffer.insert(text, cursor.position)
-      editor.moveCursorRight(cursor, text.length)
-    }
-  }
+  def execute(editor: Editor, clipboard: Clipboard): Unit = editor.write(text)
+  
 }
 
