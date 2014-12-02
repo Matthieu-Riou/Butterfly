@@ -4,6 +4,8 @@ package io.atal.butterfly
   * Copy the text of the selection
   * If several selections, concat all the selection's texts
   */
-class Copy() extends Action {
-  def execute(editor: Editor): Unit = Unit
+class Copy extends Action {
+  def execute(editor: Editor, clipboard: Clipboard): Unit = {
+    clipboard.data = editor.getSelectionContent
+  }
 }

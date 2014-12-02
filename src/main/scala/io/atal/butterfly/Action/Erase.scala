@@ -39,7 +39,7 @@ class Erase() extends Action {
     *
     * @param editor The editor onto the action is executed
     */
-  def execute(editor: Editor): Unit = {
+  def execute(editor: Editor, clipboard: Clipboard): Unit = {
     if(editor.isSelectionMode)
       eraseSelection(editor)
     else

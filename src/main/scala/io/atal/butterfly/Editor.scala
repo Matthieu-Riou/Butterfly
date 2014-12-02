@@ -13,22 +13,6 @@ class Editor(var buffer: Buffer = new Buffer("")) {
 
   def cursors_=(cursors: List[Cursor]): Unit = _cursors = cursors
 
-  /** Write a text into the buffer at the current cursors position
-    * Create and execute an action Write
-    *
-    * @param text The text to be inserted in the buffer
-    */
-  def write(text: String): Unit = new Write(text).execute(this)
-  
-  /** A simple eraser, character by character
-    * Erase the character before the cursors
-    * Create and execute an action Erase
-    */
-  def erase(): Unit = new Erase().execute(this)
-  
-  
-
-
   /** Return all selections' content
     * Used to put it inside the Butterfly clipboard (copy event)
     *

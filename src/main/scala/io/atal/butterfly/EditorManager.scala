@@ -44,7 +44,7 @@ class EditorManager {
     * @param text The text to insert
     */
   def write(text: String): Unit = _currentEditor match {
-    case Some(editor) => editor.write(text)
+    case Some(editor) => new Write(text).execute(editor, clipboard)
     case None => Unit
   }
   
@@ -53,7 +53,7 @@ class EditorManager {
     * Call the erase method of Editor
     */
   def erase: Unit = _currentEditor match {
-    case Some(editor) => editor.erase
+    case Some(editor) => new Erase().execute(editor, clipboard)
     case None => Unit
   }
 
