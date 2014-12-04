@@ -277,23 +277,6 @@ class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
     (buffer) => {
       if (buffer == this.buffer) {
         println("Hey EditorManager, my buffer has changed !")
-        // [---Example---]
-        //
-        // Here :
-        // editorManager match {
-        //   case Some(editorManager) => editorManager.updateEditor(this)
-        //   case None => Unit
-        // }
-        //
-        // In EditorManager :
-        // def updateEditor(editor: Editor): Unit = {
-        //   if (editor == currentEditor) {
-        //     ui match {
-        //       case Some(ui) => ui.updateView
-        //       case None => Unit
-        //     }
-        //   }
-        // }
       } else {
         println("Not my buffer, I don't care")
       }
