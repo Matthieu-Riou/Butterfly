@@ -15,21 +15,23 @@ object butterfly {
   }
   
   def update: Boolean = {
-    println("Buffer\n-----")
-    editorManager.content match {
-      case "" => Unit
-      case x => println(x)
-    }
-    println("-----")
+    printBuffer
+    
+    println
     
     println("""|What do you want to do ?
                |  - write [text]
-               |  - erase""".stripMargin)
+               |  - line
+               |  - erase
+               |  - quit """.stripMargin)
                
     var input = readLine("> ")
     
+    println
+    
     input.split(" ")(0) match {
       case "write" => execute(new Write(input.splitAt(6)._2)); true
+      case "line" => execute(new Write('\n'.toString)); true
       case "erase" => execute(new Erase()); true
       case "quit" => false
       case x => true
@@ -38,5 +40,23 @@ object butterfly {
   
   def execute(action: Action): Unit = {
     editorManager.execute(action)
+  }
+  
+  def printBuffer: Unit = {
+    println("Buffer\n-----")
+    val lines = editorManager.contentByLines
+    for(i <- 0 until lines.length) {
+      println(lines(i))
+      var strCursor: String = " "*(lines(i).length+1)
+      
+      for(cursor <- editorManager.cursors) {
+        if(cursor.position._1 == i) {
+          strCursor = strCursor.updated(cursor.position._2, '^')
+        }
+      }
+      
+      println(strCursor)
+    }
+    println("-----")
   }
 }

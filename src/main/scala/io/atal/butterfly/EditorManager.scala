@@ -68,8 +68,18 @@ class EditorManager {
   }
   
   def content: String = _currentEditor match {
-    case Some(editor) => return editor.buffer.content    
-    case None => return ""
+    case Some(editor) => editor.buffer.content    
+    case None => ""
+  }
+  
+  def contentByLines: Array[String] = _currentEditor match {
+    case Some(editor) => editor.buffer.lines
+    case None => Array()
+  }
+  
+  def cursors: List[Cursor] = _currentEditor match {
+    case Some(editor) => editor.cursors
+    case None => List()
   }
   
   def execute(action: Action): Unit = _currentEditor match {
