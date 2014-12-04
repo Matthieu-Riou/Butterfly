@@ -8,10 +8,15 @@ package io.atal.butterfly
   */
 class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
   var _cursors: List[Cursor] = List(new Cursor())
+  var _editorManager: Option[EditorManager] = None
 
   def cursors: List[Cursor] = _cursors
 
   def cursors_=(cursors: List[Cursor]): Unit = _cursors = cursors
+
+  def editorManager: Option[EditorManager] = _editorManager
+
+  def editorManager_=(editorManager: Option[EditorManager]): Unit = _editorManager = editorManager
 
   /** Return all selections' content
     * Used to put it inside the Butterfly clipboard (copy event)
@@ -275,10 +280,10 @@ class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
   event.on(
     "buffer-changed",
     (buffer) => {
-      if (buffer == this.buffer) {
-        println("Hey EditorManager, my buffer has changed !")
-      } else {
-        println("Not my buffer, I don't care")
+      editorManager match {
+        case Some(e) if (buffer == this.buffer) => e.editorChanged(this)
+        case Some(e) => Unit
+        case None => Unit
       }
     }
   )
