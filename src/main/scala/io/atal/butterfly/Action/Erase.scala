@@ -13,5 +13,4 @@ class Erase() extends Action {
     * @param clipboard The clipboard onto the action is executed
     */
   def execute(editor: Editor, clipboard: Clipboard): Unit = editor.erase
-  
 }

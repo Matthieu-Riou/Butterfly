@@ -7,13 +7,11 @@ package io.atal.butterfly
   * @param text The text to write
   */
 class Write(text: String) extends Action {
-  
+
   /** Execute the action
     *
     * @param editor The editor onto the action is executed
     * @param clipboard The clipboard onto the action is executed
     */
   def execute(editor: Editor, clipboard: Clipboard): Unit = editor.write(text)
-  
 }
-
