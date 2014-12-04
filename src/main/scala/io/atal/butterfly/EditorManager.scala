@@ -67,4 +67,14 @@ class EditorManager {
     case None => ""
   }
   
+  def content: String = _currentEditor match {
+    case Some(editor) => return editor.buffer.content    
+    case None => return ""
+  }
+  
+  def execute(action: Action): Unit = _currentEditor match {
+    case Some(editor) => action.execute(editor, clipboard)
+    case None => Unit
+  }
+  
 }
