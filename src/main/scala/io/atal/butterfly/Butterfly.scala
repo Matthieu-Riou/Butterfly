@@ -23,6 +23,7 @@ object butterfly {
                |  - write [text]
                |  - line
                |  - erase
+               |  - cursor [left/right/up/down] [int]
                |  - quit """.stripMargin)
                
     var input = readLine("> ")
@@ -33,6 +34,12 @@ object butterfly {
       case "write" => execute(new Write(input.splitAt(6)._2)); true
       case "line" => execute(new Write('\n'.toString)); true
       case "erase" => execute(new Erase()); true
+      case "cursor" => input.split(" ")(1) match {
+        case "left" => execute(new MoveCursorsLeft(input.split(" ")(2).toInt)); true
+        case "right" => execute(new MoveCursorsRight(input.split(" ")(2).toInt)); true
+        case "up" => execute(new MoveCursorsUp(input.split(" ")(2).toInt)); true
+        case "down" => execute(new MoveCursorsDown(input.split(" ")(2).toInt)); true
+      }
       case "quit" => false
       case x => true
     }
