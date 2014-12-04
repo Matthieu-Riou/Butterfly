@@ -212,8 +212,16 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     */
   private def moveCursorUp(cursor: Cursor, row: Int = 1): Unit = cursor.position match {
     case (0, y) => Unit
-    case (x, y) if y > buffer.lines(x - 1).length => cursor.position = (x - 1, buffer.lines(x - 1).length)
-    case (x, y) => cursor.position = (x - 1, y)
+    case (x, y) if x <= row => {
+      if(y > buffer.lines(0).length) {
+        cursor.position = (0, buffer.lines(0).length)
+      }
+      else {
+        cursor.position = (0, y)
+      }
+    }
+    case (x, y) if y > buffer.lines(x - row).length => cursor.position = (x - row, buffer.lines(x - row).length)
+    case (x, y) => cursor.position = (x - row, y)
   }
   
   /** Move down a single cursor
@@ -224,10 +232,17 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   private def moveCursorDown(cursor: Cursor, row: Int = 1): Unit = {
     // LastLine and LastColumn need to start with an uppercase to be stable identifiers, and to be used in the match
     val LastLine = buffer.lines.length - 1
-    val LastColumn = buffer.lines(cursor.position._1).length
 
     cursor.position match {
       case (LastLine, y) => Unit
+      case (x, y) if x + row >= LastLine => {
+        if(y > buffer.lines(LastLine).length) {
+          cursor.position = (LastLine, buffer.lines(LastLine).length)
+        }
+        else {
+          cursor.position = (LastLine, y)
+        }
+      }
       case (x, y) if y > buffer.lines(x + 1).length => cursor.position = (x + 1, buffer.lines(x + 1).length)
       case (x, y) => cursor.position = (x + 1, y)
     }
