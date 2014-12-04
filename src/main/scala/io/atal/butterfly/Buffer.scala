@@ -10,7 +10,7 @@ class Buffer(var content: String) extends EventHandler {
 
   /** Return the content as an array
     */
-  def lines: Array[String] = content.split("\n", -1)
+  def lines: Array[String] = content.split("\n")
 
   /** Return a selected substring in the buffer
     *
@@ -115,5 +115,5 @@ class Buffer(var content: String) extends EventHandler {
 
   /** Emit an event when the buffer has changed
     */
-  def hasChanged: Unit = event.emit("buffer-changed")
+  def hasChanged: Unit = event.emit("buffer-changed", this)
 }

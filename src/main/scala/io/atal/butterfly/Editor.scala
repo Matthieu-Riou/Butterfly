@@ -6,7 +6,7 @@ package io.atal.butterfly
   * @constructor Create a new editor for the buffer
   * @param buffer The buffer to edit, default empty buffer
   */
-class Editor(var buffer: Buffer = new Buffer("")) {
+class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
   var _cursors: List[Cursor] = List(new Cursor())
 
   def cursors: List[Cursor] = _cursors
@@ -20,17 +20,17 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     */
   def getSelectionContent: String = {
     var content: String = ""
-    
+
     if(isSelectionMode) {
 
       for (cursor <- cursors) {
         content += buffer.select(cursor.position, cursor.cursorSelection.get.position) + "\n"
       }
     }
-    
+
     content.dropRight(1)
   }
-  
+
  /** Write a text into the buffer at the current cursors position
   *
   * @param text The text to be inserted in the buffer
@@ -39,13 +39,13 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     if(isSelectionMode) {
       erase
     }
-    
+
     for(cursor <- cursors) {
       buffer.insert(text, cursor.position)
       moveCursorRight(cursor, text.length)
     }
   }
-  
+
   /** A simple eraser, character by character
   * Erase the character before the cursors
   */
@@ -106,7 +106,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
       if(cursor.cursorSelection == None) {
         cursor.cursorSelection = Some(new Cursor(cursor.position))
       }
-      
+
       if(move < 0) {
         moveCursorLeft(cursor.cursorSelection.get, Math.abs(move))
       }
@@ -115,7 +115,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
       }
     }
   }
-  
+
   /** Clear all selections
     */
   def clearSelection: Unit = {
@@ -124,7 +124,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
       cursor.cursorSelection = None
     }
   }
-  
+
   /** Notify if the editor is in selection's mode
     * The editor is in selection's mode if there is at least one current selection
     */
@@ -132,7 +132,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     case None => false
     case Some(_) => true
   }
-  
+
   /** Return the position of the cursor in the whole string
     *
     * @param cursor The cursor that we want
@@ -204,7 +204,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
 
     removeMergedCursors
   }
-  
+
   /** Move up a single cursor
     *
     * @param cursor The cursor to move up
@@ -215,7 +215,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     case (x, y) if y > buffer.lines(x - 1).length => cursor.position = (x - 1, buffer.lines(x - 1).length)
     case (x, y) => cursor.position = (x - 1, y)
   }
-  
+
   /** Move down a single cursor
     *
     * @param cursor The cursor to move down
@@ -248,7 +248,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
       moveCursorLeft(cursor, column - y - 1)
     }
   }
-  
+
   /** Move right a single cursor
     *
     * @param cursor The cursor to move right
@@ -269,4 +269,34 @@ class Editor(var buffer: Buffer = new Buffer("")) {
       }
     }
   }
+  /** Event registration on buffer changed
+    * If the changed buffer is the Editor's one, tell it to EditorManager
+    */
+  event.on(
+    "buffer-changed",
+    (buffer) => {
+      if (buffer == this.buffer) {
+        println("Hey EditorManager, my buffer has changed !")
+        // [---Example---]
+        //
+        // Here :
+        // editorManager match {
+        //   case Some(editorManager) => editorManager.updateEditor(this)
+        //   case None => Unit
+        // }
+        //
+        // In EditorManager :
+        // def updateEditor(editor: Editor): Unit = {
+        //   if (editor == currentEditor) {
+        //     ui match {
+        //       case Some(ui) => ui.updateView
+        //       case None => Unit
+        //     }
+        //   }
+        // }
+      } else {
+        println("Not my buffer, I don't care")
+      }
+    }
+  )
 }
