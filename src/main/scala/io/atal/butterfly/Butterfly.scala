@@ -67,9 +67,18 @@ object butterfly {
       println(lines(i))
       var strCursor: String = " "*(lines(i).length+1)
 
+      val selection = editorManager.isSelectionMode
+
       for (cursor <- editorManager.cursors) {
         if (cursor.position._1 == i) {
-          strCursor = strCursor.updated(cursor.position._2, '^')
+          if(selection)
+            strCursor = strCursor.updated(cursor.position._2, '>')
+          else
+            strCursor = strCursor.updated(cursor.position._2, '^')
+        }
+        
+        if(selection && cursor.cursorSelection.get.position._1 == i) {
+          strCursor = strCursor.updated(cursor.cursorSelection.get.position._2, '<')
         }
       }
 

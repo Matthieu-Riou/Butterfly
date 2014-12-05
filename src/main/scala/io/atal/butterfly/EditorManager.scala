@@ -88,4 +88,9 @@ class EditorManager {
     case Some(editor) => action.execute(editor, clipboard)
     case None => Unit
   }
+  
+  def isSelectionMode: Boolean = currentEditor match {
+    case Some(editor) => editor.isSelectionMode
+    case None => false
+  }
 }
