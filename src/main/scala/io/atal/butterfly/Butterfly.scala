@@ -24,6 +24,7 @@ object butterfly {
                  |  - line
                  |  - erase
                  |  - cursor ([left/right/up/down] [int]) | ([top/bottom])
+                 |  - selection [left/right] [int]
                  |  - quit """.stripMargin)
                  
       val input = readLine("> ")
@@ -44,7 +45,12 @@ object butterfly {
           case "top" => execute(new MoveCursorsToTop())
           case "bottom" => execute(new MoveCursorsToBottom())
         }
+        case "selection" => split(1) match {
+          case "left" => execute(new MoveSelection(-1 * split(2).toInt))
+          case "right" => execute(new MoveSelection(split(2).toInt))
+        }
         case "quit" => continue = false
+        case _ => Unit
       }
     }
   }
