@@ -5,11 +5,12 @@ import scala.io.StdIn.readLine
 object butterfly {
 
   val editorManager = new EditorManager
-  
-  def main(args: Array[String]) {    
+
+  def main(args: Array[String]) {
     editorManager.openEditor
-    
+
     println("Hey! This is butterfly !")
+
     println
     
     var continue = true
@@ -54,24 +55,24 @@ object butterfly {
       }
     }
   }
-  
+
   def execute(action: Action): Unit = {
     editorManager.execute(action)
   }
-  
+
   def printBuffer: Unit = {
     println("Buffer\n-----")
     val lines = editorManager.contentByLines
-    for(i <- 0 until lines.length) {
+    for (i <- 0 until lines.length) {
       println(lines(i))
       var strCursor: String = " "*(lines(i).length+1)
-      
-      for(cursor <- editorManager.cursors) {
-        if(cursor.position._1 == i) {
+
+      for (cursor <- editorManager.cursors) {
+        if (cursor.position._1 == i) {
           strCursor = strCursor.updated(cursor.position._2, '^')
         }
       }
-      
+
       println(strCursor)
     }
     println("-----")

@@ -20,37 +20,37 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     */
   def getSelectionContent: String = {
     var content: String = ""
-    
-    if(isSelectionMode) {
+
+    if (isSelectionMode) {
 
       for (cursor <- cursors) {
         content += buffer.select(cursor.position, cursor.cursorSelection.get.position) + "\n"
       }
     }
-    
+
     content.dropRight(1)
   }
-  
+
  /** Write a text into the buffer at the current cursors position
   *
   * @param text The text to be inserted in the buffer
   */
   def write(text: String): Unit = {
-    if(isSelectionMode) {
+    if (isSelectionMode) {
       erase
     }
-    
-    for(cursor <- cursors) {
+
+    for (cursor <- cursors) {
       buffer.insert(text, cursor.position)
       moveCursorRight(cursor, text.length)
     }
   }
-  
+
   /** A simple eraser, character by character
   * Erase the character before the cursors
   */
   def erase: Unit = {
-    if(isSelectionMode) {
+    if (isSelectionMode) {
       for (cursor <- cursors) {
         buffer.remove(cursor.position, cursor.cursorSelection.get.position)
       }
@@ -101,13 +101,12 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     * @param move The number of character (absolute value) that moves of the selection (on the left if move < 0, one the right if move > 0)
     */
   def moveSelection(move: Int): Unit = {
-    for(cursor <- cursors)
-    {
-      if(cursor.cursorSelection == None) {
+    for (cursor <- cursors) {
+      if (cursor.cursorSelection == None) {
         cursor.cursorSelection = Some(new Cursor(cursor.position))
       }
-      
-      if(move < 0) {
+
+      if (move < 0) {
         moveCursorLeft(cursor.cursorSelection.get, Math.abs(move))
       }
       else {
@@ -115,16 +114,15 @@ class Editor(var buffer: Buffer = new Buffer("")) {
       }
     }
   }
-  
+
   /** Clear all selections
     */
   def clearSelection: Unit = {
-    for(cursor <- cursors)
-    {
+    for (cursor <- cursors) {
       cursor.cursorSelection = None
     }
   }
-  
+
   /** Notify if the editor is in selection's mode
     * The editor is in selection's mode if there is at least one current selection
     */
@@ -132,7 +130,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     case None => false
     case Some(_) => true
   }
-  
+
   /** Return the position of the cursor in the whole string
     *
     * @param cursor The cursor that we want
@@ -204,7 +202,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
 
     removeMergedCursors
   }
-  
+
   /** Move up a single cursor
     *
     * @param cursor The cursor to move up
@@ -212,18 +210,18 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     */
   private def moveCursorUp(cursor: Cursor, row: Int = 1): Unit = cursor.position match {
     case (0, y) => Unit
-    case (x, y) if x <= row => {
-      if(y > buffer.lines(0).length) {
+    case (x, y) if (x <= row) => {
+      if (y > buffer.lines(0).length) {
         cursor.position = (0, buffer.lines(0).length)
       }
       else {
         cursor.position = (0, y)
       }
     }
-    case (x, y) if y > buffer.lines(x - row).length => cursor.position = (x - row, buffer.lines(x - row).length)
+    case (x, y) if (y > buffer.lines(x - row).length) => cursor.position = (x - row, buffer.lines(x - row).length)
     case (x, y) => cursor.position = (x - row, y)
   }
-  
+
   /** Move down a single cursor
     *
     * @param cursor The cursor to move down
@@ -236,14 +234,14 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     cursor.position match {
       case (LastLine, y) => Unit
       case (x, y) if x + row >= LastLine => {
-        if(y > buffer.lines(LastLine).length) {
+        if (y > buffer.lines(LastLine).length) {
           cursor.position = (LastLine, buffer.lines(LastLine).length)
         }
         else {
           cursor.position = (LastLine, y)
         }
       }
-      case (x, y) if y > buffer.lines(x + 1).length => cursor.position = (x + 1, buffer.lines(x + 1).length)
+      case (x, y) if (y > buffer.lines(x + 1).length) => cursor.position = (x + 1, buffer.lines(x + 1).length)
       case (x, y) => cursor.position = (x + 1, y)
     }
   }
@@ -263,7 +261,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
       moveCursorLeft(cursor, column - y - 1)
     }
   }
-  
+
   /** Move right a single cursor
     *
     * @param cursor The cursor to move right
