@@ -34,6 +34,14 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>me.verticale</groupId>
+      <artifactId>scalamitter</artifactId>
+      <version>1.0.0</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/scalamitter-1.0.0.jar</systemPath>
+    </dependency>
+
   </dependencies>
 
   <build>

@@ -6,12 +6,17 @@ package io.atal.butterfly
   * @constructor Create a new editor for the buffer
   * @param buffer The buffer to edit, default empty buffer
   */
-class Editor(var buffer: Buffer = new Buffer("")) {
+class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
   var _cursors: List[Cursor] = List(new Cursor())
+  var _editorManager: Option[EditorManager] = None
 
   def cursors: List[Cursor] = _cursors
 
   def cursors_=(cursors: List[Cursor]): Unit = _cursors = cursors
+
+  def editorManager: Option[EditorManager] = _editorManager
+
+  def editorManager_=(editorManager: Option[EditorManager]): Unit = _editorManager = editorManager
 
   /** Return all selections' content
     * Used to put it inside the Butterfly clipboard (copy event)
@@ -287,4 +292,18 @@ class Editor(var buffer: Buffer = new Buffer("")) {
       }
     }
   }
+
+  /** Event registration on buffer changed
+    * If the changed buffer is the Editor's one, tell it to EditorManager
+    */
+  event.on(
+    "buffer-changed",
+    (buffer) => {
+      editorManager match {
+        case Some(e) if (buffer == this.buffer) => e.editorChanged(this)
+        case Some(e) => Unit
+        case None => Unit
+      }
+    }
+  )
 }

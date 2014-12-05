@@ -8,6 +8,7 @@ class EditorManager {
   var _editors: List[Editor] = List()
   var _clipboard: Clipboard = new Clipboard()
   var _currentEditor: Option[Editor] = None
+  var _view : Option[View] = None
 
   def editors: List[Editor] = _editors
 
@@ -18,6 +19,10 @@ class EditorManager {
   def currentEditor: Option[Editor] = _currentEditor
 
   def currentEditor_=(editor: Option[Editor]) = _currentEditor = editor
+
+  def view: Option[View] = _view
+
+  def view_=(view: Option[View]): Unit = _view = view
 
   /** Open a new Editor
     *
@@ -88,9 +93,21 @@ class EditorManager {
     case Some(editor) => action.execute(editor, clipboard)
     case None => Unit
   }
-  
+
   def isSelectionMode: Boolean = currentEditor match {
     case Some(editor) => editor.isSelectionMode
     case None => false
+  }
+
+  /** When an editor changed, tell the view to update
+    *
+    * @param editor The editor which changed
+    */
+  def editorChanged(editor: Editor): Unit = {
+    view match {
+      case Some(v) if (editor == currentEditor) => v.updateView()
+      case Some(v) => Unit
+      case None => Unit
+    }
   }
 }
