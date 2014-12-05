@@ -100,9 +100,9 @@ class EditorManager {
   }
 
   /** When an editor changed, tell the view to update
-  *
-  * @param editor The editor which changed
-  */
+    *
+    * @param editor The editor which changed
+    */
   def editorChanged(editor: Editor): Unit = {
     view match {
       case Some(v) if (editor == currentEditor) => v.updateView()

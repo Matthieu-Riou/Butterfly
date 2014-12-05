@@ -294,8 +294,8 @@ class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
   }
 
   /** Event registration on buffer changed
-  * If the changed buffer is the Editor's one, tell it to EditorManager
-  */
+    * If the changed buffer is the Editor's one, tell it to EditorManager
+    */
   event.on(
     "buffer-changed",
     (buffer) => {
