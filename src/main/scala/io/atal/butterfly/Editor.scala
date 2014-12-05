@@ -52,7 +52,12 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   def erase: Unit = {
     if (isSelectionMode) {
       for (cursor <- cursors) {
-        buffer.remove(cursor.position, cursor.cursorSelection.get.position)
+        if(cursor.greaterThen(cursor.cursorSelection.get)) {
+          buffer.remove(cursor.cursorSelection.get.position, cursor.position)
+          cursor.position = cursor.cursorSelection.get.position
+        }
+        else
+          buffer.remove(cursor.position, cursor.cursorSelection.get.position)
       }
 
       clearSelection
