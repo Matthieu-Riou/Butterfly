@@ -23,7 +23,7 @@ object butterfly {
                  |  - write [text]
                  |  - line
                  |  - erase
-                 |  - cursor [left/right/up/down] [int]
+                 |  - cursor ([left/right/up/down] [int]) | ([top/bottom])
                  |  - quit """.stripMargin)
                  
       val input = readLine("> ")
@@ -41,6 +41,8 @@ object butterfly {
           case "right" => execute(new MoveCursorsRight(split(2).toInt))
           case "up" => execute(new MoveCursorsUp(split(2).toInt))
           case "down" => execute(new MoveCursorsDown(split(2).toInt))
+          case "top" => execute(new MoveCursorsToTop())
+          case "bottom" => execute(new MoveCursorsToBottom())
         }
         case "quit" => continue = false
       }
