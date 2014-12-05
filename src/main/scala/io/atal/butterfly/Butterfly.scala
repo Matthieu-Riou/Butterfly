@@ -10,38 +10,40 @@ object butterfly {
     editorManager.openEditor
     
     println("Hey! This is butterfly !")
-    
-    while(update) {}
-  }
-  
-  def update: Boolean = {
-    printBuffer
-    
     println
     
-    println("""|What do you want to do ?
-               |  - write [text]
-               |  - line
-               |  - erase
-               |  - cursor [left/right/up/down] [int]
-               |  - quit """.stripMargin)
-               
-    var input = readLine("> ")
+    var continue = true
     
-    println
-    
-    input.split(" ")(0) match {
-      case "write" => execute(new Write(input.splitAt(6)._2)); true
-      case "line" => execute(new Write('\n'.toString)); true
-      case "erase" => execute(new Erase()); true
-      case "cursor" => input.split(" ")(1) match {
-        case "left" => execute(new MoveCursorsLeft(input.split(" ")(2).toInt)); true
-        case "right" => execute(new MoveCursorsRight(input.split(" ")(2).toInt)); true
-        case "up" => execute(new MoveCursorsUp(input.split(" ")(2).toInt)); true
-        case "down" => execute(new MoveCursorsDown(input.split(" ")(2).toInt)); true
+    while(continue) {
+      printBuffer
+      
+      println
+      
+      println("""|What do you want to do ?
+                 |  - write [text]
+                 |  - line
+                 |  - erase
+                 |  - cursor [left/right/up/down] [int]
+                 |  - quit """.stripMargin)
+                 
+      val input = readLine("> ")
+      
+      println
+      
+      val split = input.split(" ")
+      
+      split(0) match {
+        case "write" => execute(new Write(input.splitAt(6)._2))
+        case "line" => execute(new Write('\n'.toString))
+        case "erase" => execute(new Erase())
+        case "cursor" => split(1) match {
+          case "left" => execute(new MoveCursorsLeft(split(2).toInt))
+          case "right" => execute(new MoveCursorsRight(split(2).toInt))
+          case "up" => execute(new MoveCursorsUp(split(2).toInt))
+          case "down" => execute(new MoveCursorsDown(split(2).toInt))
+        }
+        case "quit" => continue = false
       }
-      case "quit" => false
-      case x => true
     }
   }
   
