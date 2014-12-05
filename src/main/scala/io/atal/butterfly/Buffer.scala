@@ -5,7 +5,7 @@ package io.atal.butterfly
   * @constructor Create a new buffer with the given content
   * @param content The default content of the buffer
   */
-class Buffer(var content: String) {
+class Buffer(var content: String) extends EventHandler {
   var history: History = new History(this)
 
   /** Return the content as an array
@@ -75,6 +75,7 @@ class Buffer(var content: String) {
     */
   def simpleInsert(string: String, index: Int): Unit = {
     content = content.substring(0, index).concat(string).concat(content.substring(index))
+    hasChanged
   }
 
   /** Remove the substring between beginIndex (included) and endIndex (excluded)
@@ -84,6 +85,7 @@ class Buffer(var content: String) {
     */
   def simpleRemove(beginIndex: Int, endIndex: Int): Unit = {
     content = content.substring(0, beginIndex).concat(content.substring(endIndex))
+    hasChanged
   }
 
   /** Convert a two dimensions position to its linear equivalent
@@ -97,7 +99,7 @@ class Buffer(var content: String) {
     for (i <- 0 until position._1) {
       linearPosition += lines(i).length + 1 // Add previous lines' length (including \n)
     }
-    
+
     linearPosition += position._2 // Add the column index
 
     return linearPosition
@@ -110,4 +112,8 @@ class Buffer(var content: String) {
   /** Redo the last undo event
     */
   def redo(): Unit = history.redo()
+
+  /** Emit an event when the buffer has changed
+    */
+  def hasChanged: Unit = event.emit("buffer-changed", this)
 }

@@ -67,127 +67,85 @@ class EditorTest extends FlatSpec {
   "The Editor default selections" should "be empty" in {
     val editor = new Editor
 
-    editor.selections should have length 0
+    assert(editor.cursors.head.cursorSelection == None)
   }
 
-  "The Editor add selection method" should "actually add the selection" in {
+  "The Editor move selection method" should "add the selections if there isn't" in {
     val editor = new Editor
-    val selection = new Selection((0, 0), (1, 1))
+    
+    editor.buffer.content = "Hello\nthe world"
+    
+    assert(editor.cursors.head.cursorSelection == None)
 
-    editor.addSelection(selection)
+    editor.moveSelection(2)
 
-    editor.selections should have length 1
-    editor.selections should contain (selection)
+    assert(editor.cursors.head.cursorSelection == Some(new Cursor((0, 2))))
   }
-
-  "The Editor remove selection method" should "actually remove the selection" in {
+  
+    "The Editor move selection method" should "work as expected" in {
     val editor = new Editor
-    val selection = new Selection((0, 0), (1, 1))
-    val selection1 = new Selection((1, 1), (0, 0))
+    val cursor = new Cursor((2,0))
+    
+    editor.buffer.content = "Oh\nHello\nthe world"
+    
+    editor.addCursor(cursor)
 
-    editor.addSelection(selection)
-    editor.addSelection(selection1)
-    editor.removeSelection(selection)
+    editor.moveSelection(4)
 
-    editor.selections should have length 1
-    editor.selections should not contain (selection)
+    assert(editor.cursors.head.cursorSelection == Some(new Cursor((2, 4))))
+    assert(editor.cursors.tail.head.cursorSelection == Some(new Cursor((1, 1))))
+    
+    editor.moveSelection(-2)
+
+    assert(editor.cursors.head.cursorSelection == Some(new Cursor((2, 2))))
+    assert(editor.cursors.tail.head.cursorSelection == Some(new Cursor((0, 2))))
   }
 
   "The Editor clear selection method" should "actually remove all selections" in {
     val editor = new Editor
-    val selection = new Selection((0, 0), (1, 1))
-    val selection1 = new Selection((1, 1), (0, 0))
+    val cursor = new Cursor((2,0))
+    
+    editor.buffer.content = "Oh\nHello\nthe world"
+    
+    editor.addCursor(cursor)
 
-    editor.addSelection(selection)
-    editor.addSelection(selection1)
+    editor.moveSelection(4)
 
+    assert(editor.cursors.head.cursorSelection != None)
+    assert(editor.cursors.tail.head.cursorSelection != None)
+    
     editor.clearSelection
-
-    editor.selections should have length 0
+    
+    assert(editor.cursors.head.cursorSelection == None)
+    assert(editor.cursors.tail.head.cursorSelection == None)
   }
-
-  "The Editor write method" should "write the given text at all cursors position" in {
+  
+  "The Editor getIndexPosition method" should "actually return the index position of the cursor" in {
     val editor = new Editor
-    val cursor = new Cursor((1, 0))
-
-    editor.buffer.content = "Wow\nWow"
-
-    editor.addCursor(cursor)
-
-    // There are two cursors, lying at (0, 0) and (1, 0)
-    editor.write("So ")
-
-    assert(editor.buffer.content == "So Wow\nSo Wow")
-  }
-
-  "The Editor erase method" should "erase the character at all cursors position" in {
-    val editor = new Editor
-    val cursor = new Cursor((1, 2))
-
-    editor.buffer.content = "Wow\nSon"
-
-    editor.addCursor(cursor)
-
-    // Two cursors, lying at (0, 0) and (1, 2)
-    editor.erase
-
-    assert(editor.buffer.content == "Wow\nSn")
-    assert(editor.cursors(0).position == (1, 1))
-    assert(editor.cursors(1).position == (0, 0))
-
-    // Two cursors, lying at (0, 0) and (1, 1)
-    editor.erase
-
-    assert(editor.buffer.content == "Wow\nn")
-    assert(editor.cursors(0).position == (1, 0))
-    assert(editor.cursors(1).position == (0, 0))
-
-    // Two cursors, lying at (0, 0) and (1, 0)
-    editor.erase
-
-    assert(editor.buffer.content == "Wown")
-    assert(editor.cursors(0).position == (0, 3))
-    assert(editor.cursors(1).position == (0, 0))
-  }
-
-  "The Editor erase selection method" should "erase all selections' content" in {
-    val editor = new Editor
-    val selection1 = new Selection((0, 4), (0, 10))
-    val selection2 = new Selection((1, 4), (1, 10))
-    val selection3 = new Selection((2, 3), (2, 9))
-    val selection4 = new Selection((3, 16), (3, 22))
-
-    editor.buffer.content = "Wow Please\nSon Please\nNo Please\nDon't chair me. Please."
-
-    // Selections are on every "Please"
-    editor.addSelection(selection1)
-    editor.addSelection(selection2)
-    editor.addSelection(selection3)
-    editor.addSelection(selection4)
-
-    editor.eraseSelection
-
-    var expected = "Wow \nSon \nNo \nDon't chair me. ."
-    assert(editor.buffer.content == expected)
-
-    editor.selections should have length 0
+    val cursor = new Cursor((1,3))
+    
+    editor.buffer.content = "Hello\nthe world"
+    
+    assert(editor.getIndexPosition(cursor) == 9)
+    
   }
 
   "The Editor get selection content method" should "return the content of every selections" in {
     val editor = new Editor
-    val selection1 = new Selection((0, 4), (0, 10))
-    val selection2 = new Selection((1, 4), (1, 10))
-    val selection3 = new Selection((2, 3), (2, 9))
-    val selection4 = new Selection((3, 16), (3, 22))
+    editor.cursors.head.position = (0, 4)
+    val cursor2 = new Cursor(1, 4)
+    val cursor3 = new Cursor(2, 3)
+    val cursor4 = new Cursor(3, 16)
 
     editor.buffer.content = "Wow Please\nSon Please\nNo Please\nDon't chair me. Please."
 
-    // Selections are on every "Please"
-    editor.addSelection(selection1)
-    editor.addSelection(selection2)
-    editor.addSelection(selection3)
-    editor.addSelection(selection4)
+    editor.addCursor(cursor2)
+    editor.addCursor(cursor3)
+    editor.addCursor(cursor4)
 
+    // Selections are on every "Please"
+    editor.moveSelection(6)    
+    
     var content = editor.getSelectionContent
     var expected = "Please\nPlease\nPlease\nPlease"
 

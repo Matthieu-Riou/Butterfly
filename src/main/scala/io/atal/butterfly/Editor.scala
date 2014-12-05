@@ -6,61 +6,17 @@ package io.atal.butterfly
   * @constructor Create a new editor for the buffer
   * @param buffer The buffer to edit, default empty buffer
   */
-class Editor(var buffer: Buffer = new Buffer("")) {
+class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
   var _cursors: List[Cursor] = List(new Cursor())
-  var _selections: List[Selection] = List()
+  var _editorManager: Option[EditorManager] = None
 
   def cursors: List[Cursor] = _cursors
 
   def cursors_=(cursors: List[Cursor]): Unit = _cursors = cursors
 
-  def selections: List[Selection] = _selections
+  def editorManager: Option[EditorManager] = _editorManager
 
-  def selections_=(selections: List[Selection]): Unit = _selections = selections
-
-  /** Write a text into the buffer at the current cursors position
-    *
-    * @param text The text to be inserted in the buffer
-    */
-  def write(text: String): Unit = {
-    for (cursor <- cursors) {
-      buffer.insert(text, cursor.position)
-      cursor.moveRight(text.length)
-    }
-  }
-
-  /** A simple eraser, character by character
-    * Erase the character before the cursors
-    */
-  def erase: Unit = {
-    for (cursor <- cursors) {
-      cursor.position match {
-        case (0, 0) => Unit
-        case (x, 0) => {
-          val lines = buffer.lines
-          val lastColOfPrevLine = lines(x - 1).length
-
-          // Remove the \n of the previous line
-          buffer.remove((x - 1, lastColOfPrevLine), (x, 0))
-          cursor.position = (x - 1, lastColOfPrevLine)
-        }
-        case (x, y) => {
-          buffer.remove((x, y - 1), (x, y))
-          moveCursorLeft(cursor)
-        }
-      }
-    }
-  }
-
-  /** Erase all selections content
-    */
-  def eraseSelection: Unit = {
-    for (selection <- selections) {
-      buffer.remove(selection.begin, selection.end)
-    }
-
-    clearSelection
-  }
+  def editorManager_=(editorManager: Option[EditorManager]): Unit = _editorManager = editorManager
 
   /** Return all selections' content
     * Used to put it inside the Butterfly clipboard (copy event)
@@ -70,11 +26,61 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   def getSelectionContent: String = {
     var content: String = ""
 
-    for (selection <- selections) {
-      content += buffer.select(selection.begin, selection.end) + "\n"
+    if(isSelectionMode) {
+
+      for (cursor <- cursors) {
+        content += buffer.select(cursor.position, cursor.cursorSelection.get.position) + "\n"
+      }
     }
 
     content.dropRight(1)
+  }
+
+ /** Write a text into the buffer at the current cursors position
+  *
+  * @param text The text to be inserted in the buffer
+  */
+  def write(text: String): Unit = {
+    if(isSelectionMode) {
+      erase
+    }
+
+    for(cursor <- cursors) {
+      buffer.insert(text, cursor.position)
+      moveCursorRight(cursor, text.length)
+    }
+  }
+
+  /** A simple eraser, character by character
+  * Erase the character before the cursors
+  */
+  def erase: Unit = {
+    if(isSelectionMode) {
+      for (cursor <- cursors) {
+        buffer.remove(cursor.position, cursor.cursorSelection.get.position)
+      }
+
+      clearSelection
+    }
+    else {
+      for (cursor <- cursors) {
+        cursor.position match {
+          case (0, 0) => Unit
+          case (x, 0) => {
+            val lines = buffer.lines
+            val lastColOfPrevLine = lines(x - 1).length
+
+            // Remove the \n of the previous line
+            buffer.remove((x - 1, lastColOfPrevLine), (x, 0))
+            cursor.position = (x - 1, lastColOfPrevLine)
+          }
+          case (x, y) => {
+            buffer.remove((x, y - 1), (x, y))
+            moveCursorLeft(cursor)
+          }
+        }
+      }
+    }
   }
 
   /** Add a cursor
@@ -94,21 +100,50 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     */
   def removeMergedCursors: Unit = cursors = cursors.distinct
 
-  /** Add a selection
+  /** Move the selections for all cursors
+    * Create the selections if they does'nt exits
     *
-    * @param selection Selection to add
+    * @param move The number of character (absolute value) that moves of the selection (on the left if move < 0, one the right if move > 0)
     */
-  def addSelection(selection: Selection): Unit = selections = selection :: selections
+  def moveSelection(move: Int): Unit = {
+    for(cursor <- cursors)
+    {
+      if(cursor.cursorSelection == None) {
+        cursor.cursorSelection = Some(new Cursor(cursor.position))
+      }
 
-  /** Remove a selection
-    *
-    * @param selection Selection to remove
-    */
-  def removeSelection(selection: Selection): Unit = selections = selections.diff(List(selection))
+      if(move < 0) {
+        moveCursorLeft(cursor.cursorSelection.get, Math.abs(move))
+      }
+      else {
+        moveCursorRight(cursor.cursorSelection.get, Math.abs(move))
+      }
+    }
+  }
 
   /** Clear all selections
     */
-  def clearSelection: Unit = selections = List()
+  def clearSelection: Unit = {
+    for(cursor <- cursors)
+    {
+      cursor.cursorSelection = None
+    }
+  }
+
+  /** Notify if the editor is in selection's mode
+    * The editor is in selection's mode if there is at least one current selection
+    */
+  def isSelectionMode: Boolean = cursors.head.cursorSelection match {
+    case None => false
+    case Some(_) => true
+  }
+
+  /** Return the position of the cursor in the whole string
+    *
+    * @param cursor The cursor that we want
+    * @retutrn The position in the buffer
+    */
+  def getIndexPosition(cursor: Cursor): Int = buffer.convertToLinearPosition(cursor.position)
 
   /** Move up all cursors
     *
@@ -119,17 +154,6 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     removeMergedCursors
   }
 
-  /** Move up a single cursor
-    *
-    * @param cursor The cursor to move up
-    * @param row Number of row to move, default 1
-    */
-  def moveCursorUp(cursor: Cursor, row: Int = 1): Unit = cursor.position match {
-    case (0, y) => Unit
-    case (x, y) if y > buffer.lines(x - 1).length => cursor.position = (x - 1, buffer.lines(x - 1).length)
-    case (x, y) => cursor.position = (x - 1, y)
-  }
-
   /** Move down all cursors
     *
     * @param row Number of row to move, default 1
@@ -137,39 +161,6 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   def moveCursorsDown(row: Int = 1): Unit = {
     cursors.foreach { moveCursorDown(_, row) }
     removeMergedCursors
-  }
-
-  /** Move down a single cursor
-    *
-    * @param cursor The cursor to move down
-    * @param row Number of row to move, default 1
-    */
-  def moveCursorDown(cursor: Cursor, row: Int = 1): Unit = {
-    // LastLine and LastColumn need to start with an uppercase to be stable identifiers, and to be used in the match
-    val LastLine = buffer.lines.length - 1
-    val LastColumn = buffer.lines(cursor.position._1).length
-
-    cursor.position match {
-      case (LastLine, y) => Unit
-      case (x, y) if y > buffer.lines(x + 1).length => cursor.position = (x + 1, buffer.lines(x + 1).length)
-      case (x, y) => cursor.position = (x + 1, y)
-    }
-  }
-
-  /** Move left a single cursor
-    *
-    * @param cursor The cursor to move left
-    * @param column Number of column to move, default 1
-    */
-  def moveCursorLeft(cursor: Cursor, column: Int = 1): Unit = cursor.position match {
-    case (0, 0) => Unit
-    case (x, y) if (y - column >= 0) => cursor.moveLeft(column)
-    case (0, y) => cursor.position = (0, 0)
-    case (x, y) => {
-      val lastColumn = buffer.lines(x - 1).length
-      cursor.position = (x - 1, lastColumn)
-      moveCursorLeft(cursor, column - y - 1)
-    }
   }
 
   /** Move left all cursors
@@ -182,27 +173,6 @@ class Editor(var buffer: Buffer = new Buffer("")) {
     }
 
     removeMergedCursors
-  }
-
-  /** Move right a single cursor
-    *
-    * @param cursor The cursor to move right
-    * @param column Number of column to move, default 1
-    */
-  def moveCursorRight(cursor: Cursor, column: Int = 1): Unit = {
-    // LastLine and LastColumn need to start with an uppercase to be stable identifiers, and to be used in the match
-    val LastLine = buffer.lines.length - 1
-    val LastColumn = buffer.lines(cursor.position._1).length
-
-    cursor.position match {
-      case (LastLine, LastColumn) => Unit
-      case (x, y) if (y + column <= LastColumn) => cursor.moveRight(column)
-      case (LastLine, y) => cursor.position = (LastLine, LastColumn)
-      case (x, y) => {
-        cursor.position = (x + 1, 0)
-        moveCursorRight(cursor, column - (LastColumn - y) - 1)
-      }
-    }
   }
 
   /** Move right all cursors
@@ -220,7 +190,7 @@ class Editor(var buffer: Buffer = new Buffer("")) {
   /** Move to the top all cursors
     */
   def moveCursorsToTop: Unit = {
-    cursors.foreach { _.moveToTop }
+    cursors.foreach { _.position = (0, 0) }
     removeMergedCursors
   }
 
@@ -239,4 +209,82 @@ class Editor(var buffer: Buffer = new Buffer("")) {
 
     removeMergedCursors
   }
+
+  /** Move up a single cursor
+    *
+    * @param cursor The cursor to move up
+    * @param row Number of row to move, default 1
+    */
+  private def moveCursorUp(cursor: Cursor, row: Int = 1): Unit = cursor.position match {
+    case (0, y) => Unit
+    case (x, y) if y > buffer.lines(x - 1).length => cursor.position = (x - 1, buffer.lines(x - 1).length)
+    case (x, y) => cursor.position = (x - 1, y)
+  }
+
+  /** Move down a single cursor
+    *
+    * @param cursor The cursor to move down
+    * @param row Number of row to move, default 1
+    */
+  private def moveCursorDown(cursor: Cursor, row: Int = 1): Unit = {
+    // LastLine and LastColumn need to start with an uppercase to be stable identifiers, and to be used in the match
+    val LastLine = buffer.lines.length - 1
+    val LastColumn = buffer.lines(cursor.position._1).length
+
+    cursor.position match {
+      case (LastLine, y) => Unit
+      case (x, y) if y > buffer.lines(x + 1).length => cursor.position = (x + 1, buffer.lines(x + 1).length)
+      case (x, y) => cursor.position = (x + 1, y)
+    }
+  }
+
+  /** Move left a single cursor
+    *
+    * @param cursor The cursor to move left
+    * @param column Number of column to move, default 1
+    */
+  private def moveCursorLeft(cursor: Cursor, column: Int = 1): Unit = cursor.position match {
+    case (0, 0) => Unit
+    case (x, y) if (y - column >= 0) => cursor.position = (x, y - column)
+    case (0, y) => cursor.position = (0, 0)
+    case (x, y) => {
+      val lastColumn = buffer.lines(x - 1).length
+      cursor.position = (x - 1, lastColumn)
+      moveCursorLeft(cursor, column - y - 1)
+    }
+  }
+
+  /** Move right a single cursor
+    *
+    * @param cursor The cursor to move right
+    * @param column Number of column to move, default 1
+    */
+  private def moveCursorRight(cursor: Cursor, column: Int = 1): Unit = {
+    // LastLine and LastColumn need to start with an uppercase to be stable identifiers, and to be used in the match
+    val LastLine = buffer.lines.length - 1
+    val LastColumn = buffer.lines(cursor.position._1).length
+
+    cursor.position match {
+      case (LastLine, LastColumn) => Unit
+      case (x, y) if (y + column <= LastColumn) => cursor.position = (x, y + column)
+      case (LastLine, y) => cursor.position = (LastLine, LastColumn)
+      case (x, y) => {
+        cursor.position = (x + 1, 0)
+        moveCursorRight(cursor, column - (LastColumn - y) - 1)
+      }
+    }
+  }
+  /** Event registration on buffer changed
+    * If the changed buffer is the Editor's one, tell it to EditorManager
+    */
+  event.on(
+    "buffer-changed",
+    (buffer) => {
+      editorManager match {
+        case Some(e) if (buffer == this.buffer) => e.editorChanged(this)
+        case Some(e) => Unit
+        case None => Unit
+      }
+    }
+  )
 }

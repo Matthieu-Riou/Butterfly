@@ -16,49 +16,5 @@ class CursorTest extends FlatSpec {
 
     assert(cursor.position == expected)
   }
-
-  "The Cursor moveToTop method" should "place the cursor at the beginning" in {
-    val cursor = new Cursor((10, 10))
-
-    val expected = (0, 0)
-    cursor.moveToTop
-
-    assert(cursor.position == expected)
-  }
-
-  "The Cursor default moveUp method" should "place the cursor one row above" in {
-    val cursor = new Cursor((1, 0))
-
-    val expected = (0, 0)
-    cursor.moveUp()
-
-    assert(cursor.position == expected)
-  }
-
-  "The Cursor default moveDown method" should "place the cursor one row below" in {
-    val cursor = new Cursor((1, 0))
-
-    val expected = (2, 0)
-    cursor.moveDown()
-
-    assert(cursor.position == expected)
-  }
-
-  "The Cursor default moveLeft method" should "place the cursor one column to the left" in {
-    val cursor = new Cursor((0, 1))
-
-    val expected = (0, 0)
-    cursor.moveLeft()
-
-    assert(cursor.position == expected)
-  }
-
-  "The Cursor default moveRight method" should "place the cursor one column to the right" in {
-    val cursor = new Cursor((0, 1))
-
-    val expected = (0, 2)
-    cursor.moveRight()
-
-    assert(cursor.position == expected)
-  }
 }
+
