@@ -26,6 +26,7 @@ object butterfly {
                  |  - erase
                  |  - cursor ([left/right/up/down] [int]) | ([top/bottom])
                  |  - selection [left/right] [int]
+                 |  - cut / copy / paste
                  |  - quit """.stripMargin)
                  
       val input = readLine("> ")
@@ -50,6 +51,9 @@ object butterfly {
           case "left" => execute(new MoveSelection(-1 * split(2).toInt))
           case "right" => execute(new MoveSelection(split(2).toInt))
         }
+        case "cut" => execute(new Cut())
+        case "copy" => execute(new Copy())
+        case "paste" => execute(new Paste())
         case "quit" => continue = false
         case _ => Unit
       }
