@@ -35,27 +35,34 @@ object butterfly {
       
       val split = input.split(" ")
       
-      split(0) match {
-        case "write" => execute(new Write(input.splitAt(6)._2))
-        case "line" => execute(new Write('\n'.toString))
-        case "erase" => execute(new Erase())
-        case "cursor" => split(1) match {
-          case "left" => execute(new MoveCursorsLeft(split(2).toInt))
-          case "right" => execute(new MoveCursorsRight(split(2).toInt))
-          case "up" => execute(new MoveCursorsUp(split(2).toInt))
-          case "down" => execute(new MoveCursorsDown(split(2).toInt))
-          case "top" => execute(new MoveCursorsToTop())
-          case "bottom" => execute(new MoveCursorsToBottom())
+      try {
+        split(0) match {
+          case "write" => execute(new Write(input.splitAt(6)._2))
+          case "line" => execute(new Write('\n'.toString))
+          case "erase" => execute(new Erase())
+          case "cursor" => split(1) match {
+            case "left" => execute(new MoveCursorsLeft(split(2).toInt))
+            case "right" => execute(new MoveCursorsRight(split(2).toInt))
+            case "up" => execute(new MoveCursorsUp(split(2).toInt))
+            case "down" => execute(new MoveCursorsDown(split(2).toInt))
+            case "top" => execute(new MoveCursorsToTop())
+            case "bottom" => execute(new MoveCursorsToBottom())
+            case _ => Unit
+          }
+          case "selection" => split(1) match {
+            case "left" => execute(new MoveSelection(-1 * split(2).toInt))
+            case "right" => execute(new MoveSelection(split(2).toInt))
+            case _ => Unit
+          }
+          case "cut" => execute(new Cut())
+          case "copy" => execute(new Copy())
+          case "paste" => execute(new Paste())
+          case "quit" => continue = false
+          case _ => Unit
         }
-        case "selection" => split(1) match {
-          case "left" => execute(new MoveSelection(-1 * split(2).toInt))
-          case "right" => execute(new MoveSelection(split(2).toInt))
-        }
-        case "cut" => execute(new Cut())
-        case "copy" => execute(new Copy())
-        case "paste" => execute(new Paste())
-        case "quit" => continue = false
-        case _ => Unit
+      }
+      catch {
+        case _: Throwable => Unit
       }
     }
   }
