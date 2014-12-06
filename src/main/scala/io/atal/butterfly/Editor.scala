@@ -29,7 +29,10 @@ class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
     if (isSelectionMode) {
 
       for (cursor <- cursors) {
-        content += buffer.select(cursor.position, cursor.cursorSelection.get.position) + "\n"
+        if(cursor.greaterThen(cursor.cursorSelection.get))
+          content += buffer.select(cursor.cursorSelection.get.position, cursor.position) + "\n"
+        else
+          content += buffer.select(cursor.position, cursor.cursorSelection.get.position) + "\n"
       }
     }
 
