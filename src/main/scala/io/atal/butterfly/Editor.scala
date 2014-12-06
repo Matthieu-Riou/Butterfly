@@ -95,13 +95,13 @@ class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
     *
     * @param cursor Cursor to add
     */
-  def addCursor(cursor: Cursor): Unit = cursors = cursor :: cursors
+  def addCursor(line: Int, column: Int): Unit = cursors = new Cursor((line, column)) :: cursors
 
   /** Remove a cursor
     *
     * @param cursor Cursor to remove
     */
-  def removeCursor(cursor: Cursor): Unit = cursors = cursors.diff(List(cursor))
+  def removeCursor(line: Int, column: Int): Unit = cursors = cursors.diff(List(new Cursor((line, column))))
 
   /** Remove merged cursors (in other words with the same position)
     * It occurs each time a cursor has moved
