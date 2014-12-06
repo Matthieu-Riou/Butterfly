@@ -47,8 +47,8 @@ object butterfly {
             case "down" => execute(new MoveCursorsDown(split(2).toInt))
             case "top" => execute(new MoveCursorsToTop())
             case "bottom" => execute(new MoveCursorsToBottom())
-            case "add" => execute(new AddCursor(split(2).toInt, split(3).toInt))
-            case "remove" => execute(new RemoveCursor(split(2).toInt, split(3).toInt))
+            case "add" => execute(new AddCursor((split(2).toInt, split(3).toInt)))
+            case "remove" => execute(new RemoveCursor((split(2).toInt, split(3).toInt)))
             case _ => Unit
           }
           case "selection" => split(1) match {

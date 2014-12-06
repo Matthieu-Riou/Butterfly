@@ -3,7 +3,7 @@ package io.atal.butterfly
 /** Implement the action RemoveCursor
   * Remove a cursor
   */
-class RemoveCursor(line: Int, column:Int) extends Action {
+class RemoveCursor(position: (Int,Int)) extends Action {
 
   /** Execute the action
     *
@@ -11,6 +11,6 @@ class RemoveCursor(line: Int, column:Int) extends Action {
     * @param clipboard The clipboard onto the action is executed
     */
   def execute(editor: Editor, clipboard: Clipboard): Unit = {
-    editor.removeCursor(line, column)
+    editor.removeCursor(position)
   }
 }
