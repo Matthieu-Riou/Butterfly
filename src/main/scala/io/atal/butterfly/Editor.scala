@@ -102,6 +102,10 @@ class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
     * @param cursor Cursor to remove
     */
   def removeCursor(position: (Int,Int)): Unit = cursors = cursors.diff(List(new Cursor(position)))
+  
+  /** Remove all cursors
+    */
+  def removeAllCursors: Unit = cursors = List()
 
   /** Remove merged cursors (in other words with the same position)
     * It occurs each time a cursor has moved
