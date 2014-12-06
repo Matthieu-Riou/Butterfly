@@ -25,7 +25,7 @@ object butterfly {
                  |  - line
                  |  - erase
                  |  - cursor ([left/right/up/down] [int]) | ([top/bottom]) | ([add/remove] [int] [int])
-                 |  - selection [left/right] [int]
+                 |  - selection ([left/right] [int]) | ([clear])
                  |  - cut / copy / paste
                  |  - quit """.stripMargin)
                  
@@ -54,6 +54,7 @@ object butterfly {
           case "selection" => split(1) match {
             case "left" => execute(new MoveSelection(-1 * split(2).toInt))
             case "right" => execute(new MoveSelection(split(2).toInt))
+            case "clear" => execute(new ClearSelection())
             case _ => Unit
           }
           case "cut" => execute(new Cut())
