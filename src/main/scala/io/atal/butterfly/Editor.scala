@@ -50,6 +50,9 @@ class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
 
     for (cursor <- cursors) {
       buffer.insert(text, cursor.position)
+      for(cursorGreater <- cursors.filter(c => c.greaterThen(cursor))) {
+        moveCursorRight(cursorGreater, text.length)
+      }
       moveCursorRight(cursor, text.length)
     }
   }
@@ -60,12 +63,22 @@ class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
   def erase: Unit = {
     if (isSelectionMode) {
       for (cursor <- cursors) {
+        var length = 0
         if(cursor.greaterThen(cursor.cursorSelection.get)) {
+          length = getIndexPosition(cursor) - getIndexPosition(cursor.cursorSelection.get)
+          
           buffer.remove(cursor.cursorSelection.get.position, cursor.position)
           cursor.position = cursor.cursorSelection.get.position
         }
-        else
+        else {
+          length = getIndexPosition(cursor.cursorSelection.get) - getIndexPosition(cursor)
           buffer.remove(cursor.position, cursor.cursorSelection.get.position)
+        }
+        
+        for(cursorGreater <- cursors.filter(c => c.greaterThen(cursor))) {
+            moveCursorLeft(cursorGreater, length)
+        }
+        
       }
 
       clearSelection
@@ -84,11 +97,16 @@ class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
           }
           case (x, y) => {
             buffer.remove((x, y - 1), (x, y))
+            for(cursorGreater <- cursors.filter(c => c.greaterThen(cursor))) {
+              moveCursorLeft(cursorGreater)
+            }
             moveCursorLeft(cursor)
           }
         }
       }
     }
+    
+    removeMergedCursors
   }
 
   /** Add a cursor
