@@ -4,8 +4,12 @@ package io.atal.butterfly
   *
   * @constructor Create a new cursor with a position
   * @param position Cursor's position, default (0, 0)
+  * @param cursorSelection An optional second cursor for selection mode, default None
   */
-class Cursor(var position: (Int, Int) = (0, 0)) {
+class Cursor(
+    var position: (Int, Int) = (0, 0),
+    var cursorSelection: Option[Cursor] = None
+  ) {
 
   override def hashCode: Int = position.hashCode
 
@@ -14,39 +18,25 @@ class Cursor(var position: (Int, Int) = (0, 0)) {
     case _ => false
   }
 
-  /** Move up the cursor
+  /** Compare two cursors
+    * Return true if this > cursor (false if equals)
     *
-    * @param row Number of row to move, default 1
+    * @param cursor The other cursor
     */
-  def moveUp(row: Int = 1): Unit = {
-    position = (position._1 - row, position._2)
+  def greaterThan(cursor: Cursor): Boolean = (position, cursor.position) match {
+    case ((x1, y1), (x2 ,y2)) if (x1 > x2) => true
+    case ((x1, y1), (x2, y2)) if (x1 < x2) => false
+    case ((_, y1), (_, y2)) if (y1 > y2) => true
+    case (_) => false
   }
 
-  /** Move down the cursor
+  /** Compare two cursors
+    * Return true if this < cursor (false if equals)
     *
-    * @param row Number of row to move, default 1
+    * @param cursor The other cursor
     */
-  def moveDown(row: Int = 1): Unit = {
-    position = (position._1 + row, position._2)
+  def lowerThan(cursor: Cursor): Boolean = (position, cursor.position) match {
+    case (p1, p2) if (p1 == p2) => false
+    case _ => !greaterThan(cursor)
   }
-
-  /** Move left the cursor
-    *
-    * @param column Number of column to move, default 1
-    */
-  def moveLeft(column: Int = 1): Unit = {
-    position = (position._1, position._2 - column)
-  }
-
-  /** Move right the cursor
-    *
-    * @param column Number of column to move, default 1
-    */
-  def moveRight(column: Int = 1): Unit = {
-    position = (position._1, position._2 + column)
-  }
-
-  /** Move to the top the cursor
-    */
-  def moveToTop: Unit = position = (0, 0)
 }
