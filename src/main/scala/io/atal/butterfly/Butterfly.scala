@@ -107,7 +107,7 @@ object butterfly {
       for (cursor <- editorManager.cursors) {
         if (cursor.position._1 == i) {
           if(selection) {
-            if(cursor.greaterThen(cursor.cursorSelection.get))
+            if(cursor.greaterThan(cursor.cursorSelection.get))
               strCursor = strCursor.updated(cursor.position._2, '<')
             else
               strCursor = strCursor.updated(cursor.position._2, '>')
@@ -117,7 +117,7 @@ object butterfly {
         }
         
         if(selection && cursor.cursorSelection.get.position._1 == i) {
-          if(cursor.greaterThen(cursor.cursorSelection.get))
+          if(cursor.greaterThan(cursor.cursorSelection.get))
             strCursor = strCursor.updated(cursor.cursorSelection.get.position._2, '>')
           else
             strCursor = strCursor.updated(cursor.cursorSelection.get.position._2, '<')
