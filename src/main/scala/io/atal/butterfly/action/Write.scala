@@ -5,7 +5,7 @@ import io.atal.butterfly.{Editor, Clipboard}
 /** Implement the action Write
   * Write a text in the buffer at the cursor's position
   *
-  * @constructor Create the action
+  * @constructor Create the action with the given text
   * @param text The text to write
   */
 class Write(text: String) extends Action {

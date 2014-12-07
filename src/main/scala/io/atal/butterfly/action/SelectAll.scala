@@ -15,7 +15,7 @@ class SelectAll extends Action {
   def execute(editor: Editor, clipboard: Clipboard): Unit = {
     editor.removeAllCursors
 
-    editor.addCursor(0,0)
+    editor.addCursor(0, 0)
 
     new MoveSelection(editor.buffer.content.length).execute(editor, clipboard)
   }
