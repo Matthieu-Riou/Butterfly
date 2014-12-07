@@ -47,25 +47,6 @@ class EditorManager {
     }
   }
 
-  /** Write text into the current Editor
-    *
-    * Call the write method of Editor
-    * @param text The text to insert
-    */
-  def write(text: String): Unit = currentEditor match {
-    case Some(editor) => new Write(text).execute(editor, clipboard)
-    case None => Unit
-  }
-
-  /** Erase text from the current Editor
-    *
-    * Call the erase method of Editor
-    */
-  def erase: Unit = currentEditor match {
-    case Some(editor) => new Erase().execute(editor, clipboard)
-    case None => Unit
-  }
-
   /** Get contents from the selections of the current Editor
     *
     * Call the getSelectionContent method from Editor
