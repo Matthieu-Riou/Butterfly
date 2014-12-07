@@ -1,4 +1,6 @@
-package io.atal.butterfly
+package io.atal.butterfly.action
+import io.atal.butterfly.Editor
+import io.atal.butterfly.Clipboard
 
 /** Implement the action SelectAllText
   * Select all the occurences of a string

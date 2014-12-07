@@ -1,5 +1,6 @@
 package io.atal.butterfly
 
+import io.atal.butterfly.action._
 import scala.io.StdIn.readLine
 
 object butterfly {

@@ -1,4 +1,6 @@
-package io.atal.butterfly
+package io.atal.butterfly.action
+import io.atal.butterfly.Editor
+import io.atal.butterfly.Clipboard
 
 /** Implement the action Copy
   * Copy the text of the selection
