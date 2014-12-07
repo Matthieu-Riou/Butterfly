@@ -6,11 +6,10 @@ import io.atal.butterfly.action._
   * Call function of Editor, and manage the focus upon editors
   * Manage the clipboard
   */
-class EditorManager {
+class EditorManager(var view: Option[View] = None) {
   var _editors: List[Editor] = List()
   var _clipboard: Clipboard = new Clipboard()
   var _currentEditor: Option[Editor] = None
-  var _view : Option[View] = None
 
   def editors: List[Editor] = _editors
 
@@ -22,16 +21,12 @@ class EditorManager {
 
   def currentEditor_=(editor: Option[Editor]) = _currentEditor = editor
 
-  def view: Option[View] = _view
-
-  def view_=(view: Option[View]): Unit = _view = view
-
   /** Open a new Editor
     *
     * @TODO Add a param files to open a file text
     */
   def openEditor: Unit = {
-    editors = new Editor() :: editors
+    editors = new Editor(editorManager = Some(this)) :: editors
     currentEditor = Some(editors.head)
   }
 

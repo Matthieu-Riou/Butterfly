@@ -3,9 +3,9 @@ package io.atal.butterfly
 import io.atal.butterfly.action._
 import scala.io.StdIn.readLine
 
-object butterfly {
+object butterfly extends View {
 
-  val editorManager = new EditorManager
+  val editorManager = new EditorManager(Some(this))
   var _macro: Map[String, Action] = Map()
 
   def main(args: Array[String]) {
@@ -223,4 +223,6 @@ object butterfly {
       
     println
   }
+  
+  def updateView: Unit = {}
 }
