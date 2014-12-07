@@ -52,6 +52,7 @@ class EditorManagerTest extends FlatSpec {
     assert(editorManager.currentEditor == Some(editorManager.editors.head))
   }
   
+  /*
   "The EditorManager write method" should "write the given text int the current editor at all cursors position" in {
     val editorManager = new EditorManager
     
@@ -131,6 +132,6 @@ class EditorManagerTest extends FlatSpec {
     assert(editor.buffer.content == expected)
 
     assert(editor.isSelectionMode == false)
-  }
+  }*/
 
 }

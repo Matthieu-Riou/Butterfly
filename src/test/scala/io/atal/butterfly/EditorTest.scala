@@ -33,20 +33,19 @@ class EditorTest extends FlatSpec {
 
   "The Editor add cursor method" should "actually add a cursor" in {
     val editor = new Editor
-    val cursor = new Cursor
 
-    editor.addCursor(cursor)
+    editor.addCursor((0,0))
 
     editor.cursors should have length 2
-    editor.cursors should contain (cursor)
   }
 
   "The Editor remove cursor method" should "actually remove the cursor" in {
     val editor = new Editor
-    val cursor = new Cursor((1, 1))
 
-    editor.addCursor(cursor)
-    editor.removeCursor(cursor)
+    editor.addCursor((1,1))
+    val cursor = editor.cursors.head
+    
+    editor.removeCursor((1,1))
 
     editor.cursors should have length 1
     editor.cursors should not contain (cursor)
@@ -56,7 +55,7 @@ class EditorTest extends FlatSpec {
     val editor = new Editor
     val cursor = new Cursor((0, 0))
 
-    editor.addCursor(cursor)
+    editor.addCursor((0,0))
 
     // By default, an editor has a cursor lying at (0, 0)
     editor.removeMergedCursors
@@ -88,7 +87,7 @@ class EditorTest extends FlatSpec {
     
     editor.buffer.content = "Oh\nHello\nthe world"
     
-    editor.addCursor(cursor)
+    editor.addCursor((2,0))
 
     editor.moveSelection(4)
 
@@ -107,7 +106,7 @@ class EditorTest extends FlatSpec {
     
     editor.buffer.content = "Oh\nHello\nthe world"
     
-    editor.addCursor(cursor)
+    editor.addCursor((2,0))
 
     editor.moveSelection(4)
 
@@ -133,15 +132,12 @@ class EditorTest extends FlatSpec {
   "The Editor get selection content method" should "return the content of every selections" in {
     val editor = new Editor
     editor.cursors.head.position = (0, 4)
-    val cursor2 = new Cursor(1, 4)
-    val cursor3 = new Cursor(2, 3)
-    val cursor4 = new Cursor(3, 16)
 
     editor.buffer.content = "Wow Please\nSon Please\nNo Please\nDon't chair me. Please."
 
-    editor.addCursor(cursor2)
-    editor.addCursor(cursor3)
-    editor.addCursor(cursor4)
+    editor.addCursor((1,4))
+    editor.addCursor((2,3))
+    editor.addCursor((3,16))
 
     // Selections are on every "Please"
     editor.moveSelection(6)    
@@ -156,7 +152,7 @@ class EditorTest extends FlatSpec {
     val editor = new Editor
     val cursor = new Cursor((1, 2))
 
-    editor.addCursor(cursor)
+    editor.addCursor((1,2))
     editor.buffer.content = "Wow\nSon"
 
     editor.moveCursorsUp()
@@ -166,8 +162,7 @@ class EditorTest extends FlatSpec {
 
     editor.buffer.content = "Wow\nSon my chair"
 
-    val cursor1 = new Cursor((1, 7))
-    editor.addCursor(cursor1)
+    editor.addCursor((1,7))
 
     editor.moveCursorsUp()
 
@@ -177,9 +172,8 @@ class EditorTest extends FlatSpec {
 
   "The Editor move cursors down method" should "work as expected" in {
     val editor = new Editor
-    val cursor = new Cursor((1, 2))
 
-    editor.addCursor(cursor)
+    editor.addCursor((1,2))
     editor.buffer.content = "Wow\nSon"
 
     editor.moveCursorsDown()
@@ -189,8 +183,7 @@ class EditorTest extends FlatSpec {
 
     editor.buffer.content = "Wow\nSon my chair\nHey"
 
-    val cursor1 = new Cursor((1, 7))
-    editor.addCursor(cursor1)
+    editor.addCursor((1,7))
 
     editor.moveCursorsDown()
 
@@ -200,9 +193,8 @@ class EditorTest extends FlatSpec {
 
   "The Editor move cursors left method" should "work as expected" in {
     val editor = new Editor
-    val cursor = new Cursor((1, 2))
 
-    editor.addCursor(cursor)
+    editor.addCursor((1,2))
     editor.buffer.content = "Wow\nSon"
 
     editor.moveCursorsLeft()
@@ -212,8 +204,7 @@ class EditorTest extends FlatSpec {
 
     editor.buffer.content = "Wow\nSon my chair\nHey"
 
-    val cursor1 = new Cursor((2, 0))
-    editor.addCursor(cursor1)
+    editor.addCursor((2,0))
 
     editor.moveCursorsLeft()
 
@@ -223,9 +214,8 @@ class EditorTest extends FlatSpec {
 
   "The Editor move cursors left (with several steps) method" should "work as expected" in {
     val editor = new Editor
-    val cursor = new Cursor((1, 2))
 
-    editor.addCursor(cursor)
+    editor.addCursor((1,2))
     editor.buffer.content = "Wow\nSon"
 
     editor.moveCursorsLeft(2)
@@ -235,8 +225,7 @@ class EditorTest extends FlatSpec {
 
     editor.buffer.content = "Wow\nSon my chair\nHey"
 
-    val cursor1 = new Cursor((2, 0))
-    editor.addCursor(cursor1)
+    editor.addCursor((2,0))
 
     editor.moveCursorsLeft(4)
 
@@ -247,9 +236,8 @@ class EditorTest extends FlatSpec {
 
   "The Editor move cursors right method" should "work as expected" in {
     val editor = new Editor
-    val cursor = new Cursor((1, 2))
 
-    editor.addCursor(cursor)
+    editor.addCursor((1,2))
     editor.buffer.content = "Wow\nSon"
 
     editor.moveCursorsRight()
@@ -259,8 +247,7 @@ class EditorTest extends FlatSpec {
 
     editor.buffer.content = "Wow\nSon my chair\nHey!"
 
-    val cursor1 = new Cursor((1, 12))
-    editor.addCursor(cursor1)
+    editor.addCursor((1,12))
 
     editor.moveCursorsRight()
 
@@ -270,9 +257,8 @@ class EditorTest extends FlatSpec {
 
   "The Editor move cursors right (with several steps) method" should "work as expected" in {
     val editor = new Editor
-    val cursor = new Cursor((1, 2))
 
-    editor.addCursor(cursor)
+    editor.addCursor((1,2))
     editor.buffer.content = "Wow\nSon"
 
     editor.moveCursorsRight(2)
@@ -290,9 +276,8 @@ class EditorTest extends FlatSpec {
 
   "The Editor move cursors to top method" should "work as expected" in {
     val editor = new Editor
-    val cursor = new Cursor((1, 2))
 
-    editor.addCursor(cursor)
+    editor.addCursor((1,2))
     editor.buffer.content = "Wow\nSon"
 
     editor.moveCursorsToTop
@@ -303,9 +288,8 @@ class EditorTest extends FlatSpec {
 
   "The Editor move cursors to bottom method" should "work as expected" in {
     val editor = new Editor
-    val cursor = new Cursor((1, 2))
 
-    editor.addCursor(cursor)
+    editor.addCursor((1,2))
     editor.buffer.content = "Wow\nSon\nWhere is my chair ?"
 
     editor.moveCursorsToBottom
