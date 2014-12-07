@@ -128,6 +128,37 @@ class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
     
     removeMergedCursors
   }
+  
+  /** Undo the last event
+    */
+  def undo: Unit = {
+    clearSelection
+    buffer.undo
+    
+    val lines = buffer.lines
+    
+    for(cursor <- cursors) {
+      if(cursor.position._2 > lines(cursor.position._1).length)
+        cursor.position = (cursor.position._1, lines(cursor.position._1).length)
+    }
+  }
+  
+  /** Redo the last undo event
+    */
+  def redo: Unit = {
+    clearSelection
+    buffer.redo
+    
+    val lines = buffer.lines
+    
+    for(cursor <- cursors) {
+      if(cursor.position._1 >= lines.length)
+        cursor.position = (lines.length -1, cursor.position._2)
+        
+      if(cursor.position._2 > lines(cursor.position._1).length)
+        cursor.position = (cursor.position._1, lines(cursor.position._1).length)
+    }
+  }
 
   /** Add a cursor
     *

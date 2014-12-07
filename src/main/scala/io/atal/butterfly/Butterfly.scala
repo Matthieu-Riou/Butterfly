@@ -29,6 +29,7 @@ object butterfly {
                  |  - cursor ([left/right/up/down] [int]) | ([top/bottom]) | ([add/remove] [int] [int])
                  |  - selection ([left/right] [int]) | ([clear])
                  |  - cut / copy / paste
+                 |  - undo / redo
                  |  - selectAll ([text])
                  |  - eraseAll ([text])
                  |  - macro ([list/add]) | ([apply] [name])
@@ -65,6 +66,8 @@ object butterfly {
           case "cut" => execute(new Cut())
           case "copy" => execute(new Copy())
           case "paste" => execute(new Paste())
+          case "undo" => execute(new Undo())
+          case "redo" => execute(new Redo())
           case "selectAll" => {
             if(input.splitAt(10)._2 != "") 
               execute(new SelectAllText(input.splitAt(10)._2))
