@@ -1,9 +1,9 @@
 package io.atal.butterfly
 
-/** Implement the action EraseAll
-  * Erase all the buffer
+/** Implement the action EraseAllText
+  * Erase all the occurences of a string
   */
-class EraseAll() extends Action {
+class EraseAllText(text: String) extends Action {
 
   /** Execute the action
     *
@@ -11,7 +11,7 @@ class EraseAll() extends Action {
     * @param clipboard The clipboard onto the action is executed
     */
   def execute(editor: Editor, clipboard: Clipboard): Unit = {
-    new SelectAll().execute(editor, clipboard)
+    new SelectAllText(text).execute(editor, clipboard)
     new Erase().execute(editor, clipboard)
   }
 }

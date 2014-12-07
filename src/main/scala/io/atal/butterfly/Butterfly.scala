@@ -28,8 +28,8 @@ object butterfly {
                  |  - cursor ([left/right/up/down] [int]) | ([top/bottom]) | ([add/remove] [int] [int])
                  |  - selection ([left/right] [int]) | ([clear])
                  |  - cut / copy / paste
-                 |  - selectAll [text]
-                 |  - eraseAll [text]
+                 |  - selectAll ([text])
+                 |  - eraseAll ([text])
                  |  - macro ([list/add]) | ([apply] [name])
                  |  - quit """.stripMargin)
                  
@@ -64,8 +64,18 @@ object butterfly {
           case "cut" => execute(new Cut())
           case "copy" => execute(new Copy())
           case "paste" => execute(new Paste())
-          case "selectAll" => if(input.splitAt(10)._2 != "") execute(new SelectAll(input.splitAt(10)._2))
-          case "eraseAll" => if(input.splitAt(9)._2 != "") execute(new EraseAll(input.splitAt(9)._2))
+          case "selectAll" => {
+            if(input.splitAt(10)._2 != "") 
+              execute(new SelectAllText(input.splitAt(10)._2))
+            else
+              execute(new SelectAll())
+          }
+          case "eraseAll" => {
+            if(input.splitAt(9)._2 != "") 
+              execute(new EraseAllText(input.splitAt(9)._2))
+            else
+              execute(new EraseAll())
+          }
           case "macro" => split(1) match {
             case "list" => printMacro; println
             case "add" => addMacro
@@ -146,8 +156,8 @@ object butterfly {
                    |  - cursor ([left/right/up/down] [int]) | ([top/bottom]) | ([add/remove] [int] [int])
                    |  - selection ([left/right] [int]) | ([clear])
                    |  - cut / copy / paste
-                   |  - selectAll [text]
-                   |  - eraseAll [text]
+                   |  - selectAll ([text])
+                   |  - eraseAll ([text])
                    |  - valid
                    |  - quit""".stripMargin)
                    
@@ -182,8 +192,18 @@ object butterfly {
           case "cut" => action.add(new Cut())
           case "copy" => action.add(new Copy())
           case "paste" => action.add(new Paste())
-          case "selectAll" => if(input.splitAt(10)._2 != "") action.add(new SelectAll(input.splitAt(10)._2))
-          case "eraseAll" => if(input.splitAt(9)._2 != "") action.add(new EraseAll(input.splitAt(9)._2))
+          case "selectAll" => {
+            if(input.splitAt(10)._2 != "") 
+              action.add(new SelectAllText(input.splitAt(10)._2))
+            else
+              action.add(new SelectAll())
+          }
+          case "eraseAll" => {
+            if(input.splitAt(9)._2 != "") 
+              action.add(new EraseAllText(input.splitAt(9)._2))
+            else
+              action.add(new EraseAll())
+          }
           case "valid" => continue = false; valid = true
           case "quit" => continue = false; valid = false
           case _ => Unit

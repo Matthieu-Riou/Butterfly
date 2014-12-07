@@ -1,9 +1,9 @@
 package io.atal.butterfly
 
 /** Implement the action SelectAll
-  * Select all the occurences of a string
+  * Select all the buffer
   */
-class SelectAll(text: String) extends Action {
+class SelectAll extends Action {
 
   /** Execute the action
     *
@@ -13,18 +13,10 @@ class SelectAll(text: String) extends Action {
   def execute(editor: Editor, clipboard: Clipboard): Unit = {
     editor.removeAllCursors
     
-    val lines = editor.buffer.lines
+    editor.addCursor(0,0)
     
-    for(i <- 0 until lines.length) {
-      var index = lines(i).indexOf(text)
-      
-      while(index != -1) {
-        editor.addCursor((i,index))
-        index = lines(i).indexOf(text, index +1)
-      }
-    }
-    
-    new MoveSelection(text.length).execute(editor, clipboard)
+    new MoveSelection(editor.buffer.content.length).execute(editor, clipboard)
       
   }
 }
+
