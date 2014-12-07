@@ -166,8 +166,9 @@ object butterfly extends View {
                    |  - line
                    |  - erase
                    |  - cursor ([left/right/up/down] [int]) | ([top/bottom]) | ([add/remove] [int] [int])
-                   |  - selection ([left/right] [int]) | ([clear])
+                   |  - selection ([left/right] [int]) | ([start/end] [left/right] [int]) | ([clear])
                    |  - cut / copy / paste
+                   |  - undo / redo
                    |  - selectAll ([text])
                    |  - eraseAll ([text])
                    |  - valid
@@ -198,12 +199,22 @@ object butterfly extends View {
           case "selection" => split(1) match {
             case "left" => action.add(new MoveSelection(-1 * split(2).toInt))
             case "right" => action.add(new MoveSelection(split(2).toInt))
+            case "start" => split(2) match {
+              case "left" => action.add(new MoveStartSelection(-1 * split(3).toInt))
+              case "right" => action.add(new MoveStartSelection(split(3).toInt))
+            }
+            case "end" => split(2) match {
+              case "left" => action.add(new MoveEndSelection(-1 * split(3).toInt))
+              case "right" => action.add(new MoveEndSelection(split(3).toInt))
+            }
             case "clear" => action.add(new ClearSelection())
             case _ => Unit
           }
           case "cut" => action.add(new Cut())
           case "copy" => action.add(new Copy())
           case "paste" => action.add(new Paste())
+          case "undo" => action.add(new Undo())
+          case "redo" => action.add(new Redo())
           case "selectAll" => {
             if(input.splitAt(10)._2 != "") 
               action.add(new SelectAllText(input.splitAt(10)._2))
