@@ -4,7 +4,6 @@ import io.atal.butterfly.action._
 import scala.io.StdIn.readLine
 
 object butterfly extends View {
-
   val editorManager = new EditorManager(Some(this))
   var _macro: Map[String, Action] = Map()
 
@@ -14,14 +13,14 @@ object butterfly extends View {
     println("Hey! This is butterfly !")
 
     println
-    
+
     var continue = true
-    
-    while(continue) {
+
+    while (continue) {
       printBuffer
-      
+
       println
-      
+
       println("""|What do you want to do ?
                  |  - write [text]
                  |  - line
@@ -34,13 +33,13 @@ object butterfly extends View {
                  |  - eraseAll ([text])
                  |  - macro ([list/add]) | ([apply] [name])
                  |  - quit """.stripMargin)
-                 
+
       val input = readLine("> ")
-      
+
       println
-      
+
       val split = input.split(" ")
-      
+
       try {
         split(0) match {
           case "write" => execute(new Write(input.splitAt(6)._2))
@@ -77,13 +76,13 @@ object butterfly extends View {
           case "undo" => execute(new Undo())
           case "redo" => execute(new Redo())
           case "selectAll" => {
-            if(input.splitAt(10)._2 != "") 
+            if (input.splitAt(10)._2 != "")
               execute(new SelectAllText(input.splitAt(10)._2))
             else
               execute(new SelectAll())
           }
           case "eraseAll" => {
-            if(input.splitAt(9)._2 != "") 
+            if (input.splitAt(9)._2 != "")
               execute(new EraseAllText(input.splitAt(9)._2))
             else
               execute(new EraseAll())
@@ -118,18 +117,18 @@ object butterfly extends View {
 
       for (cursor <- editorManager.cursors) {
         if (cursor.position._1 == i) {
-          if(selection) {
-            if(cursor.greaterThan(cursor.cursorSelection.get))
+          if (selection) {
+            if (cursor.greaterThan(cursor.cursorSelection.get))
               strCursor = strCursor.updated(cursor.position._2, '<')
             else
               strCursor = strCursor.updated(cursor.position._2, '>')
           }
-          else 
+          else
             strCursor = strCursor.updated(cursor.position._2, '^')
         }
-        
-        if(selection && cursor.cursorSelection.get.position._1 == i) {
-          if(cursor.greaterThan(cursor.cursorSelection.get))
+
+        if (selection && cursor.cursorSelection.get.position._1 == i) {
+          if (cursor.greaterThan(cursor.cursorSelection.get))
             strCursor = strCursor.updated(cursor.cursorSelection.get.position._2, '>')
           else
             strCursor = strCursor.updated(cursor.cursorSelection.get.position._2, '<')
@@ -140,28 +139,27 @@ object butterfly extends View {
     }
     println("-----")
   }
-  
-  def printMacro : Unit = {
+
+  def printMacro: Unit = {
     println("Macro\n-----")
-    for((k,_) <- _macro) {
+    for ((k,_) <- _macro) {
       println(k)
     }
     println("-----")
-  
   }
-  
+
   def addMacro: Unit = {
     var action = new Composite()
-    
+
     val name = readLine("> Give a name to your macro : ")
-    
+
     println
-    
+
     var continue = true
     var valid = false
-    
-    while(continue) {
-      println("""|Compose your macro : 
+
+    while (continue) {
+      println("""|Compose your macro :
                    |  - write [text]
                    |  - line
                    |  - erase
@@ -173,13 +171,13 @@ object butterfly extends View {
                    |  - eraseAll ([text])
                    |  - valid
                    |  - quit""".stripMargin)
-                   
+
       val input = readLine("> ")
-      
+
       println
-        
+
       val split = input.split(" ")
-      
+
       try {
         split(0) match {
           case "write" => action.add(new Write(input.splitAt(6)._2))
@@ -216,13 +214,13 @@ object butterfly extends View {
           case "undo" => action.add(new Undo())
           case "redo" => action.add(new Redo())
           case "selectAll" => {
-            if(input.splitAt(10)._2 != "") 
+            if (input.splitAt(10)._2 != "")
               action.add(new SelectAllText(input.splitAt(10)._2))
             else
               action.add(new SelectAll())
           }
           case "eraseAll" => {
-            if(input.splitAt(9)._2 != "") 
+            if (input.splitAt(9)._2 != "")
               action.add(new EraseAllText(input.splitAt(9)._2))
             else
               action.add(new EraseAll())
@@ -234,14 +232,14 @@ object butterfly extends View {
       }
       catch {
         case _: Throwable => Unit
-      }  
+      }
     }
-   
-    if(valid)
+
+    if (valid)
       _macro = _macro updated (name, action)
-      
+
     println
   }
-  
+
   def updateView: Unit = {}
 }

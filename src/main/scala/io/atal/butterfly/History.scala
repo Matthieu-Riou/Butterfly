@@ -1,8 +1,18 @@
 package io.atal.butterfly
 
-class History(val buffer: Buffer) {
-  var _historyBefore: List[HistoryEvent] = List()
-  var _historyAfter: List[HistoryEvent] = List()
+/** An history is linked to a buffer and memorized events (insertion and deletion)
+  * It offers undo and redo features
+  *
+  * @constructor Create a new History sticked to a buffer
+  * @param buffer The linked buffer
+  * @param historyBefore Past history event, default empty
+  * @param historyAfter
+  */
+class History(
+    val buffer: Buffer,
+    var historyBefore: List[HistoryEvent] = List(),
+    var historyAfter: List[HistoryEvent] = List()
+  ) {
 
   /** Add a new insertion to the history
     *
@@ -10,8 +20,8 @@ class History(val buffer: Buffer) {
     * @param index The position of the insertion
     */
   def newInsertion(string: String, index: Int): Unit = {
-    _historyBefore = new HistoryInsertion(buffer, string, index) :: _historyBefore
-    _historyAfter = List()
+    historyBefore = new HistoryInsertion(buffer, string, index) :: historyBefore
+    historyAfter = List()
   }
 
   /** Add a new deletion to the history
@@ -20,24 +30,24 @@ class History(val buffer: Buffer) {
     * @param endIndex The ending of the deletion (excluded)
     */
   def newDeletion(beginIndex: Int, endIndex: Int): Unit = {
-    _historyBefore = new HistoryDeletion(buffer, beginIndex, endIndex) :: _historyBefore
-    _historyAfter = List()
+    historyBefore = new HistoryDeletion(buffer, beginIndex, endIndex) :: historyBefore
+    historyAfter = List()
   }
 
   /** Undo the last event
     */
   def undo(): Unit = {
-    _historyBefore.head.undo()
-    _historyAfter = _historyBefore.head :: _historyAfter
-    _historyBefore = _historyBefore.tail
+    historyBefore.head.undo()
+    historyAfter = historyBefore.head :: historyAfter
+    historyBefore = historyBefore.tail
   }
 
   /** Redo the last undo event
     */
   def redo(): Unit = {
-    _historyAfter.head.redo()
-    _historyBefore = _historyAfter.head :: _historyBefore
-    _historyAfter = _historyAfter.tail
+    historyAfter.head.redo()
+    historyBefore = historyAfter.head :: historyBefore
+    historyAfter = historyAfter.tail
   }
 }
 
@@ -48,7 +58,7 @@ trait HistoryEvent {
   /** Define an undo function
     */
   def undo(): Unit
-  
+
   /** Define a redo function
     */
   def redo(): Unit
@@ -67,7 +77,7 @@ class HistoryInsertion(val buffer: Buffer, val string: String, val index: Int) e
     * Delete the string inserted
     */
   def undo(): Unit = new HistoryDeletion(buffer, index, index + string.length).redo()
-  
+
   /** Redo an Insertion
     */
   def redo(): Unit = buffer.simpleInsert(string, index)
@@ -82,12 +92,12 @@ class HistoryInsertion(val buffer: Buffer, val string: String, val index: Int) e
   */
 class HistoryDeletion(val buffer: Buffer, val beginIndex: Int, val endIndex: Int) extends HistoryEvent {
   val string = buffer.select(beginIndex, endIndex)
-  
+
   /** Undo the Deletion
     * Re-insert the deleted string
     */
   def undo(): Unit = new HistoryInsertion(buffer, string, beginIndex).redo()
-  
+
   /** Redo the Deletion
     */
   def redo(): Unit = buffer.simpleRemove(beginIndex, endIndex)

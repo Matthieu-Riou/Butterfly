@@ -1,11 +1,11 @@
 package io.atal.butterfly.action
-import io.atal.butterfly.Editor
-import io.atal.butterfly.Clipboard
+
+import io.atal.butterfly.{Editor, Clipboard}
 
 /** Implement the action MoveCursorsRight
   * Move the cursors right
   *
-  * @constructeur Create the action
+  * @constructor Create the action
   * @param move The number of columns you want to move
   */
 class MoveCursorsRight(move: Int) extends Action {

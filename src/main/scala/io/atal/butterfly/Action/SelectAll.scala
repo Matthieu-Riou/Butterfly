@@ -1,6 +1,6 @@
 package io.atal.butterfly.action
-import io.atal.butterfly.Editor
-import io.atal.butterfly.Clipboard
+
+import io.atal.butterfly.{Editor, Clipboard}
 
 /** Implement the action SelectAll
   * Select all the buffer
@@ -14,11 +14,9 @@ class SelectAll extends Action {
     */
   def execute(editor: Editor, clipboard: Clipboard): Unit = {
     editor.removeAllCursors
-    
+
     editor.addCursor(0,0)
-    
+
     new MoveSelection(editor.buffer.content.length).execute(editor, clipboard)
-      
   }
 }
-

@@ -101,8 +101,7 @@ class Buffer(var content: String) extends EventHandler {
     }
 
     linearPosition += position._2 // Add the column index
-
-    return linearPosition
+    linearPosition
   }
 
   /** Undo the last event
@@ -113,5 +112,7 @@ class Buffer(var content: String) extends EventHandler {
     */
   def redo(): Unit = history.redo()
 
+  /** Emit an event when the buffer change (on insert and remove)
+    */
   def hasChanged(): Unit = event.emit("buffer-changed", this)
 }

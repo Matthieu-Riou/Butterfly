@@ -2,28 +2,26 @@ package io.atal.butterfly
 
 import io.atal.butterfly.action._
 
-/** A manager that allow to use multiple editor
+/** An manager that allow to use multiple editor
   * Call function of Editor, and manage the focus upon editors
-  * Manage the clipboard
+  * And Manage the clipboard
+  *
+  * @constructor Create a new EditorManager
+  * @param view An optional view, default None
+  * @param editors Editors managed by the manager
+  * @param clipboard The clipboard
+  * @param currentEditor The current editor (where actions will take place)
   */
-class EditorManager(var view: Option[View] = None) {
-  var _editors: List[Editor] = List()
-  var _clipboard: Clipboard = new Clipboard()
-  var _currentEditor: Option[Editor] = None
-
-  def editors: List[Editor] = _editors
-
-  def editors_=(editors: List[Editor]): Unit = _editors = editors
-
-  def clipboard: Clipboard = _clipboard
-
-  def currentEditor: Option[Editor] = _currentEditor
-
-  def currentEditor_=(editor: Option[Editor]) = _currentEditor = editor
+class EditorManager(
+    var view: Option[View] = None,
+    var editors: List[Editor] = List(),
+    var clipboard: Clipboard = new Clipboard(),
+    var currentEditor: Option[Editor] = None
+  ) {
 
   /** Open a new Editor
     *
-    * @TODO Add a param files to open a file text
+    * @todo Add a param files to open a file text
     */
   def openEditor: Unit = {
     editors = new Editor(editorManager = Some(this)) :: editors
@@ -33,7 +31,7 @@ class EditorManager(var view: Option[View] = None) {
   /** Close an Editor
     *
     * @param editor The editor to close
-    * @TODO Save the editor
+    * @todo Save the editor
     */
   def closeEditor(editor: Editor): Unit = {
     editors = editors.diff(List(editor))

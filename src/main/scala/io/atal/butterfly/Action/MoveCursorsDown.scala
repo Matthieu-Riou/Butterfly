@@ -1,11 +1,11 @@
 package io.atal.butterfly.action
-import io.atal.butterfly.Editor
-import io.atal.butterfly.Clipboard
+
+import io.atal.butterfly.{Editor, Clipboard}
 
 /** Implement the action MoveCursorsDown
   * Move the cursors down
   *
-  * @constructeur Create the action
+  * @constructor Create the action
   * @param move The number of lines you want to move
   */
 class MoveCursorsDown(move: Int) extends Action {

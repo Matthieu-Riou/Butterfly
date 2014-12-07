@@ -1,13 +1,13 @@
 package io.atal.butterfly.action
-import io.atal.butterfly.Editor
-import io.atal.butterfly.Clipboard
+
+import io.atal.butterfly.{Editor, Clipboard}
 
 /** Implement the action MoveCursorsToBottom
   * Move the cursors to the bottom
   *
-  * @constructeur Create the action
+  * @constructor Create the action
   */
-class MoveCursorsToBottom() extends Action {
+class MoveCursorsToBottom extends Action {
 
   /** Execute the action
     *

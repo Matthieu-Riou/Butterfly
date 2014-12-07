@@ -1,11 +1,9 @@
 package io.atal.butterfly.action
-import io.atal.butterfly.Editor
-import io.atal.butterfly.Clipboard
+
+import io.atal.butterfly.{Editor, Clipboard}
 
 /** Implement the action Undo
   * Undo the last action on the buffer
-  *
-  * @constructeur Create the action
   */
 class Undo extends Action {
 

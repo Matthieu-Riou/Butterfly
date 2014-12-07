@@ -18,47 +18,47 @@ class HistoryTest extends FlatSpec {
     val buffer = new Buffer("Hello")
     val history = new History(buffer)
 
-    history._historyBefore should have length 0
+    history.historyBefore should have length 0
 
     history.newInsertion(" world!", 5)
     buffer.insert(" world!", 5)
 
-    history._historyBefore should have length 1
+    history.historyBefore should have length 1
 
     history.newDeletion(5, 11)
     buffer.remove(5, 11)
 
-    history._historyBefore should have length 2
+    history.historyBefore should have length 2
   }
 
   "The History newInsertion and newDeletion methods" should "clear the after history" in {
     val buffer = new Buffer("Hello")
     val history = new History(buffer)
 
-    history._historyAfter should have length 0
+    history.historyAfter should have length 0
 
     history.newInsertion(" world!", 5)
     buffer.insert(" world!", 5)
 
-    history._historyAfter should have length 0
+    history.historyAfter should have length 0
 
     history.undo()
 
-    history._historyAfter should have length 1
+    history.historyAfter should have length 1
 
     history.newInsertion(" woooorld!", 5)
     buffer.insert(" woooorld!", 5)
 
-    history._historyAfter should have length 0
+    history.historyAfter should have length 0
 
     history.undo()
 
-    history._historyAfter should have length 1
+    history.historyAfter should have length 1
 
     history.newDeletion(2, 3)
     buffer.remove(2, 3)
 
-    history._historyAfter should have length 0
+    history.historyAfter should have length 0
   }
 
   "The History undo method" should "undo the last event" in {

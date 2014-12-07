@@ -1,11 +1,11 @@
 package io.atal.butterfly.action
-import io.atal.butterfly.Editor
-import io.atal.butterfly.Clipboard
+
+import io.atal.butterfly.{Editor, Clipboard}
 
 /** Implement the action EraseAll
   * Erase all the buffer
   */
-class EraseAll() extends Action {
+class EraseAll extends Action {
 
   /** Execute the action
     *

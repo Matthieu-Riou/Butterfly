@@ -5,13 +5,14 @@ package io.atal.butterfly
   *
   * @constructor Create a new editor for the buffer
   * @param buffer The buffer to edit, default empty buffer
+  * @param editorManager A potential parent manager, default None
+  * @param cursors Cursors of the editor, default with one cursor at (0, 0)
   */
-class Editor(var buffer: Buffer = new Buffer(""), var editorManager: Option[EditorManager] = None) extends EventHandler {
-  var _cursors: List[Cursor] = List(new Cursor())
-
-  def cursors: List[Cursor] = _cursors
-
-  def cursors_=(cursors: List[Cursor]): Unit = _cursors = cursors
+class Editor(
+    var buffer: Buffer = new Buffer(""),
+    var editorManager: Option[EditorManager] = None,
+    var cursors: List[Cursor] = List(new Cursor()))
+  extends EventHandler {
 
   /** Return all selections' content
     * Used to put it inside the Butterfly clipboard (copy event)
@@ -22,9 +23,8 @@ class Editor(var buffer: Buffer = new Buffer(""), var editorManager: Option[Edit
     var content: String = ""
 
     if (isSelectionMode) {
-
       for (cursor <- cursors) {
-        if(cursor.greaterThan(cursor.cursorSelection.get))
+        if (cursor.greaterThan(cursor.cursorSelection.get))
           content += buffer.select(cursor.cursorSelection.get.position, cursor.position) + "\n"
         else
           content += buffer.select(cursor.position, cursor.cursorSelection.get.position) + "\n"
@@ -35,9 +35,9 @@ class Editor(var buffer: Buffer = new Buffer(""), var editorManager: Option[Edit
   }
 
  /** Write a text into the buffer at the current cursors position
-  *
-  * @param text The text to be inserted in the buffer
-  */
+   *
+   * @param text The text to be inserted in the buffer
+   */
   def write(text: String): Unit = {
     if (isSelectionMode) {
       erase
@@ -45,7 +45,7 @@ class Editor(var buffer: Buffer = new Buffer(""), var editorManager: Option[Edit
 
     for (cursor <- cursors) {
       buffer.insert(text, cursor.position)
-      for(cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 && c.greaterThan(cursor))) {
+      for (cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 && c.greaterThan(cursor))) {
         moveCursorRight(cursorGreater, text.length)
       }
       moveCursorRight(cursor, text.length)
@@ -53,17 +53,18 @@ class Editor(var buffer: Buffer = new Buffer(""), var editorManager: Option[Edit
   }
 
   /** A simple eraser, character by character
-  * Erase the character before the cursors
-  */
+    * Erase the character before the cursors
+    */
   def erase: Unit = {
     if (isSelectionMode) {
       for (cursor <- cursors) {
         var length = 0
         var diffLines = 0
-        if(cursor.greaterThan(cursor.cursorSelection.get)) {
+
+        if (cursor.greaterThan(cursor.cursorSelection.get)) {
           length = getIndexPosition(cursor) - getIndexPosition(cursor.cursorSelection.get)
           diffLines = cursor.position._1 - cursor.cursorSelection.get.position._1
-          
+
           buffer.remove(cursor.cursorSelection.get.position, cursor.position)
           cursor.position = cursor.cursorSelection.get.position
         }
@@ -72,18 +73,16 @@ class Editor(var buffer: Buffer = new Buffer(""), var editorManager: Option[Edit
           diffLines = cursor.cursorSelection.get.position._1 - cursor.position._1
           buffer.remove(cursor.position, cursor.cursorSelection.get.position)
         }
-        
-        for(cursorGreater <- cursors.filter(c => c.greaterThan(cursor))) {
+
+        for (cursorGreater <- cursors.filter(c => c.greaterThan(cursor))) {
           cursorGreater.position = (cursorGreater.position._1 - diffLines, cursorGreater.position._2)
         }
-      
-        for(cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 && c.greaterThan(cursor))) {
+
+        for (cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 && c.greaterThan(cursor))) {
             moveCursorLeft(cursorGreater, length)
             moveCursorLeft(cursorGreater.cursorSelection.get, length)
         }
-        
       }
-
       clearSelection
     }
     else {
@@ -97,60 +96,55 @@ class Editor(var buffer: Buffer = new Buffer(""), var editorManager: Option[Edit
             // Remove the \n of the previous line
             buffer.remove((x - 1, lastColOfPrevLine), (x, 0))
             cursor.position = (x - 1, lastColOfPrevLine)
-            
-            for(cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 +1)) {
+
+            for (cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 +1)) {
               cursorGreater.position = (x - 1, lastColOfPrevLine + cursorGreater.position._2)
             }
-            
-            for(cursorGreater <- cursors.filter(c => c.position._1 > cursor.position._1 +1)) {
+
+            for (cursorGreater <- cursors.filter(c => c.position._1 > cursor.position._1 +1)) {
               cursorGreater.position = (cursorGreater.position._1 -1, cursorGreater.position._2)
             }
           }
           case (x, y) => {
             buffer.remove((x, y - 1), (x, y))
-            for(cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 && c.position._2 > c.position._1)) {
+            for (cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 && c.position._2 > c.position._1)) {
               cursorGreater.position = (cursorGreater.position._1, cursorGreater.position._2 -1)
             }
             cursor.position = (x, y - 1)
           }
         }
-        
-        println(buffer.content)
-        for(cursor <- cursors)
-          println(cursor.position._1 + " " + cursor.position._2)
       }
     }
-    
     removeMergedCursors
   }
-  
+
   /** Undo the last event
     */
   def undo: Unit = {
     clearSelection
     buffer.undo
-    
+
     val lines = buffer.lines
-    
-    for(cursor <- cursors) {
-      if(cursor.position._2 > lines(cursor.position._1).length)
+
+    for (cursor <- cursors) {
+      if (cursor.position._2 > lines(cursor.position._1).length)
         cursor.position = (cursor.position._1, lines(cursor.position._1).length)
     }
   }
-  
+
   /** Redo the last undo event
     */
   def redo: Unit = {
     clearSelection
     buffer.redo
-    
+
     val lines = buffer.lines
-    
-    for(cursor <- cursors) {
-      if(cursor.position._1 >= lines.length)
+
+    for (cursor <- cursors) {
+      if (cursor.position._1 >= lines.length)
         cursor.position = (lines.length -1, cursor.position._2)
-        
-      if(cursor.position._2 > lines(cursor.position._1).length)
+
+      if (cursor.position._2 > lines(cursor.position._1).length)
         cursor.position = (cursor.position._1, lines(cursor.position._1).length)
     }
   }
@@ -166,7 +160,7 @@ class Editor(var buffer: Buffer = new Buffer(""), var editorManager: Option[Edit
     * @param cursor Cursor to remove
     */
   def removeCursor(position: (Int,Int)): Unit = cursors = cursors.diff(List(new Cursor(position)))
-  
+
   /** Remove all cursors
     */
   def removeAllCursors: Unit = cursors = List()
@@ -195,7 +189,7 @@ class Editor(var buffer: Buffer = new Buffer(""), var editorManager: Option[Edit
       }
     }
   }
-  
+
   /** Move the start of the selections for all cursors
     * Create the selections if they does'nt exits
     *
@@ -208,20 +202,20 @@ class Editor(var buffer: Buffer = new Buffer(""), var editorManager: Option[Edit
       }
 
       if (move < 0) {
-        if(cursor.greaterThan(cursor.cursorSelection.get))
+        if (cursor.greaterThan(cursor.cursorSelection.get))
           moveCursorLeft(cursor.cursorSelection.get, Math.abs(move))
         else
           moveCursorLeft(cursor, Math.abs(move))
       }
       else {
-        if(cursor.greaterThan(cursor.cursorSelection.get))
+        if (cursor.greaterThan(cursor.cursorSelection.get))
           moveCursorRight(cursor.cursorSelection.get, Math.abs(move))
         else
           moveCursorRight(cursor, Math.abs(move))
       }
     }
   }
-  
+
   /** Move the end of the selections for all cursors
     * Create the selections if they does'nt exits
     *
@@ -267,7 +261,7 @@ class Editor(var buffer: Buffer = new Buffer(""), var editorManager: Option[Edit
   /** Return the position of the cursor in the whole string
     *
     * @param cursor The cursor that we want
-    * @retutrn The position in the buffer
+    * @return The position in the buffer
     */
   def getIndexPosition(cursor: Cursor): Int = buffer.convertToLinearPosition(cursor.position)
 
@@ -297,7 +291,6 @@ class Editor(var buffer: Buffer = new Buffer(""), var editorManager: Option[Edit
     for (cursor <- cursors) {
       moveCursorLeft(cursor, column)
     }
-
     removeMergedCursors
   }
 
@@ -309,7 +302,6 @@ class Editor(var buffer: Buffer = new Buffer(""), var editorManager: Option[Edit
     for (cursor <- cursors) {
       moveCursorRight(cursor, column)
     }
-
     removeMergedCursors
   }
 

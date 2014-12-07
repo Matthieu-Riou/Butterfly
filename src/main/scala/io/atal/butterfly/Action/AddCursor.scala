@@ -1,11 +1,11 @@
 package io.atal.butterfly.action
-import io.atal.butterfly.Editor
-import io.atal.butterfly.Clipboard
+
+import io.atal.butterfly.{Editor, Clipboard}
 
 /** Implement the action AddCursor
   * Add a new cursor
   */
-class AddCursor(position: (Int,Int)) extends Action {
+class AddCursor(position: (Int, Int)) extends Action {
 
   /** Execute the action
     *

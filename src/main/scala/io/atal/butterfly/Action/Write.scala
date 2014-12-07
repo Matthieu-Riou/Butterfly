@@ -1,11 +1,11 @@
 package io.atal.butterfly.action
-import io.atal.butterfly.Editor
-import io.atal.butterfly.Clipboard
+
+import io.atal.butterfly.{Editor, Clipboard}
 
 /** Implement the action Write
   * Write a text in the buffer at the cursor's position
   *
-  * @constructeur Create the action
+  * @constructor Create the action
   * @param text The text to write
   */
 class Write(text: String) extends Action {

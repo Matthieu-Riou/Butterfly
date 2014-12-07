@@ -1,6 +1,6 @@
 package io.atal.butterfly.action
-import io.atal.butterfly.Editor
-import io.atal.butterfly.Clipboard
+
+import io.atal.butterfly.{Editor, Clipboard}
 
 /** Implement the action SelectAllText
   * Select all the occurences of a string
@@ -14,19 +14,17 @@ class SelectAllText(text: String) extends Action {
     */
   def execute(editor: Editor, clipboard: Clipboard): Unit = {
     editor.removeAllCursors
-    
+
     val lines = editor.buffer.lines
-    
-    for(i <- 0 until lines.length) {
+
+    for (i <- 0 until lines.length) {
       var index = lines(i).indexOf(text)
-      
-      while(index != -1) {
+
+      while (index != -1) {
         editor.addCursor((i,index))
-        index = lines(i).indexOf(text, index +1)
+        index = lines(i).indexOf(text, index + 1)
       }
     }
-    
     new MoveSelection(text.length).execute(editor, clipboard)
-      
   }
 }

@@ -44,7 +44,7 @@ class EditorTest extends FlatSpec {
 
     editor.addCursor((1,1))
     val cursor = editor.cursors.head
-    
+
     editor.removeCursor((1,1))
 
     editor.cursors should have length 1
@@ -71,29 +71,29 @@ class EditorTest extends FlatSpec {
 
   "The Editor move selection method" should "add the selections if there isn't" in {
     val editor = new Editor
-    
+
     editor.buffer.content = "Hello\nthe world"
-    
+
     assert(editor.cursors.head.cursorSelection == None)
 
     editor.moveSelection(2)
 
     assert(editor.cursors.head.cursorSelection == Some(new Cursor((0, 2))))
   }
-  
+
     "The Editor move selection method" should "work as expected" in {
     val editor = new Editor
     val cursor = new Cursor((2,0))
-    
+
     editor.buffer.content = "Oh\nHello\nthe world"
-    
+
     editor.addCursor((2,0))
 
     editor.moveSelection(4)
 
     assert(editor.cursors.head.cursorSelection == Some(new Cursor((2, 4))))
     assert(editor.cursors.tail.head.cursorSelection == Some(new Cursor((1, 1))))
-    
+
     editor.moveSelection(-2)
 
     assert(editor.cursors.head.cursorSelection == Some(new Cursor((2, 2))))
@@ -103,30 +103,30 @@ class EditorTest extends FlatSpec {
   "The Editor clear selection method" should "actually remove all selections" in {
     val editor = new Editor
     val cursor = new Cursor((2,0))
-    
+
     editor.buffer.content = "Oh\nHello\nthe world"
-    
+
     editor.addCursor((2,0))
 
     editor.moveSelection(4)
 
     assert(editor.cursors.head.cursorSelection != None)
     assert(editor.cursors.tail.head.cursorSelection != None)
-    
+
     editor.clearSelection
-    
+
     assert(editor.cursors.head.cursorSelection == None)
     assert(editor.cursors.tail.head.cursorSelection == None)
   }
-  
+
   "The Editor getIndexPosition method" should "actually return the index position of the cursor" in {
     val editor = new Editor
     val cursor = new Cursor((1,3))
-    
+
     editor.buffer.content = "Hello\nthe world"
-    
+
     assert(editor.getIndexPosition(cursor) == 9)
-    
+
   }
 
   "The Editor get selection content method" should "return the content of every selections" in {
@@ -140,8 +140,8 @@ class EditorTest extends FlatSpec {
     editor.addCursor((3,16))
 
     // Selections are on every "Please"
-    editor.moveSelection(6)    
-    
+    editor.moveSelection(6)
+
     var content = editor.getSelectionContent
     var expected = "Please\nPlease\nPlease\nPlease"
 
@@ -157,7 +157,7 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsUp()
 
-    var expected = List(new Cursor(0, 2), new Cursor(0, 0))
+    var expected = List(new Cursor((0, 2)), new Cursor((0, 0)))
     editor.cursors should equal (expected)
 
     editor.buffer.content = "Wow\nSon my chair"
@@ -166,7 +166,7 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsUp()
 
-    expected = List(new Cursor(0, 3) ,new Cursor(0, 2), new Cursor(0, 0))
+    expected = List(new Cursor((0, 3)) ,new Cursor((0, 2)), new Cursor((0, 0)))
     editor.cursors should equal (expected)
   }
 
@@ -178,7 +178,7 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsDown()
 
-    var expected = List(new Cursor(1, 2), new Cursor(1, 0))
+    var expected = List(new Cursor((1, 2)), new Cursor((1, 0)))
     editor.cursors should equal (expected)
 
     editor.buffer.content = "Wow\nSon my chair\nHey"
@@ -187,7 +187,7 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsDown()
 
-    expected = List(new Cursor(2, 3), new Cursor(2, 2), new Cursor(2, 0))
+    expected = List(new Cursor((2, 3)), new Cursor((2, 2)), new Cursor((2, 0)))
     editor.cursors should equal (expected)
   }
 
@@ -199,7 +199,7 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsLeft()
 
-    var expected = List(new Cursor(1, 1), new Cursor(0, 0))
+    var expected = List(new Cursor((1, 1)), new Cursor((0, 0)))
     editor.cursors should equal (expected)
 
     editor.buffer.content = "Wow\nSon my chair\nHey"
@@ -208,7 +208,7 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsLeft()
 
-    expected = List(new Cursor(1, 12), new Cursor(1, 0), new Cursor(0, 0))
+    expected = List(new Cursor((1, 12)), new Cursor((1, 0)), new Cursor((0, 0)))
     editor.cursors should equal (expected)
   }
 
@@ -220,7 +220,7 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsLeft(2)
 
-    var expected = List(new Cursor(1, 0), new Cursor(0, 0))
+    var expected = List(new Cursor((1, 0)), new Cursor((0, 0)))
     editor.cursors should equal (expected)
 
     editor.buffer.content = "Wow\nSon my chair\nHey"
@@ -230,7 +230,7 @@ class EditorTest extends FlatSpec {
     editor.moveCursorsLeft(4)
 
     // Due to merge
-    expected = List(new Cursor(1, 9), new Cursor(0, 0))
+    expected = List(new Cursor((1, 9)), new Cursor((0, 0)))
     editor.cursors should equal (expected)
   }
 
@@ -242,7 +242,7 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsRight()
 
-    var expected = List(new Cursor(1, 3), new Cursor(0, 1))
+    var expected = List(new Cursor((1, 3)), new Cursor((0, 1)))
     editor.cursors should equal (expected)
 
     editor.buffer.content = "Wow\nSon my chair\nHey!"
@@ -251,7 +251,7 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsRight()
 
-    expected = List(new Cursor(2, 0), new Cursor(1, 4), new Cursor(0, 2))
+    expected = List(new Cursor((2, 0)), new Cursor((1, 4)), new Cursor((0, 2)))
     editor.cursors should equal (expected)
   }
 
@@ -263,14 +263,14 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsRight(2)
 
-    var expected = List(new Cursor(1, 3), new Cursor(0, 2))
+    var expected = List(new Cursor((1, 3)), new Cursor((0, 2)))
     editor.cursors should equal (expected)
 
     editor.buffer.content = "Wow\nSon my chair\nHey!"
 
     editor.moveCursorsRight(15)
 
-    expected = List(new Cursor(2, 4), new Cursor(2, 0))
+    expected = List(new Cursor((2, 4)), new Cursor((2, 0)))
     editor.cursors should equal (expected)
   }
 
@@ -282,7 +282,7 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsToTop
 
-    var expected = List(new Cursor(0, 0))
+    var expected = List(new Cursor((0, 0)))
     editor.cursors should equal (expected)
   }
 
@@ -294,7 +294,7 @@ class EditorTest extends FlatSpec {
 
     editor.moveCursorsToBottom
 
-    var expected = List(new Cursor(2, 19))
+    var expected = List(new Cursor((2, 19)))
     editor.cursors should equal (expected)
   }
 }
