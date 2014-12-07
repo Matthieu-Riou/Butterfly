@@ -37,16 +37,16 @@ class History(
   /** Undo the last event
     */
   def undo(): Unit = {
-    historyBefore.head.undo()
-    historyAfter = historyBefore.head :: historyAfter
+    historyBefore(0).undo()
+    historyAfter = historyBefore(0) :: historyAfter
     historyBefore = historyBefore.tail
   }
 
   /** Redo the last undo event
     */
   def redo(): Unit = {
-    historyAfter.head.redo()
-    historyBefore = historyAfter.head :: historyBefore
+    historyAfter(0).redo()
+    historyBefore = historyAfter(0) :: historyBefore
     historyAfter = historyAfter.tail
   }
 }

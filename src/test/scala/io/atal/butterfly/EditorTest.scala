@@ -43,7 +43,7 @@ class EditorTest extends FlatSpec {
     val editor = new Editor
 
     editor.addCursor((1,1))
-    val cursor = editor.cursors.head
+    val cursor = editor.cursors(0)
 
     editor.removeCursor((1,1))
 
@@ -66,7 +66,7 @@ class EditorTest extends FlatSpec {
   "The Editor default selections" should "be empty" in {
     val editor = new Editor
 
-    assert(editor.cursors.head.cursorSelection == None)
+    assert(editor.cursors(0).cursorSelection == None)
   }
 
   "The Editor move selection method" should "add the selections if there isn't" in {
@@ -74,11 +74,11 @@ class EditorTest extends FlatSpec {
 
     editor.buffer.content = "Hello\nthe world"
 
-    assert(editor.cursors.head.cursorSelection == None)
+    assert(editor.cursors(0).cursorSelection == None)
 
     editor.moveSelection(2)
 
-    assert(editor.cursors.head.cursorSelection == Some(new Cursor((0, 2))))
+    assert(editor.cursors(0).cursorSelection == Some(new Cursor((0, 2))))
   }
 
     "The Editor move selection method" should "work as expected" in {
@@ -91,13 +91,13 @@ class EditorTest extends FlatSpec {
 
     editor.moveSelection(4)
 
-    assert(editor.cursors.head.cursorSelection == Some(new Cursor((2, 4))))
-    assert(editor.cursors.tail.head.cursorSelection == Some(new Cursor((1, 1))))
+    assert(editor.cursors(0).cursorSelection == Some(new Cursor((2, 4))))
+    assert(editor.cursors.tail(0).cursorSelection == Some(new Cursor((1, 1))))
 
     editor.moveSelection(-2)
 
-    assert(editor.cursors.head.cursorSelection == Some(new Cursor((2, 2))))
-    assert(editor.cursors.tail.head.cursorSelection == Some(new Cursor((0, 2))))
+    assert(editor.cursors(0).cursorSelection == Some(new Cursor((2, 2))))
+    assert(editor.cursors.tail(0).cursorSelection == Some(new Cursor((0, 2))))
   }
 
   "The Editor clear selection method" should "actually remove all selections" in {
@@ -110,13 +110,13 @@ class EditorTest extends FlatSpec {
 
     editor.moveSelection(4)
 
-    assert(editor.cursors.head.cursorSelection != None)
-    assert(editor.cursors.tail.head.cursorSelection != None)
+    assert(editor.cursors(0).cursorSelection != None)
+    assert(editor.cursors.tail(0).cursorSelection != None)
 
     editor.clearSelection
 
-    assert(editor.cursors.head.cursorSelection == None)
-    assert(editor.cursors.tail.head.cursorSelection == None)
+    assert(editor.cursors(0).cursorSelection == None)
+    assert(editor.cursors.tail(0).cursorSelection == None)
   }
 
   "The Editor getIndexPosition method" should "actually return the index position of the cursor" in {
@@ -131,7 +131,7 @@ class EditorTest extends FlatSpec {
 
   "The Editor get selection content method" should "return the content of every selections" in {
     val editor = new Editor
-    editor.cursors.head.position = (0, 4)
+    editor.cursors(0).position = (0, 4)
 
     editor.buffer.content = "Wow Please\nSon Please\nNo Please\nDon't chair me. Please."
 

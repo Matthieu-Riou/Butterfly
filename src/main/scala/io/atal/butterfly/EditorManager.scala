@@ -25,7 +25,7 @@ class EditorManager(
     */
   def openEditor: Unit = {
     editors = new Editor(editorManager = Some(this)) :: editors
-    currentEditor = Some(editors.head)
+    currentEditor = Some(editors(0))
   }
 
   /** Close an Editor
@@ -36,7 +36,7 @@ class EditorManager(
   def closeEditor(editor: Editor): Unit = {
     editors = editors.diff(List(editor))
     if (currentEditor == Some(editor)) {
-      currentEditor = Some(editors.head)
+      currentEditor = Some(editors(0))
     }
   }
 

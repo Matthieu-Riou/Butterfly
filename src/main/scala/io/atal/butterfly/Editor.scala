@@ -60,22 +60,26 @@ class Editor(
       for (cursor <- cursors) {
         var length = 0
         var diffLines = 0
+        val (x1, y1) = cursor.position
+        val selection = cursor.cursorSelection.get
+        val (x2, y2) = selection.position
 
-        if (cursor.greaterThan(cursor.cursorSelection.get)) {
-          length = getIndexPosition(cursor) - getIndexPosition(cursor.cursorSelection.get)
-          diffLines = cursor.position._1 - cursor.cursorSelection.get.position._1
+        if (cursor.greaterThan(selection)) {
+          length = getIndexPosition(cursor) - getIndexPosition(selection)
+          diffLines = x1 - x2
 
-          buffer.remove(cursor.cursorSelection.get.position, cursor.position)
-          cursor.position = cursor.cursorSelection.get.position
+          buffer.remove((x2, y2), (x1, y1))
+          cursor.position = (x2, y2)
         }
         else {
-          length = getIndexPosition(cursor.cursorSelection.get) - getIndexPosition(cursor)
-          diffLines = cursor.cursorSelection.get.position._1 - cursor.position._1
-          buffer.remove(cursor.position, cursor.cursorSelection.get.position)
+          length = getIndexPosition(selection) - getIndexPosition(cursor)
+          diffLines = x2 - x1
+          buffer.remove((x1, y1), (x2, y2))
         }
 
         for (cursorGreater <- cursors.filter(c => c.greaterThan(cursor))) {
-          cursorGreater.position = (cursorGreater.position._1 - diffLines, cursorGreater.position._2)
+          val (x, y) = cursorGreater.position
+          cursorGreater.position = (x - diffLines, y)
         }
 
         for (cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 && c.greaterThan(cursor))) {
@@ -97,18 +101,21 @@ class Editor(
             buffer.remove((x - 1, lastColOfPrevLine), (x, 0))
             cursor.position = (x - 1, lastColOfPrevLine)
 
-            for (cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 +1)) {
-              cursorGreater.position = (x - 1, lastColOfPrevLine + cursorGreater.position._2)
+            for (cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 + 1)) {
+              val (x, y) = cursorGreater.position
+              cursorGreater.position = (x - 1, lastColOfPrevLine + y)
             }
 
-            for (cursorGreater <- cursors.filter(c => c.position._1 > cursor.position._1 +1)) {
-              cursorGreater.position = (cursorGreater.position._1 -1, cursorGreater.position._2)
+            for (cursorGreater <- cursors.filter(c => c.position._1 > cursor.position._1 + 1)) {
+              val (x, y) = cursorGreater.position
+              cursorGreater.position = (x - 1, y)
             }
           }
           case (x, y) => {
             buffer.remove((x, y - 1), (x, y))
             for (cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 && c.position._2 > c.position._1)) {
-              cursorGreater.position = (cursorGreater.position._1, cursorGreater.position._2 -1)
+              val (x, y) = cursorGreater.position
+              cursorGreater.position = (x, y - 1)
             }
             cursor.position = (x, y - 1)
           }
@@ -127,8 +134,10 @@ class Editor(
     val lines = buffer.lines
 
     for (cursor <- cursors) {
-      if (cursor.position._2 > lines(cursor.position._1).length)
-        cursor.position = (cursor.position._1, lines(cursor.position._1).length)
+      val (x, y) = cursor.position
+
+      if (y > lines(x).length)
+        cursor.position = (x, lines(x).length)
     }
   }
 
@@ -141,11 +150,13 @@ class Editor(
     val lines = buffer.lines
 
     for (cursor <- cursors) {
-      if (cursor.position._1 >= lines.length)
-        cursor.position = (lines.length -1, cursor.position._2)
+      val (x, y) = cursor.position
 
-      if (cursor.position._2 > lines(cursor.position._1).length)
-        cursor.position = (cursor.position._1, lines(cursor.position._1).length)
+      if (x >= lines.length)
+        cursor.position = (lines.length - 1, y)
+
+      if (y > lines(x).length)
+        cursor.position = (x, lines(x).length)
     }
   }
 
@@ -171,7 +182,7 @@ class Editor(
   def removeMergedCursors: Unit = cursors = cursors.distinct
 
   /** Move the selections for all cursors
-    * Create the selections if they does'nt exits
+    * Create the selections if they don't exist
     *
     * @param move The number of character (absolute value) that moves of the selection (on the left if move < 0, one the right if move > 0)
     */
@@ -191,7 +202,7 @@ class Editor(
   }
 
   /** Move the start of the selections for all cursors
-    * Create the selections if they does'nt exits
+    * Create the selections if they don't exist
     *
     * @param move The number of character (absolute value) that moves of the start of the selection (on the left if move < 0, one the right if move > 0)
     */
@@ -217,7 +228,7 @@ class Editor(
   }
 
   /** Move the end of the selections for all cursors
-    * Create the selections if they does'nt exits
+    * Create the selections if they don't exist
     *
     * @param move The number of character (absolute value) that moves of the end of the selection (on the left if move < 0, one the right if move > 0)
     */
@@ -250,10 +261,10 @@ class Editor(
     }
   }
 
-  /** Notify if the editor is in selection's mode
-    * The editor is in selection's mode if there is at least one current selection
+  /** Check if the editor is in selection mode
+    * The editor is in selection mode if there is at least one selection
     */
-  def isSelectionMode: Boolean = cursors.head.cursorSelection match {
+  def isSelectionMode: Boolean = cursors(0).cursorSelection match {
     case None => false
     case Some(_) => true
   }
