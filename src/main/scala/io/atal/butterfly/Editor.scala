@@ -50,7 +50,7 @@ class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
 
     for (cursor <- cursors) {
       buffer.insert(text, cursor.position)
-      for(cursorGreater <- cursors.filter(c => c.greaterThen(cursor))) {
+      for(cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 && c.greaterThen(cursor))) {
         moveCursorRight(cursorGreater, text.length)
       }
       moveCursorRight(cursor, text.length)
@@ -64,19 +64,27 @@ class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
     if (isSelectionMode) {
       for (cursor <- cursors) {
         var length = 0
+        var diffLines = 0
         if(cursor.greaterThen(cursor.cursorSelection.get)) {
           length = getIndexPosition(cursor) - getIndexPosition(cursor.cursorSelection.get)
+          diffLines = cursor.position._1 - cursor.cursorSelection.get.position._1
           
           buffer.remove(cursor.cursorSelection.get.position, cursor.position)
           cursor.position = cursor.cursorSelection.get.position
         }
         else {
           length = getIndexPosition(cursor.cursorSelection.get) - getIndexPosition(cursor)
+          diffLines = cursor.cursorSelection.get.position._1 - cursor.position._1
           buffer.remove(cursor.position, cursor.cursorSelection.get.position)
         }
         
         for(cursorGreater <- cursors.filter(c => c.greaterThen(cursor))) {
+          cursorGreater.position = (cursorGreater.position._1 - diffLines, cursorGreater.position._2)
+        }
+      
+        for(cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 && c.greaterThen(cursor))) {
             moveCursorLeft(cursorGreater, length)
+            moveCursorLeft(cursorGreater.cursorSelection.get, length)
         }
         
       }
@@ -94,15 +102,27 @@ class Editor(var buffer: Buffer = new Buffer("")) extends EventHandler {
             // Remove the \n of the previous line
             buffer.remove((x - 1, lastColOfPrevLine), (x, 0))
             cursor.position = (x - 1, lastColOfPrevLine)
+            
+            for(cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 +1)) {
+              cursorGreater.position = (x - 1, lastColOfPrevLine + cursorGreater.position._2)
+            }
+            
+            for(cursorGreater <- cursors.filter(c => c.position._1 > cursor.position._1 +1)) {
+              cursorGreater.position = (cursorGreater.position._1 -1, cursorGreater.position._2)
+            }
           }
           case (x, y) => {
             buffer.remove((x, y - 1), (x, y))
-            for(cursorGreater <- cursors.filter(c => c.greaterThen(cursor))) {
-              moveCursorLeft(cursorGreater)
+            for(cursorGreater <- cursors.filter(c => c.position._1 == cursor.position._1 && c.position._2 > c.position._1)) {
+              cursorGreater.position = (cursorGreater.position._1, cursorGreater.position._2 -1)
             }
-            moveCursorLeft(cursor)
+            cursor.position = (x, y - 1)
           }
         }
+        
+        println(buffer.content)
+        for(cursor <- cursors)
+          println(cursor.position._1 + " " + cursor.position._2)
       }
     }
     
