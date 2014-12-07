@@ -2,7 +2,7 @@ package io.atal.butterfly
 
 import io.atal.butterfly.action._
 
-/** An manager that allow to use multiple editor
+/** A manager that allow to use multiple editor
   * Call function of Editor, and manage the focus upon editors
   * And Manage the clipboard
   *
