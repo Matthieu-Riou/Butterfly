@@ -195,6 +195,58 @@ class Editor(var buffer: Buffer = new Buffer(""), var editorManager: Option[Edit
       }
     }
   }
+  
+  /** Move the start of the selections for all cursors
+    * Create the selections if they does'nt exits
+    *
+    * @param move The number of character (absolute value) that moves of the start of the selection (on the left if move < 0, one the right if move > 0)
+    */
+  def moveStartSelection(move: Int): Unit = {
+    for (cursor <- cursors) {
+      if (cursor.cursorSelection == None) {
+        cursor.cursorSelection = Some(new Cursor(cursor.position))
+      }
+
+      if (move < 0) {
+        if(cursor.greaterThan(cursor.cursorSelection.get))
+          moveCursorLeft(cursor.cursorSelection.get, Math.abs(move))
+        else
+          moveCursorLeft(cursor, Math.abs(move))
+      }
+      else {
+        if(cursor.greaterThan(cursor.cursorSelection.get))
+          moveCursorRight(cursor.cursorSelection.get, Math.abs(move))
+        else
+          moveCursorRight(cursor, Math.abs(move))
+      }
+    }
+  }
+  
+  /** Move the end of the selections for all cursors
+    * Create the selections if they does'nt exits
+    *
+    * @param move The number of character (absolute value) that moves of the end of the selection (on the left if move < 0, one the right if move > 0)
+    */
+  def moveEndSelection(move: Int): Unit = {
+    for (cursor <- cursors) {
+      if (cursor.cursorSelection == None) {
+        cursor.cursorSelection = Some(new Cursor(cursor.position))
+      }
+
+      if (move < 0) {
+        if(cursor.lowerThan(cursor.cursorSelection.get))
+          moveCursorLeft(cursor.cursorSelection.get, Math.abs(move))
+        else
+          moveCursorLeft(cursor, Math.abs(move))
+      }
+      else {
+        if(cursor.lowerThan(cursor.cursorSelection.get))
+          moveCursorRight(cursor.cursorSelection.get, Math.abs(move))
+        else
+          moveCursorRight(cursor, Math.abs(move))
+      }
+    }
+  }
 
   /** Clear all selections
     */

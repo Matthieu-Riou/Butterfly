@@ -27,7 +27,7 @@ object butterfly extends View {
                  |  - line
                  |  - erase
                  |  - cursor ([left/right/up/down] [int]) | ([top/bottom]) | ([add/remove] [int] [int])
-                 |  - selection ([left/right] [int]) | ([clear])
+                 |  - selection ([left/right] [int]) | ([start/end] [left/right] [int]) | ([clear])
                  |  - cut / copy / paste
                  |  - undo / redo
                  |  - selectAll ([text])
@@ -60,6 +60,14 @@ object butterfly extends View {
           case "selection" => split(1) match {
             case "left" => execute(new MoveSelection(-1 * split(2).toInt))
             case "right" => execute(new MoveSelection(split(2).toInt))
+            case "start" => split(2) match {
+              case "left" => execute(new MoveStartSelection(-1 * split(3).toInt))
+              case "right" => execute(new MoveStartSelection(split(3).toInt))
+            }
+            case "end" => split(2) match {
+              case "left" => execute(new MoveEndSelection(-1 * split(3).toInt))
+              case "right" => execute(new MoveEndSelection(split(3).toInt))
+            }
             case "clear" => execute(new ClearSelection())
             case _ => Unit
           }
