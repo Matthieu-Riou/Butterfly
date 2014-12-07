@@ -81,7 +81,7 @@ class EditorTest extends FlatSpec {
     assert(editor.cursors(0).cursorSelection == Some(new Cursor((0, 2))))
   }
 
-    "The Editor move selection method" should "work as expected" in {
+  "The Editor move selection method" should "work as expected" in {
     val editor = new Editor
     val cursor = new Cursor((2,0))
 

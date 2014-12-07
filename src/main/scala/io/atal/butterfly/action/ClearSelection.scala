@@ -3,7 +3,6 @@ package io.atal.butterfly.action
 import io.atal.butterfly.{Editor, Clipboard}
 
 /** Implement the action ClearSelection
-  * Remove a cursor
   */
 class ClearSelection extends Action {
 

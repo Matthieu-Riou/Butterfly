@@ -2,9 +2,7 @@ package io.atal.butterfly
 
 import io.atal.butterfly.action._
 
-/** A manager that allow to use multiple editor
-  * Call function of Editor, and manage the focus upon editors
-  * And Manage the clipboard
+/** A manager that allows to use multiple editor and a clipboard
   *
   * @constructor Create a new EditorManager
   * @param view An optional view, default None
@@ -50,26 +48,46 @@ class EditorManager(
     case None => ""
   }
 
+  /** Get the buffer's content of the current editor
+    *
+    * @return Content of the buffer
+    */
   def content: String = currentEditor match {
     case Some(editor) => editor.buffer.content
     case None => ""
   }
 
+  /** Get the buffer's content by lines of the current editor
+    *
+    * @return An array containing buffer's content
+    */
   def contentByLines: Array[String] = currentEditor match {
     case Some(editor) => editor.buffer.lines
     case None => Array()
   }
 
+  /** Get cursors of the current editor
+    *
+    * @return The cursors
+    */
   def cursors: List[Cursor] = currentEditor match {
     case Some(editor) => editor.cursors
     case None => List()
   }
 
+  /** Execute the given action
+    *
+    * @param action The action to execute
+    */
   def execute(action: Action): Unit = currentEditor match {
     case Some(editor) => action.execute(editor, clipboard)
     case None => Unit
   }
 
+  /** Check if the current editor is in selection mode
+    *
+    * @return True if in selection mode
+    */
   def isSelectionMode: Boolean = currentEditor match {
     case Some(editor) => editor.isSelectionMode
     case None => false
